@@ -268,9 +268,13 @@ async function fetchLapTimes(round,driverId){
 
 // ── NEXT RACE ─────────────────────────────────────────────────────────────────
 const NEXT_RACES=[
-  {round:7,name:'Emilia Romagna Grand Prix',circuit:'Autodromo Enzo e Dino Ferrari',country:'🇮🇹',date:'2026-05-17'},
-  {round:8,name:'Monaco Grand Prix',circuit:'Circuit de Monaco',country:'🇲🇨',date:'2026-05-24'},
-  {round:9,name:'Canadian Grand Prix',circuit:'Circuit Gilles Villeneuve',country:'🇨🇦',date:'2026-06-15'},
+  {round:5,name:'Canadian Grand Prix',circuit:'Circuit Gilles-Villeneuve',country:'🇨🇦',date:'2026-05-22',sprint:true},
+  {round:6,name:'Monaco Grand Prix',circuit:'Circuit de Monaco',country:'🇲🇨',date:'2026-06-07'},
+  {round:7,name:'Barcelona-Catalunya Grand Prix',circuit:'Circuit de Barcelona-Catalunya',country:'🇪🇸',date:'2026-06-14'},
+  {round:8,name:'Austrian Grand Prix',circuit:'Red Bull Ring',country:'🇦🇹',date:'2026-06-28'},
+  {round:9,name:'British Grand Prix',circuit:'Silverstone Circuit',country:'🇬🇧',date:'2026-07-05',sprint:true},
+  {round:10,name:'Belgian Grand Prix',circuit:'Circuit de Spa-Francorchamps',country:'🇧🇪',date:'2026-07-19'},
+  {round:11,name:'Hungarian Grand Prix',circuit:'Hungaroring',country:'🇭🇺',date:'2026-07-26'},
 ];
 
 function renderNextBanner(){
@@ -281,7 +285,7 @@ function renderNextBanner(){
   const cdHTML=cd?`<div class="countdown-num">${cd.num}</div><div class="countdown-label">${cd.unit} AWAY</div>`:`<div class="countdown-num" style="color:var(--green)">NOW</div>`;
   return`<div class="next-race-banner">
     <div>
-      <div class="next-race-label">Next Race · Round ${next.round}</div>
+      <div class="next-race-label">Next Race · Round ${next.round}${next.sprint?' · 🏃 SPRINT WEEKEND':''}</div>
       <div class="next-race-name">${next.country} ${next.name}</div>
       <div class="next-race-circuit">${next.circuit}</div>
       <div class="next-race-date">${fmtDate(next.date)}</div>
