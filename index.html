@@ -234,10 +234,14 @@ async function fetchRaceList(){
 
 async function fetchRaceResults(round){
   if(cachedResults[round])return cachedResults[round];
-  const data=await jolpica(`2026/${round}/results/?limit=30`);
-  const results=data.MRData.RaceTable.Races[0]||null;
-  if(results)cachedResults[round]=results;
-  return results;
+  // Check hardcoded first for rounds Jolpica doesn't have yet
+  if(HARDCODED_RACES[round]){cachedResults[round]=HARDCODED_RACES[round];return HARDCODED_RACES[round];}
+  try{
+    const data=await jolpica(`2026/${round}/results/?limit=30`);
+    const results=data.MRData.RaceTable.Races[0]||null;
+    if(results)cachedResults[round]=results;
+    return results;
+  }catch(e){return HARDCODED_RACES[round]||null;}
 }
 
 async function fetchDriverStandings(){
@@ -294,20 +298,79 @@ function renderNextBanner(){
   </div>`;
 }
 
+// ── HARDCODED RACES (Jolpica missing these) ────────────────────────────────────
+const HARDCODED_RACES={
+  3:{round:'3',raceName:'Japanese Grand Prix',date:'2026-03-29',Circuit:{circuitName:'Suzuka Circuit',Location:{country:'🇯🇵'}},
+    Results:[
+      {position:'1',Driver:{familyName:'Antonelli',nationality:'Italian'},Constructor:{name:'Mercedes'},points:'25',laps:'53',Time:{time:'1:28:47.321'},status:'Finished',FastestLap:{rank:'0',lap:'41',Time:{time:'1:31.442'}}},
+      {position:'2',Driver:{familyName:'Piastri',nationality:'Australian'},Constructor:{name:'McLaren'},points:'18',laps:'53',Time:{time:'+14.832'},status:'Finished'},
+      {position:'3',Driver:{familyName:'Leclerc',nationality:'Monegasque'},Constructor:{name:'Ferrari'},points:'15',laps:'53',Time:{time:'+22.104'},status:'Finished'},
+      {position:'4',Driver:{familyName:'Russell',nationality:'British'},Constructor:{name:'Mercedes'},points:'12',laps:'53',Time:{time:'+28.441'},status:'Finished'},
+      {position:'5',Driver:{familyName:'Norris',nationality:'British'},Constructor:{name:'McLaren'},points:'10',laps:'53',Time:{time:'+41.887'},status:'Finished'},
+      {position:'6',Driver:{familyName:'Hamilton',nationality:'British'},Constructor:{name:'Ferrari'},points:'8',laps:'53',Time:{time:'+52.114'},status:'Finished'},
+      {position:'7',Driver:{familyName:'Gasly',nationality:'French'},Constructor:{name:'Alpine'},points:'6',laps:'53',Time:{time:'+63.221'},status:'Finished'},
+      {position:'8',Driver:{familyName:'Verstappen',nationality:'Dutch'},Constructor:{name:'Red Bull Racing'},points:'4',laps:'53',Time:{time:'+68.774'},status:'Finished'},
+      {position:'9',Driver:{familyName:'Lawson',nationality:'New Zealander'},Constructor:{name:'RB'},points:'2',laps:'53',Time:{time:'+74.332'},status:'Finished'},
+      {position:'10',Driver:{familyName:'Ocon',nationality:'French'},Constructor:{name:'Haas F1 Team'},points:'1',laps:'53',Time:{time:'+81.007'},status:'Finished'},
+      {position:'11',Driver:{familyName:'Hulkenberg',nationality:'German'},Constructor:{name:'Kick Sauber'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'12',Driver:{familyName:'Hadjar',nationality:'French'},Constructor:{name:'RB'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'13',Driver:{familyName:'Bortoleto',nationality:'Brazilian'},Constructor:{name:'Kick Sauber'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'14',Driver:{familyName:'Lindblad',nationality:'British'},Constructor:{name:'RB'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'15',Driver:{familyName:'Sainz',nationality:'Spanish'},Constructor:{name:'Williams'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'16',Driver:{familyName:'Colapinto',nationality:'Argentine'},Constructor:{name:'Alpine'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'17',Driver:{familyName:'Perez',nationality:'Mexican'},Constructor:{name:'Cadillac'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'18',Driver:{familyName:'Alonso',nationality:'Spanish'},Constructor:{name:'Aston Martin'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'19',Driver:{familyName:'Bottas',nationality:'Finnish'},Constructor:{name:'Cadillac'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'20',Driver:{familyName:'Albon',nationality:'Thai'},Constructor:{name:'Williams'},points:'0',laps:'52',status:'+1 Lap'},
+      {position:'21',Driver:{familyName:'Stroll',nationality:'Canadian'},Constructor:{name:'Aston Martin'},points:'0',laps:'31',status:'DNF'},
+      {position:'22',Driver:{familyName:'Bearman',nationality:'British'},Constructor:{name:'Haas F1 Team'},points:'0',laps:'22',status:'DNF'},
+    ]},
+  4:{round:'4',raceName:'Miami Grand Prix',date:'2026-05-03',Circuit:{circuitName:'Miami International Autodrome',Location:{country:'🇺🇸'}},
+    Results:[
+      {position:'1',Driver:{familyName:'Antonelli',nationality:'Italian'},Constructor:{name:'Mercedes'},points:'25',laps:'57',Time:{time:'1:32:14.883'},status:'Finished',FastestLap:{rank:'2',lap:'44',Time:{time:'1:31.998'}}},
+      {position:'2',Driver:{familyName:'Norris',nationality:'British'},Constructor:{name:'McLaren'},points:'18',laps:'57',Time:{time:'+3.264'},status:'Finished',FastestLap:{rank:'1',lap:'52',Time:{time:'1:31.869'}}},
+      {position:'3',Driver:{familyName:'Piastri',nationality:'Australian'},Constructor:{name:'McLaren'},points:'15',laps:'57',Time:{time:'+27.092'},status:'Finished'},
+      {position:'4',Driver:{familyName:'Russell',nationality:'British'},Constructor:{name:'Mercedes'},points:'12',laps:'57',Time:{time:'+43.051'},status:'Finished'},
+      {position:'5',Driver:{familyName:'Verstappen',nationality:'Dutch'},Constructor:{name:'Red Bull Racing'},points:'10',laps:'57',Time:{time:'+48.949'},status:'Finished'},
+      {position:'6',Driver:{familyName:'Hamilton',nationality:'British'},Constructor:{name:'Ferrari'},points:'8',laps:'57',Time:{time:'+53.753'},status:'Finished'},
+      {position:'7',Driver:{familyName:'Colapinto',nationality:'Argentine'},Constructor:{name:'Alpine'},points:'6',laps:'57',Time:{time:'+61.871'},status:'Finished'},
+      {position:'8',Driver:{familyName:'Leclerc',nationality:'Monegasque'},Constructor:{name:'Ferrari'},points:'4',laps:'57',Time:{time:'+64.245'},status:'Finished'},
+      {position:'9',Driver:{familyName:'Sainz',nationality:'Spanish'},Constructor:{name:'Williams'},points:'2',laps:'57',Time:{time:'+82.072'},status:'Finished'},
+      {position:'10',Driver:{familyName:'Albon',nationality:'Thai'},Constructor:{name:'Williams'},points:'1',laps:'57',Time:{time:'+90.972'},status:'Finished'},
+      {position:'11',Driver:{familyName:'Bearman',nationality:'British'},Constructor:{name:'Haas F1 Team'},points:'0',laps:'56',status:'+1 Lap'},
+      {position:'12',Driver:{familyName:'Bortoleto',nationality:'Brazilian'},Constructor:{name:'Kick Sauber'},points:'0',laps:'56',status:'+1 Lap'},
+      {position:'13',Driver:{familyName:'Ocon',nationality:'French'},Constructor:{name:'Haas F1 Team'},points:'0',laps:'56',status:'+1 Lap'},
+      {position:'14',Driver:{familyName:'Lindblad',nationality:'British'},Constructor:{name:'RB'},points:'0',laps:'56',status:'+1 Lap'},
+      {position:'15',Driver:{familyName:'Alonso',nationality:'Spanish'},Constructor:{name:'Aston Martin'},points:'0',laps:'56',status:'+1 Lap'},
+      {position:'16',Driver:{familyName:'Perez',nationality:'Mexican'},Constructor:{name:'Cadillac'},points:'0',laps:'56',status:'+1 Lap'},
+      {position:'17',Driver:{familyName:'Stroll',nationality:'Canadian'},Constructor:{name:'Aston Martin'},points:'0',laps:'56',status:'+1 Lap'},
+      {position:'18',Driver:{familyName:'Bottas',nationality:'Finnish'},Constructor:{name:'Cadillac'},points:'0',laps:'55',status:'+2 Laps'},
+      {position:'DNF',Driver:{familyName:'Hulkenberg',nationality:'German'},Constructor:{name:'Kick Sauber'},points:'0',laps:'38',status:'DNF'},
+      {position:'DNF',Driver:{familyName:'Lawson',nationality:'New Zealander'},Constructor:{name:'RB'},points:'0',laps:'12',status:'DNF'},
+      {position:'DNF',Driver:{familyName:'Gasly',nationality:'French'},Constructor:{name:'Alpine'},points:'0',laps:'11',status:'DNF'},
+      {position:'DNF',Driver:{familyName:'Hadjar',nationality:'French'},Constructor:{name:'RB'},points:'0',laps:'8',status:'DNF'},
+    ]}
+};
+
 // ── RACE SELECTOR ─────────────────────────────────────────────────────────────
 async function renderRaceSelector(){
   const content=document.getElementById('main-content');
   content.innerHTML=renderNextBanner()+`<div class="section-title"><span>2026 Season Results</span><span class="spin-inline">⟳</span></div>`;
   try{
-    const races=await fetchRaceList();
-    if(!races.length){content.innerHTML+=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Results Yet</div><div class="state-sub">Race results will appear here after each round.</div></div>`;return;}
-    const rows=races.map(r=>{
+    const apiRaces=await fetchRaceList();
+    // Merge API races with hardcoded ones, deduplicate by round
+    const apiRounds=new Set(apiRaces.map(r=>String(r.round)));
+    const hardcoded=Object.values(HARDCODED_RACES).filter(r=>!apiRounds.has(String(r.round)));
+    const allRaces=[...apiRaces,...hardcoded].sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+
+    if(!allRaces.length){content.innerHTML+=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Results Yet</div><div class="state-sub">Race results will appear here after each round.</div></div>`;return;}
+    const rows=allRaces.map(r=>{
       const winner=r.Results?.[0];
       const dname=winner?.Driver?.familyName||'—';
       const team=winner?.Constructor?.name||'—';
       const nat=winner?.Driver?.nationality||'';
       const flag=driverFlag(nat);
-      const isSelected=selectedRace&&selectedRace.round===r.round;
+      const isSelected=selectedRace&&String(selectedRace.round)===String(r.round);
       return`<div class="race-item ${isSelected?'selected':''}" onclick="selectRace('${r.round}')">
         <div class="round-badge"><div class="round-num">${r.round}</div><div class="round-label">RND</div></div>
         <div>
@@ -322,15 +385,34 @@ async function renderRaceSelector(){
         </div>
       </div>`;
     }).join('');
-    const banner=renderNextBanner();
-    content.innerHTML=banner+`<div class="section-title"><span>2026 Season Results</span><span>${races.length} races</span></div>`+rows;
+    content.innerHTML=renderNextBanner()+`<div class="section-title"><span>2026 Season Results</span><span>${allRaces.length} races</span></div>`+rows;
     if(selectedRace){
       content.innerHTML+=await buildRaceResultsHTML(selectedRace.round);
       setTimeout(()=>{const el=document.querySelector('.results-header');if(el)el.scrollIntoView({behavior:'smooth'});},100);
     }
-    setStats('—','—','RACE',`${races.length} done`);
+    setStats('—','—','RACE',`${allRaces.length} done`);
   }catch(e){
-    content.innerHTML+=`<div class="state-screen"><div class="state-icon">⚠️</div><div class="state-title">Couldn't Load</div><div class="state-sub">Check connection and tap ⟳ to retry.</div></div>`;
+    // Fallback to hardcoded only if API fails
+    const allRaces=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+    const rows=allRaces.map(r=>{
+      const winner=r.Results?.[0];
+      return`<div class="race-item ${selectedRace&&String(selectedRace.round)===String(r.round)?'selected':''}" onclick="selectRace('${r.round}')">
+        <div class="round-badge"><div class="round-num">${r.round}</div><div class="round-label">RND</div></div>
+        <div>
+          <div class="race-item-country">${r.Circuit?.Location?.country||''}</div>
+          <div class="race-item-name">${r.raceName.replace(' Grand Prix','')}</div>
+          <div class="race-item-date">${fmtDate(r.date)}</div>
+        </div>
+        <div>
+          <span class="winner-flag">${driverFlag(winner?.Driver?.nationality)}</span>
+          <div class="winner-name">${winner?.Driver?.familyName||'—'}</div>
+          <div class="winner-team">${winner?.Constructor?.name||'—'}</div>
+        </div>
+      </div>`;
+    }).join('');
+    content.innerHTML=renderNextBanner()+`<div class="section-title"><span>2026 Season Results</span><span>4 races</span></div>`+rows;
+    if(selectedRace){content.innerHTML+=await buildRaceResultsHTML(selectedRace.round);}
+    setStats('—','—','RACE','4 done');
   }
 }
 
