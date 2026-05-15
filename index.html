@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="FastStat">
+<meta name="theme-color" content="#0a0a0a">
+<title>FastStat — Live Motorsport Timing</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0a0a0a;
+  --surface:#111111;
+  --surface2:#181818;
+  --border:#242424;
+  --text:#f0f0f0;
+  --muted:#666666;
+  --dim:#2a2a2a;
+  --red:#e8002d;
+  --green:#00d84a;
+  --yellow:#ffd600;
+  --blue:#4fc3f7;
+  --orange:#ff6b00;
+  --purple:#9c6dff;
+  --white:#ffffff;
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;display:flex;flex-direction:column;}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:50px;flex-shrink:0;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);}
+.logo span{color:var(--red);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.live-pill{display:flex;align-items:center;gap:5px;background:#1a0000;border:1px solid #3a0000;padding:3px 8px;border-radius:3px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.live-text{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--red);}
+.refresh-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px;display:flex;align-items:center;}
+.refresh-btn.spinning{animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SERIES BAR */
+.series-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+.series-bar::-webkit-scrollbar{display:none;}
+.series-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;padding:9px 16px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
+.series-tab:hover{color:var(--text);}
+.series-tab.active{color:var(--white);border-bottom-color:var(--red);}
+.series-dot{width:5px;height:5px;border-radius:50%;background:var(--dim);}
+.series-dot.live{background:var(--green);}
+
+/* RACE INFO BAR */
+.race-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.race-name-text{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.03em;color:var(--white);}
+.race-sub-text{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.04em;margin-top:1px;}
+.lap-display{text-align:right;}
+.lap-num{font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--yellow);}
+.lap-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-align:right;}
+
+/* TIMING TABLE */
+.timing-wrapper{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.timing-header{display:grid;grid-template-columns:32px 36px 1fr 70px 80px 56px;padding:5px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;}
+.th{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;text-align:right;}
+.th.left{text-align:left;}
+
+.driver-row{display:grid;grid-template-columns:32px 36px 1fr 70px 80px 56px;padding:7px 12px;border-bottom:1px solid #141414;align-items:center;cursor:pointer;transition:background 0.1s;}
+.driver-row:active{background:var(--surface2);}
+.driver-row.p1-row{background:#0d1a08;}
+
+.pos-cell{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;text-align:center;}
+.pos-1{color:var(--white);}
+.pos-2{color:#c0c0c0;}
+.pos-3{color:#cd7f32;}
+.pos-other{color:var(--muted);}
+
+.team-color-bar{width:3px;height:28px;border-radius:2px;margin:0 auto;}
+
+.driver-cell{}
+.d-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.02em;line-height:1.1;}
+.d-team{font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:1px;}
+
+.gap-cell{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);text-align:right;}
+.gap-leader{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--yellow);text-align:right;letter-spacing:0.05em;}
+
+.lap-cell{font-family:'Share Tech Mono',monospace;font-size:11px;text-align:right;}
+.lap-fastest{color:var(--green);}
+.lap-pb{color:var(--blue);}
+.lap-normal{color:var(--text);}
+.lap-pit{color:var(--orange);}
+
+.tire-cell{display:flex;align-items:center;justify-content:flex-end;gap:3px;}
+.tire-badge{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.tire-s{background:#c00020;color:#fff;}
+.tire-m{background:#c8a800;color:#000;}
+.tire-h{background:#e0e0e0;color:#000;}
+.tire-i{background:#006a20;color:#fff;}
+.tire-w{background:#0060c0;color:#fff;}
+.tire-laps{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);}
+
+/* PIT INDICATOR */
+.pit-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:var(--orange);letter-spacing:0.06em;background:#1a1000;border:1px solid #3a2000;padding:1px 4px;border-radius:2px;}
+
+/* BOTTOM STATS */
+.stats-bar{background:var(--surface);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);flex-shrink:0;}
+.stat-item{padding:7px 10px;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none;}
+.stat-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px;}
+.stat-val{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--text);}
+.stat-val.green{color:var(--green);}
+.stat-val.yellow{color:var(--yellow);}
+
+/* LOADING / ERROR STATES */
+.state-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;padding:20px;text-align:center;}
+.state-icon{font-size:32px;opacity:0.4;}
+.state-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--text);}
+.state-sub{font-size:13px;color:var(--muted);line-height:1.6;max-width:280px;}
+.state-btn{margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;background:var(--red);color:#fff;border:none;padding:8px 20px;border-radius:4px;cursor:pointer;}
+
+/* NO RACE */
+.no-race-msg{padding:24px 16px;text-align:center;}
+.no-race-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.no-race-sub{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* NEXT RACE CARD */
+.next-card{margin:16px;background:var(--surface);border:0.5px solid var(--border);border-radius:8px;padding:14px 16px;}
+.next-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.next-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--white);margin-bottom:2px;}
+.next-date{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--yellow);}
+.next-round{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* LOADING DOTS */
+.loading-dots span{animation:blink 1.4s infinite;display:inline-block;}
+.loading-dots span:nth-child(2){animation-delay:0.2s;}
+.loading-dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes blink{0%,80%,100%{opacity:0;}40%{opacity:1;}}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:12px;padding:8px 16px;border-radius:20px;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:100;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">FAST<span>STAT</span></div>
+  <div class="header-right">
+    <div class="live-pill" id="live-pill" style="display:none;">
+      <div class="live-dot"></div>
+      <span class="live-text">LIVE</span>
+    </div>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadData()" title="Refresh">⟳</button>
+  </div>
+</div>
+
+<div class="series-bar">
+  <div class="series-tab active" onclick="switchSeries('f1')">
+    <div class="series-dot live" id="f1-dot"></div>F1
+  </div>
+  <div class="series-tab" onclick="switchSeries('nascar')">
+    <div class="series-dot" id="nascar-dot"></div>NASCAR
+  </div>
+  <div class="series-tab" onclick="switchSeries('motogp')">
+    <div class="series-dot" id="motogp-dot"></div>MotoGP
+  </div>
+  <div class="series-tab" onclick="switchSeries('wrc')">
+    <div class="series-dot" id="wrc-dot"></div>WRC
+  </div>
+  <div class="series-tab" onclick="switchSeries('indycar')">
+    <div class="series-dot" id="indycar-dot"></div>IndyCar
+  </div>
+  <div class="series-tab" onclick="switchSeries('gt3')">
+    <div class="series-dot" id="gt3-dot"></div>GT3/WEC
+  </div>
+</div>
+
+<div class="race-bar" id="race-bar">
+  <div>
+    <div class="race-name-text" id="race-name">Loading...</div>
+    <div class="race-sub-text" id="race-sub">F1 World Championship 2026</div>
+  </div>
+  <div class="lap-display">
+    <div class="lap-num" id="lap-display">—</div>
+    <div class="lap-label">LAP</div>
+  </div>
+</div>
+
+<div class="timing-wrapper" id="timing-wrapper">
+  <div class="state-screen" id="loading-screen">
+    <div class="state-icon">🏎</div>
+    <div class="state-title">Loading <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+    <div class="state-sub">Fetching live F1 timing data</div>
+  </div>
+  <div id="timing-content" style="display:none;">
+    <div class="timing-header">
+      <div class="th left">POS</div>
+      <div class="th"></div>
+      <div class="th left">DRIVER</div>
+      <div class="th">GAP</div>
+      <div class="th">LAST LAP</div>
+      <div class="th">TIRE</div>
+    </div>
+    <div id="timing-rows"></div>
+  </div>
+  <div class="state-screen" id="no-race-screen" style="display:none;">
+    <div class="state-icon">🏁</div>
+    <div class="state-title">No Live Session</div>
+    <div class="state-sub" id="no-race-text">There's no F1 session running right now.</div>
+    <div id="next-race-container"></div>
+  </div>
+  <div class="state-screen" id="error-screen" style="display:none;">
+    <div class="state-icon">⚠️</div>
+    <div class="state-title">Connection Error</div>
+    <div class="state-sub">Couldn't reach the timing feed. Check your connection and try again.</div>
+    <button class="state-btn" onclick="loadData()">Try Again</button>
+  </div>
+</div>
+
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-item">
+    <div class="stat-label">Fastest</div>
+    <div class="stat-val green" id="stat-fastest">—</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">Leader</div>
+    <div class="stat-val" id="stat-leader">—</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">Session</div>
+    <div class="stat-val yellow" id="stat-session">—</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">Track</div>
+    <div class="stat-val" id="stat-track">—</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const TEAM_COLORS = {
+  'Red Bull Racing': '#3671C6',
+  'Mercedes': '#27F4D2',
+  'Ferrari': '#E8002D',
+  'McLaren': '#FF8000',
+  'Aston Martin': '#358C75',
+  'Alpine': '#FF87BC',
+  'Williams': '#37BEDD',
+  'Haas F1 Team': '#B6BABD',
+  'Kick Sauber': '#52E252',
+  'RB': '#6692FF',
+  'default': '#888888'
+};
+
+const DRIVER_TEAMS = {
+  1:'Red Bull Racing', 11:'Red Bull Racing',
+  44:'Mercedes', 63:'Mercedes', 12:'Mercedes',
+  16:'Ferrari', 55:'Ferrari', 38:'Ferrari',
+  4:'McLaren', 81:'McLaren',
+  14:'Aston Martin', 18:'Aston Martin',
+  10:'Alpine', 31:'Alpine',
+  23:'Williams', 22:'Williams',
+  20:'Haas F1 Team', 27:'Haas F1 Team',
+  77:'Kick Sauber', 24:'Kick Sauber',
+  3:'RB', 6:'RB'
+};
+
+let currentSeries = 'f1';
+let refreshInterval = null;
+let sessionKey = null;
+let isLive = false;
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function showScreen(name) {
+  ['loading-screen','timing-content','no-race-screen','error-screen'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(name).style.display = name === 'timing-content' ? 'block' : 'flex';
+}
+
+function teamColor(driverNum) {
+  const team = DRIVER_TEAMS[driverNum] || 'default';
+  return TEAM_COLORS[team] || TEAM_COLORS['default'];
+}
+
+function formatLap(ms) {
+  if (!ms || ms <= 0) return '—';
+  const totalSec = ms / 1000;
+  const mins = Math.floor(totalSec / 60);
+  const secs = (totalSec % 60).toFixed(3).padStart(6, '0');
+  return mins > 0 ? `${mins}:${secs}` : `${secs}`;
+}
+
+function formatGap(gap) {
+  if (gap === null || gap === undefined) return '—';
+  if (gap === 0) return 'LEADER';
+  if (typeof gap === 'number') return `+${gap.toFixed(3)}`;
+  return gap;
+}
+
+function tireBadge(compound, age) {
+  if (!compound) return '<div style="width:20px;"></div>';
+  const c = compound.toLowerCase();
+  const cls = c === 'soft' ? 'tire-s' : c === 'medium' ? 'tire-m' : c === 'hard' ? 'tire-h' : c === 'intermediate' ? 'tire-i' : c === 'wet' ? 'tire-w' : 'tire-h';
+  const letter = c[0].toUpperCase();
+  const ageStr = age !== null && age !== undefined ? `<span class="tire-laps">${age}L</span>` : '';
+  return `<div class="tire-badge ${cls}">${letter}</div>${ageStr}`;
+}
+
+function posClass(pos) {
+  if (pos === 1) return 'pos-1';
+  if (pos === 2) return 'pos-2';
+  if (pos === 3) return 'pos-3';
+  return 'pos-other';
+}
+
+async function fetchCurrentSession() {
+  const res = await fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026');
+  const sessions = await res.json();
+  if (!sessions || sessions.length === 0) return null;
+  const now = new Date();
+  const live = sessions.find(s => new Date(s.date_start) <= now && new Date(s.date_end) >= now);
+  if (live) { isLive = true; return live; }
+  isLive = false;
+  const past = sessions.filter(s => new Date(s.date_end) < now);
+  return past.length > 0 ? past[past.length - 1] : sessions[sessions.length - 1];
+}
+
+async function fetchDrivers(sKey) {
+  const res = await fetch(`https://api.openf1.org/v1/drivers?session_key=${sKey}`);
+  return await res.json();
+}
+
+async function fetchPositions(sKey) {
+  const res = await fetch(`https://api.openf1.org/v1/position?session_key=${sKey}`);
+  const data = await res.json();
+  const latest = {};
+  data.forEach(p => {
+    if (!latest[p.driver_number] || p.date > latest[p.driver_number].date) {
+      latest[p.driver_number] = p;
+    }
+  });
+  return latest;
+}
+
+async function fetchLaps(sKey) {
+  const res = await fetch(`https://api.openf1.org/v1/laps?session_key=${sKey}`);
+  const data = await res.json();
+  const byDriver = {};
+  data.forEach(l => {
+    if (!byDriver[l.driver_number]) byDriver[l.driver_number] = [];
+    byDriver[l.driver_number].push(l);
+  });
+  return byDriver;
+}
+
+async function fetchStints(sKey) {
+  const res = await fetch(`https://api.openf1.org/v1/stints?session_key=${sKey}`);
+  const data = await res.json();
+  const latest = {};
+  data.forEach(s => {
+    if (!latest[s.driver_number] || s.stint_number > (latest[s.driver_number].stint_number || 0)) {
+      latest[s.driver_number] = s;
+    }
+  });
+  return latest;
+}
+
+async function fetchIntervals(sKey) {
+  const res = await fetch(`https://api.openf1.org/v1/intervals?session_key=${sKey}`);
+  const data = await res.json();
+  const latest = {};
+  data.forEach(i => {
+    if (!latest[i.driver_number] || i.date > latest[i.driver_number].date) {
+      latest[i.driver_number] = i;
+    }
+  });
+  return latest;
+}
+
+async function fetchNextRace() {
+  try {
+    const res = await fetch('https://api.openf1.org/v1/meetings?year=2026');
+    const meetings = await res.json();
+    const now = new Date();
+    const upcoming = meetings.filter(m => new Date(m.date_start) > now);
+    return upcoming.length > 0 ? upcoming[0] : null;
+  } catch(e) { return null; }
+}
+
+function renderNoRace(session, series) {
+  if (series !== 'f1') {
+    document.getElementById('no-race-text').textContent = `${series.toUpperCase()} data coming soon. F1 live timing is available now.`;
+    document.getElementById('next-race-container').innerHTML = '';
+    showScreen('no-race-screen');
+    return;
+  }
+  document.getElementById('no-race-text').textContent = `No live F1 session right now.${session ? ' Showing last session results.' : ''}`;
+  fetchNextRace().then(next => {
+    if (next) {
+      document.getElementById('next-race-container').innerHTML = `
+        <div class="next-card">
+          <div class="next-label">Next Race</div>
+          <div class="next-name">${next.meeting_name || 'Grand Prix'}</div>
+          <div class="next-date">${new Date(next.date_start).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div>
+          <div class="next-round">Round ${next.meeting_number || '—'} · ${next.country_name || ''}</div>
+        </div>`;
+    }
+  });
+}
+
+async function loadData() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+
+  try {
+    if (currentSeries !== 'f1') {
+      showScreen('no-race-screen');
+      renderNoRace(null, currentSeries);
+      document.getElementById('race-name').textContent = `${currentSeries.toUpperCase()} — Coming Soon`;
+      document.getElementById('race-sub').textContent = 'F1 live timing available now';
+      document.getElementById('live-pill').style.display = 'none';
+      btn.classList.remove('spinning');
+      return;
+    }
+
+    showScreen('loading-screen');
+
+    const session = await fetchCurrentSession();
+    if (!session) {
+      renderNoRace(null, 'f1');
+      btn.classList.remove('spinning');
+      return;
+    }
+
+    sessionKey = session.session_key;
+    const sType = session.session_type || session.session_name || 'Session';
+    const raceEmoji = session.country_name ? '🏎' : '🏁';
+
+    document.getElementById('race-name').textContent = `${session.meeting_name || 'Grand Prix'}`;
+    document.getElementById('race-sub').textContent = `${session.circuit_short_name || ''} · ${sType} · ${session.year || 2026}`;
+    document.getElementById('stat-session').textContent = sType.toUpperCase().substring(0,4);
+    document.getElementById('stat-track').textContent = (session.circuit_short_name || '—').substring(0,6).toUpperCase();
+
+    document.getElementById('live-pill').style.display = isLive ? 'flex' : 'none';
+
+    const [drivers, positions, lapsData, stints, intervals] = await Promise.all([
+      fetchDrivers(sessionKey),
+      fetchPositions(sessionKey),
+      fetchLaps(sessionKey),
+      fetchStints(sessionKey),
+      fetchIntervals(sessionKey).catch(() => ({}))
+    ]);
+
+    const driverMap = {};
+    drivers.forEach(d => { driverMap[d.driver_number] = d; });
+
+    const sorted = Object.values(positions).sort((a, b) => a.position - b.position);
+
+    if (sorted.length === 0) {
+      renderNoRace(session, 'f1');
+      btn.classList.remove('spinning');
+      return;
+    }
+
+    let fastestTime = Infinity;
+    let fastestDriver = null;
+
+    sorted.forEach(pos => {
+      const dNum = pos.driver_number;
+      const driverLaps = lapsData[dNum] || [];
+      if (driverLaps.length > 0) {
+        const best = Math.min(...driverLaps.filter(l => l.lap_duration).map(l => l.lap_duration * 1000));
+        if (best < fastestTime) { fastestTime = best; fastestDriver = dNum; }
+      }
+    });
+
+    const maxLap = Math.max(...Object.values(lapsData).map(l => l.length), 0);
+    if (maxLap > 0) {
+      document.getElementById('lap-display').textContent = `LAP ${maxLap}`;
+    } else {
+      document.getElementById('lap-display').textContent = '—';
+    }
+
+    if (fastestTime < Infinity) {
+      document.getElementById('stat-fastest').textContent = formatLap(fastestTime);
+    }
+
+    const leader = driverMap[sorted[0]?.driver_number];
+    if (leader) {
+      document.getElementById('stat-leader').textContent = leader.name_acronym || '—';
+    }
+
+    const rows = sorted.map((pos, idx) => {
+      const dNum = pos.driver_number;
+      const driver = driverMap[dNum] || {};
+      const driverLaps = lapsData[dNum] || [];
+      const stint = stints[dNum] || {};
+      const interval = intervals[dNum] || {};
+
+      const lastLap = driverLaps.length > 0 ? driverLaps[driverLaps.length - 1] : null;
+      const lastLapMs = lastLap?.lap_duration ? lastLap.lap_duration * 1000 : null;
+      const bestLapMs = driverLaps.length > 0
+        ? Math.min(...driverLaps.filter(l => l.lap_duration).map(l => l.lap_duration * 1000))
+        : null;
+
+      const isFastest = bestLapMs && Math.abs(bestLapMs - fastestTime) < 1;
+      const isPit = lastLap?.is_pit_out_lap;
+      const compound = stint.compound || null;
+      const tireAge = stint.lap_start ? (maxLap - stint.lap_start + 1) : null;
+
+      const gapVal = idx === 0 ? 0 : (interval.gap_to_leader !== undefined ? interval.gap_to_leader : null);
+      const color = teamColor(dNum);
+
+      const lapClass = isFastest ? 'lap-fastest' : isPit ? 'lap-pit' : 'lap-normal';
+      const lapText = isPit ? 'PIT' : formatLap(lastLapMs);
+
+      return `<div class="driver-row ${idx === 0 ? 'p1-row' : ''}">
+        <div class="pos-cell ${posClass(pos.position)}">${pos.position}</div>
+        <div><div class="team-color-bar" style="background:${color}"></div></div>
+        <div class="driver-cell">
+          <div class="d-name">${driver.full_name ? driver.full_name.split(' ').pop().toUpperCase() : `#${dNum}`}</div>
+          <div class="d-team">${driver.team_name || '—'}</div>
+        </div>
+        <div class="${idx === 0 ? 'gap-leader' : 'gap-cell'}">${idx === 0 ? 'LEADER' : formatGap(gapVal)}</div>
+        <div class="lap-cell ${lapClass}">${lapText}</div>
+        <div class="tire-cell">${tireBadge(compound, tireAge)}</div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('timing-rows').innerHTML = rows;
+    showScreen('timing-content');
+
+  } catch(err) {
+    console.error(err);
+    showScreen('error-screen');
+  }
+
+  btn.classList.remove('spinning');
+}
+
+function switchSeries(series) {
+  currentSeries = series;
+  document.querySelectorAll('.series-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === ['f1','nascar','motogp','wrc','indycar','gt3'].indexOf(series));
+  });
+  if (series !== 'f1') showToast(`${series.toUpperCase()} timing coming soon`);
+  loadData();
+}
+
+function startAutoRefresh() {
+  if (refreshInterval) clearInterval(refreshInterval);
+  refreshInterval = setInterval(() => {
+    if (isLive) loadData();
+  }, 30000);
+}
+
+loadData();
+startAutoRefresh();
+</script>
+</body>
+</html>
