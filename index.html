@@ -19,8 +19,6 @@
 }
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;display:flex;flex-direction:column;}
-
-/* HEADER */
 .header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:50px;flex-shrink:0;}
 .logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);}
 .logo span{color:var(--red);}
@@ -32,26 +30,18 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .refresh-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px;}
 .refresh-btn.spinning{animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-
-/* SERIES BAR */
 .series-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
 .series-bar::-webkit-scrollbar{display:none;}
 .series-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;padding:9px 16px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
 .series-tab.active{color:var(--white);border-bottom-color:var(--red);}
 .series-dot{width:5px;height:5px;border-radius:50%;background:var(--dim);}
 .series-dot.live{background:var(--green);}
-
-/* F1 SUB MENU */
 .f1-submenu{background:var(--surface2);border-bottom:1px solid var(--border);display:flex;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
 .f1-submenu::-webkit-scrollbar{display:none;}
 .f1-sub-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;padding:8px 14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;}
 .f1-sub-tab.active{color:var(--red);border-bottom-color:var(--red);}
 .f1-sub-tab.live-tab.active{color:var(--green);border-bottom-color:var(--green);}
-
-/* MAIN */
 .main-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-
-/* NEXT RACE BANNER */
 .next-race-banner{background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:14px 16px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;}
 .next-race-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--red);text-transform:uppercase;margin-bottom:4px;}
 .next-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;color:var(--white);line-height:1;}
@@ -60,29 +50,21 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .countdown-box{text-align:right;flex-shrink:0;}
 .countdown-num{font-family:'Share Tech Mono',monospace;font-size:28px;color:var(--yellow);line-height:1;}
 .countdown-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
-
-/* RACE SELECTOR */
-.section-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;padding:10px 16px 6px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;padding:10px 16px 6px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .race-item{display:grid;grid-template-columns:44px 1fr auto;align-items:center;padding:9px 16px;border-bottom:1px solid #151515;cursor:pointer;transition:background 0.1s;gap:12px;}
 .race-item:active,.race-item.selected{background:#1a0005;}
 .round-badge{width:36px;height:36px;border-radius:4px;background:var(--surface2);border:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .round-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:var(--white);line-height:1;}
 .round-label{font-family:'Barlow Condensed',sans-serif;font-size:7px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
-.race-item-info{}
 .race-item-country{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
 .race-item-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--white);line-height:1.1;margin-top:1px;}
 .race-item-date{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
-.race-item-winner{text-align:right;}
-.winner-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
-.winner-flag{font-size:12px;}
-.winner-team{font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:1px;}
-
-/* RACE RESULTS */
+.winner-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text);text-align:right;}
+.winner-flag{font-size:12px;text-align:right;display:block;}
+.winner-team{font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);text-align:right;}
 .results-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);}
 .results-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:var(--white);}
 .results-race-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
-
-/* PODIUM */
 .podium-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
 .podium-item{background:var(--surface2);padding:10px 8px;text-align:center;}
 .podium-pos{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.06em;color:var(--muted);margin-bottom:4px;}
@@ -93,14 +75,14 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .p1-item .podium-name{color:var(--yellow);}
 .p2-item .podium-name{color:#c0c0c0;}
 .p3-item .podium-name{color:#cd7f32;}
-
-/* RESULTS TABLE */
 .results-table-header{display:grid;grid-template-columns:28px 20px 1fr 44px 78px 20px 24px;padding:5px 12px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:5;}
 .rth{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;text-align:right;}
 .rth.left{text-align:left;}
-.result-row{display:grid;grid-template-columns:28px 20px 1fr 44px 78px 20px 24px;padding:7px 12px;border-bottom:1px solid #141414;align-items:center;}
+.result-row{display:grid;grid-template-columns:28px 20px 1fr 44px 78px 20px 24px;padding:7px 12px;border-bottom:1px solid #141414;align-items:center;cursor:pointer;transition:background 0.1s;}
+.result-row:active{background:var(--surface2);}
 .result-row.p1-row{background:#0d1a08;}
 .result-row.dnf-row{opacity:0.5;}
+.result-row.selected-driver{background:#0a0a1a;border-left:2px solid var(--blue);}
 .res-pos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;text-align:center;}
 .pos-1{color:var(--white);}
 .pos-2{color:#c0c0c0;}
@@ -112,12 +94,27 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .res-team-sm{font-family:'Barlow',sans-serif;font-size:9px;color:var(--muted);margin-top:1px;}
 .res-pts{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--yellow);text-align:right;}
 .res-gap{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);text-align:right;}
-.res-gap.leader-gap{color:var(--yellow);font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.04em;}
+.res-gap.leader-gap{color:var(--yellow);font-family:'Barlow Condensed',sans-serif;font-size:10px;}
 .res-fl{font-size:11px;text-align:center;}
 .tire-sm{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-left:auto;}
 .tire-s{background:#c00020;color:#fff;}
 .tire-m{background:#c8a800;color:#000;}
 .tire-h{background:#e0e0e0;color:#000;}
+
+/* LAP TIMES PANEL */
+.lap-panel{background:var(--surface2);border-top:1px solid var(--border);padding:0;}
+.lap-panel-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.lap-panel-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+.lap-panel-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;}
+.lap-panel-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);}
+.lap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:1px;background:var(--border);max-height:240px;overflow-y:auto;}
+.lap-cell-item{background:var(--bg);padding:7px 10px;display:flex;flex-direction:column;}
+.lap-num{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px;}
+.lap-time{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--text);}
+.lap-time.fastest-lap{color:var(--green);}
+.lap-time.slow-lap{color:var(--orange);}
+.lap-pos{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);margin-top:1px;}
+.lap-loading{padding:20px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);}
 
 /* CHAMPIONSHIP */
 .champ-row{display:grid;grid-template-columns:28px 20px 1fr 60px 52px;padding:8px 14px;border-bottom:1px solid #141414;align-items:center;}
@@ -146,28 +143,22 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .tire-cell{display:flex;align-items:center;justify-content:flex-end;gap:3px;}
 .tire-badge{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .tire-laps{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);}
-
-/* STATS BAR */
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);flex-shrink:0;}
 .stat-box{background:var(--surface);padding:7px 10px;}
 .stat-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px;}
 .stat-val{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);}
 .stat-val.green{color:var(--green);}
 .stat-val.yellow{color:var(--yellow);}
-
-/* STATES */
 .state-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 20px;text-align:center;}
 .state-icon{font-size:32px;opacity:0.4;}
 .state-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--text);}
 .state-sub{font-size:13px;color:var(--muted);line-height:1.6;max-width:280px;}
-
-/* TOAST */
 .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:12px;padding:8px 16px;border-radius:20px;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:100;}
 .toast.show{opacity:1;}
+.spin-inline{display:inline-block;animation:spin 1s linear infinite;}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="logo">TRAX<span>STAT</span></div>
   <div class="header-right">
@@ -175,7 +166,6 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
     <button class="refresh-btn" id="refresh-btn" onclick="refresh()">⟳</button>
   </div>
 </div>
-
 <div class="series-bar">
   <div class="series-tab active" onclick="switchSeries('f1')"><div class="series-dot live"></div>F1</div>
   <div class="series-tab" onclick="switchSeries('nascar')"><div class="series-dot"></div>NASCAR</div>
@@ -184,108 +174,108 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
   <div class="series-tab" onclick="switchSeries('indycar')"><div class="series-dot"></div>INDYCAR</div>
   <div class="series-tab" onclick="switchSeries('gt3')"><div class="series-dot"></div>GT3/WEC</div>
 </div>
-
 <div class="f1-submenu" id="f1-submenu">
   <div class="f1-sub-tab live-tab active" onclick="switchF1Tab('live')" id="tab-live">⬤ LIVE</div>
   <div class="f1-sub-tab" onclick="switchF1Tab('races')" id="tab-races">RACE RESULTS</div>
   <div class="f1-sub-tab" onclick="switchF1Tab('drivers')" id="tab-drivers">DRIVERS</div>
   <div class="f1-sub-tab" onclick="switchF1Tab('constructors')" id="tab-constructors">CONSTRUCTORS</div>
 </div>
-
 <div class="main-content" id="main-content"></div>
-
 <div class="stats-bar">
   <div class="stat-box"><div class="stat-label">Fastest</div><div class="stat-val green" id="stat-1">—</div></div>
   <div class="stat-box"><div class="stat-label">Leader</div><div class="stat-val" id="stat-2">—</div></div>
   <div class="stat-box"><div class="stat-label">Session</div><div class="stat-val yellow" id="stat-3">—</div></div>
   <div class="stat-box"><div class="stat-label">Round</div><div class="stat-val" id="stat-4">—</div></div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const JOLPICA = 'https://api.jolpi.ca/ergast/f1';
 const TC={'Red Bull Racing':'#3671C6','Mercedes':'#27F4D2','Ferrari':'#E8002D','McLaren':'#FF8000','Aston Martin':'#358C75','Alpine':'#FF87BC','Williams':'#37BEDD','Haas F1 Team':'#B6BABD','Kick Sauber':'#52E252','RB':'#6692FF','default':'#888'};
 const DT={1:'Red Bull Racing',11:'Red Bull Racing',44:'Ferrari',16:'Ferrari',4:'McLaren',81:'McLaren',63:'Mercedes',12:'Mercedes',14:'Aston Martin',18:'Aston Martin',10:'Alpine',31:'Alpine',23:'Williams',55:'Williams',20:'Haas F1 Team',87:'Haas F1 Team',77:'Kick Sauber',5:'Kick Sauber',22:'RB',6:'RB'};
 const FL={'Verstappen':'🇳🇱','Norris':'🇬🇧','Leclerc':'🇲🇨','Piastri':'🇦🇺','Sainz':'🇪🇸','Russell':'🇬🇧','Hamilton':'🇬🇧','Alonso':'🇪🇸','Antonelli':'🇮🇹','Gasly':'🇫🇷','Ocon':'🇫🇷','Stroll':'🇨🇦','Hulkenberg':'🇩🇪','Tsunoda':'🇯🇵','Albon':'🇹🇭','Bearman':'🇬🇧','Bortoleto':'🇧🇷','Hadjar':'🇫🇷'};
 
-const RACES=[
-  {round:1,name:'Australian Grand Prix',short:'Australia',circuit:'Albert Park',country:'🇦🇺',date:'2026-03-15',winner:'Norris',wflag:'🇬🇧',team:'McLaren',laps:58,time:'1:25:43.218',fastest:'1:19.702',fastestBy:'Piastri',status:'done'},
-  {round:2,name:'Chinese Grand Prix',short:'China',circuit:'Shanghai International',country:'🇨🇳',date:'2026-03-22',winner:'Verstappen',wflag:'🇳🇱',team:'Red Bull Racing',laps:56,time:'1:31:05.137',fastest:'1:32.608',fastestBy:'Leclerc',status:'done'},
-  {round:3,name:'Japanese Grand Prix',short:'Japan',circuit:'Suzuka Circuit',country:'🇯🇵',date:'2026-04-05',winner:'Leclerc',wflag:'🇲🇨',team:'Ferrari',laps:53,time:'1:29:18.443',fastest:'1:31.723',fastestBy:'Norris',status:'done'},
-  {round:4,name:'Bahrain Grand Prix',short:'Bahrain',circuit:'Bahrain International Circuit',country:'🇧🇭',date:'2026-04-19',winner:'Piastri',wflag:'🇦🇺',team:'McLaren',laps:57,time:'1:33:22.017',fastest:'1:32.488',fastestBy:'Piastri',status:'done'},
-  {round:5,name:'Saudi Arabian Grand Prix',short:'Saudi Arabia',circuit:'Jeddah Corniche Circuit',country:'🇸🇦',date:'2026-04-26',winner:'Russell',wflag:'🇬🇧',team:'Mercedes',laps:50,time:'1:21:14.894',fastest:'1:28.442',fastestBy:'Antonelli',status:'done'},
-  {round:6,name:'Miami Grand Prix',short:'Miami',circuit:'Miami International Autodrome',country:'🇺🇸',date:'2026-05-04',winner:'Norris',wflag:'🇬🇧',team:'McLaren',laps:57,time:'1:29:08.332',fastest:'1:29.921',fastestBy:'Piastri',status:'done'},
-  {round:7,name:'Emilia Romagna Grand Prix',short:'Imola',circuit:'Autodromo Enzo e Dino Ferrari',country:'🇮🇹',date:'2026-05-17',winner:null,wflag:null,team:null,status:'next'},
-  {round:8,name:'Monaco Grand Prix',short:'Monaco',circuit:'Circuit de Monaco',country:'🇲🇨',date:'2026-05-24',winner:null,team:null,status:'upcoming'},
-  {round:9,name:'Canadian Grand Prix',short:'Canada',circuit:'Circuit Gilles Villeneuve',country:'🇨🇦',date:'2026-06-15',winner:null,team:null,status:'upcoming'},
-  {round:10,name:'Spanish Grand Prix',short:'Spain',circuit:'Circuit de Barcelona-Catalunya',country:'🇪🇸',date:'2026-06-29',winner:null,team:null,status:'upcoming'},
-  {round:11,name:'Austrian Grand Prix',short:'Austria',circuit:'Red Bull Ring',country:'🇦🇹',date:'2026-07-05',winner:null,team:null,status:'upcoming'},
-  {round:12,name:'British Grand Prix',short:'Britain',circuit:'Silverstone Circuit',country:'🇬🇧',date:'2026-07-19',winner:null,team:null,status:'upcoming'},
-];
-
-const MIAMI_RESULTS=[
-  {pos:1,name:'Norris',team:'McLaren',flag:'🇬🇧',pts:25,gap:'WINNER',tire:'M',status:'fin'},
-  {pos:2,name:'Piastri',team:'McLaren',flag:'🇦🇺',pts:18,gap:'+4.327',tire:'M',status:'fin'},
-  {pos:3,name:'Leclerc',team:'Ferrari',flag:'🇲🇨',pts:15,gap:'+12.441',tire:'H',status:'fin'},
-  {pos:4,name:'Russell',team:'Mercedes',flag:'🇬🇧',pts:12,gap:'+18.887',tire:'H',status:'fin'},
-  {pos:5,name:'Verstappen',team:'Red Bull Racing',flag:'🇳🇱',pts:10,gap:'+24.112',tire:'H',status:'fin'},
-  {pos:6,name:'Antonelli',team:'Mercedes',flag:'🇮🇹',pts:8,gap:'+31.774',tire:'M',status:'fin'},
-  {pos:7,name:'Hamilton',team:'Ferrari',flag:'🇬🇧',pts:6,gap:'+38.221',tire:'H',status:'fin'},
-  {pos:8,name:'Alonso',team:'Aston Martin',flag:'🇪🇸',pts:4,gap:'+47.008',tire:'H',status:'fin'},
-  {pos:9,name:'Gasly',team:'Alpine',flag:'🇫🇷',pts:2,gap:'+54.332',tire:'M',status:'fin'},
-  {pos:10,name:'Sainz',team:'Williams',flag:'🇪🇸',pts:1,gap:'+61.887',tire:'H',status:'fin'},
-  {pos:11,name:'Albon',team:'Williams',flag:'🇹🇭',pts:0,gap:'+68.441',tire:'H',status:'fin'},
-  {pos:12,name:'Hulkenberg',team:'Kick Sauber',flag:'🇩🇪',pts:0,gap:'+1 LAP',tire:'H',status:'fin'},
-  {pos:13,name:'Tsunoda',team:'RB',flag:'🇯🇵',pts:0,gap:'+1 LAP',tire:'H',status:'fin'},
-  {pos:14,name:'Stroll',team:'Aston Martin',flag:'🇨🇦',pts:0,gap:'+1 LAP',tire:'H',status:'fin'},
-  {pos:15,name:'Ocon',team:'Haas F1 Team',flag:'🇫🇷',pts:0,gap:'DNF',tire:'M',status:'dnf'},
-  {pos:16,name:'Bearman',team:'Haas F1 Team',flag:'🇬🇧',pts:0,gap:'DNF',tire:'S',status:'dnf'},
-];
-
-const DRIVERS_CHAMP=[
-  {pos:1,name:'Norris',team:'McLaren',flag:'🇬🇧',pts:132,gap:'LEADER'},
-  {pos:2,name:'Piastri',team:'McLaren',flag:'🇦🇺',pts:118,gap:'-14'},
-  {pos:3,name:'Leclerc',team:'Ferrari',flag:'🇲🇨',pts:97,gap:'-35'},
-  {pos:4,name:'Russell',team:'Mercedes',flag:'🇬🇧',pts:88,gap:'-44'},
-  {pos:5,name:'Verstappen',team:'Red Bull Racing',flag:'🇳🇱',pts:82,gap:'-50'},
-  {pos:6,name:'Antonelli',team:'Mercedes',flag:'🇮🇹',pts:71,gap:'-61'},
-  {pos:7,name:'Hamilton',team:'Ferrari',flag:'🇬🇧',pts:63,gap:'-69'},
-  {pos:8,name:'Alonso',team:'Aston Martin',flag:'🇪🇸',pts:44,gap:'-88'},
-  {pos:9,name:'Gasly',team:'Alpine',flag:'🇫🇷',pts:28,gap:'-104'},
-  {pos:10,name:'Sainz',team:'Williams',flag:'🇪🇸',pts:19,gap:'-113'},
-];
-
-const CONSTRUCTORS_CHAMP=[
-  {pos:1,name:'McLaren',flag:'🇬🇧',pts:250,gap:'LEADER',team:'McLaren'},
-  {pos:2,name:'Ferrari',flag:'🇮🇹',pts:160,gap:'-90',team:'Ferrari'},
-  {pos:3,name:'Mercedes',flag:'🇩🇪',pts:159,gap:'-91',team:'Mercedes'},
-  {pos:4,name:'Red Bull Racing',flag:'🇦🇹',pts:92,gap:'-158',team:'Red Bull Racing'},
-  {pos:5,name:'Aston Martin',flag:'🇬🇧',pts:52,gap:'-198',team:'Aston Martin'},
-  {pos:6,name:'Alpine',flag:'🇫🇷',pts:31,gap:'-219',team:'Alpine'},
-  {pos:7,name:'Williams',flag:'🇬🇧',pts:20,gap:'-230',team:'Williams'},
-  {pos:8,name:'Haas F1 Team',flag:'🇺🇸',pts:8,gap:'-242',team:'Haas F1 Team'},
-  {pos:9,name:'RB',flag:'🇯🇵',pts:4,gap:'-246',team:'RB'},
-  {pos:10,name:'Kick Sauber',flag:'🇨🇭',pts:0,gap:'-250',team:'Kick Sauber'},
-];
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let currentSeries='f1',currentF1Tab='live',selectedRace=null,isLive=false;
+let cachedResults={},cachedStandings=null,cachedConstructors=null,cachedLaps={};
+let selectedDriver=null;
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
-function tc(n){return TC[n]||TC['default'];}
-function posC(p){return p===1?'pos-1':p===2?'pos-2':p===3?'pos-3':'pos-other';}
+const tc=n=>TC[n]||TC['default'];
+const posC=p=>p===1?'pos-1':p===2?'pos-2':p===3?'pos-3':'pos-other';
 function fmtLap(ms){if(!ms||ms<=0)return'—';const s=ms/1000,m=Math.floor(s/60),sec=(s%60).toFixed(3).padStart(6,'0');return m>0?`${m}:${sec}`:sec;}
 function fmtGap(g){if(g===null||g===undefined)return'—';if(g===0)return'LEADER';if(typeof g==='number')return`+${g.toFixed(3)}`;return g;}
 function tireBadge(c,a){if(!c)return'<div style="width:20px"></div>';const cl=c.toLowerCase(),cs=cl==='soft'?'tire-s':cl==='medium'?'tire-m':'tire-h',lt=cl[0].toUpperCase(),ag=a!=null?`<span class="tire-laps">${a}L</span>`:'';return`<div class="tire-badge ${cs}">${lt}</div>${ag}`;}
-function tireSm(c){if(!c)return'';const cl=c.toLowerCase(),cs=cl==='s'?'tire-s':cl==='m'?'tire-m':'tire-h';return`<div class="tire-sm ${cs}">${cl.toUpperCase()}</div>`;}
+function tireSm(c){if(!c)return'';const map={'S':'tire-s','M':'tire-m','H':'tire-h'};return`<div class="tire-sm ${map[c]||'tire-h'}">${c}</div>`;}
 function countdown(ds){const r=new Date(ds+'T13:00:00Z'),n=new Date(),d=r-n;if(d<=0)return null;const dy=Math.floor(d/86400000),hr=Math.floor((d%86400000)/3600000),mn=Math.floor((d%3600000)/60000);if(dy>0)return{num:dy,unit:dy===1?'DAY':'DAYS'};if(hr>0)return{num:hr,unit:'HOURS'};return{num:mn,unit:'MINS'};}
 function fmtDate(ds){return new Date(ds+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function setStats(a,b,c,d){['stat-1','stat-2','stat-3','stat-4'].forEach((id,i)=>document.getElementById(id).textContent=[a,b,c,d][i]);}
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let currentSeries='f1',currentF1Tab='live',selectedRace=null,isLive=false;
+// Country flags by nationality
+const NAT_FLAGS={'British':'🇬🇧','German':'🇩🇪','Spanish':'🇪🇸','Finnish':'🇫🇮','French':'🇫🇷','Australian':'🇦🇺','Dutch':'🇳🇱','Monegasque':'🇲🇨','Mexican':'🇲🇽','Canadian':'🇨🇦','Japanese':'🇯🇵','Chinese':'🇨🇳','Thai':'🇹🇭','Argentine':'🇦🇷','Italian':'🇮🇹','Danish':'🇩🇰','Brazilian':'🇧🇷','American':'🇺🇸','New Zealander':'🇳🇿','Swiss':'🇨🇭','Belgian':'🇧🇪','Austrian':'🇦🇹','Swedish':'🇸🇪'};
+const driverFlag=nat=>NAT_FLAGS[nat]||'🏳️';
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
+// Race time string to ms
+function lapStrToMs(s){if(!s)return null;const p=s.split(':');if(p.length===2){return(parseInt(p[0])*60+parseFloat(p[1]))*1000;}return parseFloat(s)*1000;}
+
+// ── JOLPICA API ───────────────────────────────────────────────────────────────
+async function jolpica(path){
+  const res=await fetch(`${JOLPICA}/${path}`);
+  if(!res.ok)throw new Error(`API error ${res.status}`);
+  return res.json();
+}
+
+async function fetchRaceList(){
+  const data=await jolpica('2026/results/?limit=30');
+  return data.MRData.RaceTable.Races||[];
+}
+
+async function fetchRaceResults(round){
+  if(cachedResults[round])return cachedResults[round];
+  const data=await jolpica(`2026/${round}/results/?limit=30`);
+  const results=data.MRData.RaceTable.Races[0]||null;
+  if(results)cachedResults[round]=results;
+  return results;
+}
+
+async function fetchDriverStandings(){
+  if(cachedStandings)return cachedStandings;
+  const data=await jolpica('2026/driverStandings/');
+  const standings=data.MRData.StandingsTable.StandingsLists[0]?.DriverStandings||[];
+  cachedStandings=standings;
+  return standings;
+}
+
+async function fetchConstructorStandings(){
+  if(cachedConstructors)return cachedConstructors;
+  const data=await jolpica('2026/constructorStandings/');
+  const standings=data.MRData.StandingsTable.StandingsLists[0]?.ConstructorStandings||[];
+  cachedConstructors=standings;
+  return standings;
+}
+
+async function fetchLapTimes(round,driverId){
+  const key=`${round}_${driverId}`;
+  if(cachedLaps[key])return cachedLaps[key];
+  // Jolpica paginates lap times — fetch up to 100 laps
+  const data=await jolpica(`2026/${round}/drivers/${driverId}/laps/?limit=100`);
+  const laps=data.MRData.RaceTable.Races[0]?.Laps||[];
+  cachedLaps[key]=laps;
+  return laps;
+}
+
+// ── NEXT RACE ─────────────────────────────────────────────────────────────────
+const NEXT_RACES=[
+  {round:7,name:'Emilia Romagna Grand Prix',circuit:'Autodromo Enzo e Dino Ferrari',country:'🇮🇹',date:'2026-05-17'},
+  {round:8,name:'Monaco Grand Prix',circuit:'Circuit de Monaco',country:'🇲🇨',date:'2026-05-24'},
+  {round:9,name:'Canadian Grand Prix',circuit:'Circuit Gilles Villeneuve',country:'🇨🇦',date:'2026-06-15'},
+];
+
 function renderNextBanner(){
-  const next=RACES.find(r=>r.status==='next'||r.status==='upcoming');
+  const now=new Date();
+  const next=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z')>now);
   if(!next)return'';
   const cd=countdown(next.date);
   const cdHTML=cd?`<div class="countdown-num">${cd.num}</div><div class="countdown-label">${cd.unit} AWAY</div>`:`<div class="countdown-num" style="color:var(--green)">NOW</div>`;
@@ -300,118 +290,242 @@ function renderNextBanner(){
   </div>`;
 }
 
-function renderRaceSelector(){
-  const done=RACES.filter(r=>r.status==='done');
-  const rows=done.map(r=>`
-    <div class="race-item ${selectedRace&&selectedRace.round===r.round?'selected':''}" onclick="selectRace(${r.round})">
-      <div class="round-badge">
-        <div class="round-num">${r.round}</div>
-        <div class="round-label">RND</div>
-      </div>
-      <div class="race-item-info">
-        <div class="race-item-country">${r.country} ${r.short}</div>
-        <div class="race-item-name">${r.name.replace(' Grand Prix','')}</div>
-        <div class="race-item-date">${fmtDate(r.date)}</div>
-      </div>
-      <div class="race-item-winner">
-        <div class="winner-flag">${r.wflag||''}</div>
-        <div class="winner-name">${r.winner||'—'}</div>
-        <div class="winner-team">${r.team||'—'}</div>
-      </div>
-    </div>`).join('');
-  const resultsHTML=selectedRace?renderRaceResults(selectedRace):`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Select a Race</div><div class="state-sub">Tap any race above to see full results, podium, and points</div></div>`;
-  return renderNextBanner()+`<div class="section-title"><span>2026 Season Results</span><span>${done.length} of ${RACES.length} races</span></div>`+rows+resultsHTML;
+// ── RACE SELECTOR ─────────────────────────────────────────────────────────────
+async function renderRaceSelector(){
+  const content=document.getElementById('main-content');
+  content.innerHTML=renderNextBanner()+`<div class="section-title"><span>2026 Season Results</span><span class="spin-inline">⟳</span></div>`;
+  try{
+    const races=await fetchRaceList();
+    if(!races.length){content.innerHTML+=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Results Yet</div><div class="state-sub">Race results will appear here after each round.</div></div>`;return;}
+    const rows=races.map(r=>{
+      const winner=r.Results?.[0];
+      const dname=winner?.Driver?.familyName||'—';
+      const team=winner?.Constructor?.name||'—';
+      const nat=winner?.Driver?.nationality||'';
+      const flag=driverFlag(nat);
+      const isSelected=selectedRace&&selectedRace.round===r.round;
+      return`<div class="race-item ${isSelected?'selected':''}" onclick="selectRace('${r.round}')">
+        <div class="round-badge"><div class="round-num">${r.round}</div><div class="round-label">RND</div></div>
+        <div>
+          <div class="race-item-country">${r.Circuit?.Location?.country||''}</div>
+          <div class="race-item-name">${r.raceName.replace(' Grand Prix','')}</div>
+          <div class="race-item-date">${fmtDate(r.date)}</div>
+        </div>
+        <div>
+          <span class="winner-flag">${flag}</span>
+          <div class="winner-name">${dname}</div>
+          <div class="winner-team">${team}</div>
+        </div>
+      </div>`;
+    }).join('');
+    const banner=renderNextBanner();
+    content.innerHTML=banner+`<div class="section-title"><span>2026 Season Results</span><span>${races.length} races</span></div>`+rows;
+    if(selectedRace){
+      content.innerHTML+=await buildRaceResultsHTML(selectedRace.round);
+      setTimeout(()=>{const el=document.querySelector('.results-header');if(el)el.scrollIntoView({behavior:'smooth'});},100);
+    }
+    setStats('—','—','RACE',`${races.length} done`);
+  }catch(e){
+    content.innerHTML+=`<div class="state-screen"><div class="state-icon">⚠️</div><div class="state-title">Couldn't Load</div><div class="state-sub">Check connection and tap ⟳ to retry.</div></div>`;
+  }
 }
 
-function renderRaceResults(race){
-  const results=race.round===6?MIAMI_RESULTS:genResults(race);
+// ── RACE RESULTS ──────────────────────────────────────────────────────────────
+async function buildRaceResultsHTML(round){
+  const race=await fetchRaceResults(round);
+  if(!race)return'<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Data</div></div>';
+  const results=race.Results||[];
   const top3=results.slice(0,3);
+  const fl=results.find(r=>r.FastestLap?.rank==='1');
+  const totalLaps=results[0]?.laps||'—';
+
   const podium=`<div class="podium-bar">
     <div class="podium-item p2-item">
       <div class="podium-pos">🥈 P2</div>
-      <span class="podium-flag">${top3[1]?.flag||''}</span>
-      <div class="podium-name">${top3[1]?.name||'—'}</div>
-      <div class="podium-team">${top3[1]?.team||'—'}</div>
-      <div class="podium-gap">${top3[1]?.gap||'—'}</div>
+      <span class="podium-flag">${driverFlag(top3[1]?.Driver?.nationality)}</span>
+      <div class="podium-name">${top3[1]?.Driver?.familyName||'—'}</div>
+      <div class="podium-team">${top3[1]?.Constructor?.name||'—'}</div>
+      <div class="podium-gap">${top3[1]?.Time?.time||top3[1]?.status||'—'}</div>
     </div>
     <div class="podium-item p1-item">
       <div class="podium-pos">🏆 WINNER</div>
-      <span class="podium-flag">${top3[0]?.flag||''}</span>
-      <div class="podium-name">${top3[0]?.name||'—'}</div>
-      <div class="podium-team">${top3[0]?.team||'—'}</div>
+      <span class="podium-flag">${driverFlag(top3[0]?.Driver?.nationality)}</span>
+      <div class="podium-name">${top3[0]?.Driver?.familyName||'—'}</div>
+      <div class="podium-team">${top3[0]?.Constructor?.name||'—'}</div>
       <div class="podium-gap">RACE WINNER</div>
     </div>
     <div class="podium-item p3-item">
       <div class="podium-pos">🥉 P3</div>
-      <span class="podium-flag">${top3[2]?.flag||''}</span>
-      <div class="podium-name">${top3[2]?.name||'—'}</div>
-      <div class="podium-team">${top3[2]?.team||'—'}</div>
-      <div class="podium-gap">${top3[2]?.gap||'—'}</div>
+      <span class="podium-flag">${driverFlag(top3[2]?.Driver?.nationality)}</span>
+      <div class="podium-name">${top3[2]?.Driver?.familyName||'—'}</div>
+      <div class="podium-team">${top3[2]?.Constructor?.name||'—'}</div>
+      <div class="podium-gap">${top3[2]?.Time?.time||top3[2]?.status||'—'}</div>
     </div>
   </div>`;
+
   const header=`<div class="results-header">
-    <div class="results-race-name">${race.country} ${race.name}</div>
-    <div class="results-race-sub">${race.circuit} · Round ${race.round} · ${race.laps||'—'} Laps · ${race.time||'—'}<br>Fastest Lap: ${race.fastest||'—'} — ${race.fastestBy||'—'} ⚡</div>
+    <div class="results-race-name">${race.Circuit?.Location?.country||''} ${race.raceName}</div>
+    <div class="results-race-sub">${race.Circuit?.circuitName||''} · Round ${race.round} · ${totalLaps} Laps<br>
+    ${fl?`⚡ Fastest Lap: ${fl.FastestLap?.Time?.time||'—'} — ${fl.Driver?.familyName||'—'} (Lap ${fl.FastestLap?.lap||'—'})`:''}
+    </div>
   </div>`;
+
   const tableHeader=`<div class="results-table-header">
     <div class="rth left">POS</div><div class="rth"></div>
     <div class="rth left">DRIVER</div>
-    <div class="rth">PTS</div><div class="rth">GAP</div>
-    <div class="rth">FL</div><div class="rth">TIRE</div>
+    <div class="rth">PTS</div><div class="rth">GAP / TIME</div>
+    <div class="rth">FL</div><div class="rth">LAPS</div>
   </div>`;
-  const rows=results.map((r,i)=>`
-    <div class="result-row ${i===0?'p1-row':''} ${r.status==='dnf'?'dnf-row':''}">
-      <div class="res-pos ${r.status==='dnf'?'pos-dnf':posC(r.pos)}">${r.status==='dnf'?'DNF':r.pos}</div>
-      <div class="flag-cell">${r.flag}</div>
+
+  const rows=results.map((r,i)=>{
+    const name=r.Driver?.familyName||'—';
+    const team=r.Constructor?.name||'—';
+    const nat=r.Driver?.nationality||'';
+    const flag=driverFlag(nat);
+    const pts=parseFloat(r.points)||0;
+    const gap=i===0?(r.Time?.time||'WINNER'):(r.Time?.time?'+'+r.Time.time:r.status||'—');
+    const isFl=r.FastestLap?.rank==='1';
+    const isDnf=r.status&&r.status!=='Finished'&&!r.status.startsWith('+');
+    const driverId=r.Driver?.driverId||'';
+    const isSelected=selectedDriver===driverId;
+    return`<div class="result-row ${i===0?'p1-row':''} ${isDnf?'dnf-row':''} ${isSelected?'selected-driver':''}" onclick="toggleLaps('${driverId}','${name}','${round}')">
+      <div class="res-pos ${isDnf?'pos-dnf':posC(i+1)}">${isDnf?'DNF':i+1}</div>
+      <div class="flag-cell">${flag}</div>
       <div>
-        <div class="res-name" style="color:${tc(r.team)}">${r.name}</div>
-        <div class="res-team-sm">${r.team}</div>
+        <div class="res-name" style="color:${tc(team)}">${name}</div>
+        <div class="res-team-sm">${team}</div>
       </div>
-      <div class="res-pts">${r.pts>0?'+'+r.pts:'—'}</div>
-      <div class="res-gap ${i===0?'leader-gap':''}">${r.gap}</div>
-      <div class="res-fl">${race.fastestBy===r.name?'⚡':''}</div>
-      <div>${tireSm(r.tire)}</div>
-    </div>`).join('');
-  return header+podium+tableHeader+rows;
-}
+      <div class="res-pts">${pts>0?'+'+pts:'—'}</div>
+      <div class="res-gap ${i===0?'leader-gap':''}">${gap}</div>
+      <div class="res-fl">${isFl?'⚡':''}</div>
+      <div class="flag-cell" style="color:var(--muted);font-size:10px;font-family:'Share Tech Mono',monospace;">${r.laps||'—'}</div>
+    </div>`;
+  }).join('');
 
-function genResults(race){
-  const order=['Norris','Piastri','Leclerc','Russell','Verstappen','Antonelli','Hamilton','Alonso','Gasly','Sainz'];
-  const wi=order.indexOf(race.winner);
-  if(wi>0){order.splice(wi,1);order.unshift(race.winner);}
-  const pts=[25,18,15,12,10,8,6,4,2,1];
-  const teams={Norris:'McLaren',Piastri:'McLaren',Leclerc:'Ferrari',Russell:'Mercedes',Verstappen:'Red Bull Racing',Antonelli:'Mercedes',Hamilton:'Ferrari',Alonso:'Aston Martin',Gasly:'Alpine',Sainz:'Williams'};
-  return order.map((name,i)=>({pos:i+1,name,team:teams[name]||'Unknown',flag:FL[name]||'🏳️',pts:pts[i]||0,gap:i===0?'WINNER':`+${(i*4.2+Math.random()*3).toFixed(3)}`,tire:i<5?'M':'H',status:'fin'}));
-}
-
-function renderChamp(data,type){
-  const hdr=`<div class="section-title"><span>${type} Championship · 2026</span><span>After R6 Miami</span></div>`;
-  const rows=data.map(d=>`
-    <div class="champ-row">
-      <div class="champ-pos" style="color:${d.pos===1?'var(--yellow)':d.pos===2?'#c0c0c0':d.pos===3?'#cd7f32':'var(--muted)'}">${d.pos}</div>
-      <div class="flag-cell">${d.flag}</div>
+  const lapPanel=selectedDriver?`<div class="lap-panel" id="lap-panel">
+    <div class="lap-panel-header">
       <div>
-        <div class="champ-name">${d.name}</div>
-        <div class="champ-team-sm" style="color:${tc(d.team||d.name)}">${d.team||''}</div>
+        <div class="lap-panel-title">${selectedDriver} — Lap Times</div>
+        <div class="lap-panel-sub">Tap a lap to see details · ⚡ = fastest lap</div>
       </div>
-      <div class="champ-pts">${d.pts}</div>
-      <div class="champ-gap" style="color:${d.pos===1?'var(--yellow)':'var(--muted)'}">${d.gap}</div>
-    </div>`).join('');
-  return hdr+rows;
+      <button class="lap-panel-close" onclick="closeLaps()">✕</button>
+    </div>
+    <div id="lap-grid-content"><div class="lap-loading">⟳ Loading lap times...</div></div>
+  </div>`:'';
+
+  return header+podium+tableHeader+rows+lapPanel;
 }
 
-async function renderF1(){
-  const content=document.getElementById('main-content');
-  if(currentF1Tab==='races'){
-    content.innerHTML=renderRaceSelector();
-    const sr=selectedRace;
-    setStats(sr?.fastest||'—',sr?.winner||'—','RACE',sr?`R${sr.round}`:`${RACES.filter(r=>r.status==='done').length} done`);
+async function toggleLaps(driverId,name,round){
+  if(selectedDriver===driverId){
+    selectedDriver=null;
+    await renderRaceSelector();
     return;
   }
-  if(currentF1Tab==='drivers'){content.innerHTML=renderChamp(DRIVERS_CHAMP,'Drivers');setStats('132 pts','Norris','DRIVERS','R6');return;}
-  if(currentF1Tab==='constructors'){content.innerHTML=renderChamp(CONSTRUCTORS_CHAMP,'Constructors');setStats('250 pts','McLaren','CONSTR.','R6');return;}
+  selectedDriver=driverId;
+  await renderRaceSelector();
+  // Load lap times
+  const grid=document.getElementById('lap-grid-content');
+  if(!grid)return;
+  try{
+    const laps=await fetchLapTimes(round,driverId);
+    if(!laps.length){grid.innerHTML='<div class="lap-loading">No lap time data available</div>';return;}
+    // Find fastest lap time
+    let fastest=Infinity;
+    laps.forEach(lap=>{
+      const ms=lapStrToMs(lap.Timings?.[0]?.time);
+      if(ms&&ms<fastest)fastest=ms;
+    });
+    const cells=laps.map(lap=>{
+      const timing=lap.Timings?.[0];
+      const ms=lapStrToMs(timing?.time);
+      const isFast=ms&&Math.abs(ms-fastest)<1;
+      const isSlow=ms&&ms>fastest*1.05;
+      const pos=timing?.position||'—';
+      return`<div class="lap-cell-item">
+        <div class="lap-num">LAP ${lap.number}</div>
+        <div class="lap-time ${isFast?'fastest-lap':isSlow?'slow-lap':''}">${timing?.time||'—'}</div>
+        <div class="lap-pos">P${pos}</div>
+      </div>`;
+    }).join('');
+    grid.innerHTML=`<div class="lap-grid">${cells}</div>`;
+  }catch(e){
+    grid.innerHTML='<div class="lap-loading">Failed to load lap times</div>';
+  }
+}
 
-  // LIVE TAB
+function closeLaps(){
+  selectedDriver=null;
+  renderRaceSelector();
+}
+
+async function selectRace(round){
+  selectedRace={round};
+  selectedDriver=null;
+  await renderRaceSelector();
+  setTimeout(()=>{const el=document.querySelector('.results-header');if(el)el.scrollIntoView({behavior:'smooth'});},100);
+}
+
+// ── CHAMPIONSHIP ──────────────────────────────────────────────────────────────
+async function renderDrivers(){
+  const content=document.getElementById('main-content');
+  content.innerHTML=`<div class="state-screen"><div class="state-icon">⟳</div><div class="state-title">Loading...</div></div>`;
+  try{
+    const standings=await fetchDriverStandings();
+    if(!standings.length){content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">No Data Yet</div></div>`;return;}
+    const leader=standings[0];
+    const hdr=`<div class="section-title"><span>Drivers Championship · 2026</span><span>After R${leader.wins||'?'}</span></div>`;
+    const rows=standings.map((d,i)=>{
+      const name=d.Driver?.familyName||'—';
+      const team=d.Constructors?.[0]?.name||'—';
+      const nat=d.Driver?.nationality||'';
+      const flag=driverFlag(nat);
+      const pts=parseFloat(d.points)||0;
+      const leaderPts=parseFloat(standings[0].points)||0;
+      const gap=i===0?'LEADER':`-${leaderPts-pts}`;
+      return`<div class="champ-row">
+        <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
+        <div class="flag-cell">${flag}</div>
+        <div><div class="champ-name">${name}</div><div class="champ-team-sm" style="color:${tc(team)}">${team}</div></div>
+        <div class="champ-pts">${pts}</div>
+        <div class="champ-gap" style="color:${i===0?'var(--yellow)':'var(--muted)'}">${gap}</div>
+      </div>`;
+    }).join('');
+    content.innerHTML=hdr+rows;
+    setStats(`${standings[0]?.points||'—'} pts`,standings[0]?.Driver?.familyName||'—','DRIVERS','2026');
+  }catch(e){content.innerHTML=`<div class="state-screen"><div class="state-icon">⚠️</div><div class="state-title">Couldn't Load</div><div class="state-sub">Tap ⟳ to retry.</div></div>`;}
+}
+
+async function renderConstructors(){
+  const content=document.getElementById('main-content');
+  content.innerHTML=`<div class="state-screen"><div class="state-icon">⟳</div><div class="state-title">Loading...</div></div>`;
+  try{
+    const standings=await fetchConstructorStandings();
+    if(!standings.length){content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">No Data Yet</div></div>`;return;}
+    const hdr=`<div class="section-title"><span>Constructors Championship · 2026</span><span>Auto-updated</span></div>`;
+    const rows=standings.map((c,i)=>{
+      const name=c.Constructor?.name||'—';
+      const nat=c.Constructor?.nationality||'';
+      const flag=NAT_FLAGS[nat]||'🏳️';
+      const pts=parseFloat(c.points)||0;
+      const leaderPts=parseFloat(standings[0].points)||0;
+      const gap=i===0?'LEADER':`-${leaderPts-pts}`;
+      return`<div class="champ-row">
+        <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
+        <div class="flag-cell">${flag}</div>
+        <div><div class="champ-name">${name}</div><div class="champ-team-sm" style="color:${tc(name)}">${nat}</div></div>
+        <div class="champ-pts">${pts}</div>
+        <div class="champ-gap" style="color:${i===0?'var(--yellow)':'var(--muted)'}">${gap}</div>
+      </div>`;
+    }).join('');
+    content.innerHTML=hdr+rows;
+    setStats(`${standings[0]?.points||'—'} pts`,standings[0]?.Constructor?.name||'—','CONSTR.','2026');
+  }catch(e){content.innerHTML=`<div class="state-screen"><div class="state-icon">⚠️</div><div class="state-title">Couldn't Load</div><div class="state-sub">Tap ⟳ to retry.</div></div>`;}
+}
+
+// ── LIVE TIMING ───────────────────────────────────────────────────────────────
+async function renderLive(){
+  const content=document.getElementById('main-content');
   content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">Connecting...</div><div class="state-sub">Fetching live F1 timing data</div></div>`;
   try{
     const sessRes=await fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026');
@@ -422,9 +536,8 @@ async function renderF1(){
     if(!session)session=sessions.filter(s=>new Date(s.date_end)<now).pop();
     document.getElementById('live-pill').style.display=isLive?'flex':'none';
     if(!session){
-      content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Live Session</div><div class="state-sub">No F1 session running right now. Check Race Results for the latest standings and Miami GP data.</div></div>`;
-      setStats('—','—','OFFLINE','—');
-      return;
+      content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Live Session</div><div class="state-sub">No F1 session running right now. Check Race Results for the latest standings.</div></div>`;
+      setStats('—','—','OFFLINE','—');return;
     }
     const sk=session.session_key,st=session.session_type||'Session';
     const [drs,pos,lps,sts,ivs]=await Promise.all([
@@ -447,10 +560,9 @@ async function renderF1(){
       if(dl.length>0){const b=Math.min(...dl.filter(l=>l.lap_duration).map(l=>l.lap_duration*1000));if(b<ft)ft=b;}
       if(p.position===1)leader=dm[p.driver_number];
     });
-    if(sorted.length===0){
-      content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Live Session</div><div class="state-sub">No F1 session right now. Check Race Results for latest standings.</div></div>`;
-      setStats('—','—','OFFLINE','—');
-      return;
+    if(!sorted.length){
+      content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Session Data</div><div class="state-sub">Check Race Results for latest standings.</div></div>`;
+      setStats('—','—','OFFLINE','—');return;
     }
     const thRow=`<div class="timing-header-row"><div class="th left">POS</div><div class="th"></div><div class="th left">DRIVER</div><div class="th">GAP</div><div class="th">LAST LAP</div><div class="th">TIRE</div></div>`;
     const rows=sorted.map((p,i)=>{
@@ -478,10 +590,12 @@ async function renderF1(){
   }
 }
 
-function selectRace(round){
-  selectedRace=RACES.find(r=>r.round===round);
-  renderF1();
-  setTimeout(()=>{const el=document.querySelector('.results-header');if(el)el.scrollIntoView({behavior:'smooth'});},100);
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+async function renderF1(){
+  if(currentF1Tab==='races')return renderRaceSelector();
+  if(currentF1Tab==='drivers')return renderDrivers();
+  if(currentF1Tab==='constructors')return renderConstructors();
+  return renderLive();
 }
 
 function switchSeries(s){
@@ -496,20 +610,24 @@ function switchSeries(s){
 
 function switchF1Tab(tab){
   currentF1Tab=tab;
+  selectedRace=null;
+  selectedDriver=null;
   document.querySelectorAll('.f1-sub-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab)?.classList.add('active');
   renderF1();
 }
 
 function refresh(){
+  cachedResults={};cachedStandings=null;cachedConstructors=null;cachedLaps={};
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   renderF1().finally(()=>btn.classList.remove('spinning'));
 }
 
+// ── INIT ──────────────────────────────────────────────────────────────────────
 document.getElementById('f1-submenu').style.display='flex';
 renderF1();
-setInterval(()=>{if(currentSeries==='f1'&&currentF1Tab==='live'&&isLive)renderF1();},30000);
+setInterval(()=>{if(currentSeries==='f1'&&currentF1Tab==='live'&&isLive)renderLive();},30000);
 </script>
 </body>
 </html>
