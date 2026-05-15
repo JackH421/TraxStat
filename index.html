@@ -553,6 +553,70 @@ async function selectRace(round){
 }
 
 // ── CHAMPIONSHIP ──────────────────────────────────────────────────────────────
+// Points per race — keyed by driver familyName
+const DRIVER_RACE_POINTS={
+  'Russell':    [{round:1,race:'Australia',flag:'🇦🇺',pos:1,pts:25},{round:2,race:'China',flag:'🇨🇳',pos:2,pts:18},{round:3,race:'Japan',flag:'🇯🇵',pos:4,pts:12},{round:4,race:'Miami',flag:'🇺🇸',pos:4,pts:12}],
+  'Antonelli':  [{round:1,race:'Australia',flag:'🇦🇺',pos:2,pts:18},{round:2,race:'China',flag:'🇨🇳',pos:1,pts:25},{round:3,race:'Japan',flag:'🇯🇵',pos:1,pts:25},{round:4,race:'Miami',flag:'🇺🇸',pos:1,pts:25}],
+  'Leclerc':    [{round:1,race:'Australia',flag:'🇦🇺',pos:3,pts:15},{round:2,race:'China',flag:'🇨🇳',pos:3,pts:15},{round:3,race:'Japan',flag:'🇯🇵',pos:3,pts:15},{round:4,race:'Miami',flag:'🇺🇸',pos:8,pts:4}],
+  'Hamilton':   [{round:1,race:'Australia',flag:'🇦🇺',pos:4,pts:12},{round:2,race:'China',flag:'🇨🇳',pos:4,pts:12},{round:3,race:'Japan',flag:'🇯🇵',pos:6,pts:8},{round:4,race:'Miami',flag:'🇺🇸',pos:6,pts:8}],
+  'Norris':     [{round:1,race:'Australia',flag:'🇦🇺',pos:5,pts:10},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:5,pts:10},{round:4,race:'Miami',flag:'🇺🇸',pos:2,pts:18}],
+  'Piastri':    [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:2,pts:18},{round:4,race:'Miami',flag:'🇺🇸',pos:3,pts:15}],
+  'Verstappen': [{round:1,race:'Australia',flag:'🇦🇺',pos:6,pts:8},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:8,pts:4},{round:4,race:'Miami',flag:'🇺🇸',pos:5,pts:10}],
+  'Bearman':    [{round:1,race:'Australia',flag:'🇦🇺',pos:7,pts:6},{round:2,race:'China',flag:'🇨🇳',pos:5,pts:10},{round:3,race:'Japan',flag:'🇯🇵',pos:0,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:11,pts:0}],
+  'Lindblad':   [{round:1,race:'Australia',flag:'🇦🇺',pos:8,pts:4},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:14,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:14,pts:0}],
+  'Bortoleto':  [{round:1,race:'Australia',flag:'🇦🇺',pos:9,pts:2},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:13,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:12,pts:0}],
+  'Gasly':      [{round:1,race:'Australia',flag:'🇦🇺',pos:10,pts:1},{round:2,race:'China',flag:'🇨🇳',pos:6,pts:8},{round:3,race:'Japan',flag:'🇯🇵',pos:7,pts:6},{round:4,race:'Miami',flag:'🇺🇸',pos:0,pts:0}],
+  'Colapinto':  [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:10,pts:1},{round:3,race:'Japan',flag:'🇯🇵',pos:16,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:7,pts:6}],
+  'Hadjar':     [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:12,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:0,pts:0}],
+  'Lawson':     [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:7,pts:6},{round:3,race:'Japan',flag:'🇯🇵',pos:9,pts:2},{round:4,race:'Miami',flag:'🇺🇸',pos:0,pts:0}],
+  'Ocon':       [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:10,pts:1},{round:4,race:'Miami',flag:'🇺🇸',pos:13,pts:0}],
+  'Sainz':      [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:9,pts:2},{round:3,race:'Japan',flag:'🇯🇵',pos:15,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:9,pts:2}],
+  'Albon':      [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:8,pts:4},{round:3,race:'Japan',flag:'🇯🇵',pos:20,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:10,pts:1}],
+};
+
+let selectedDriverChamp=null;
+
+function posLabel(p){if(p===0)return'DNS/DNF';if(p===1)return'🏆 P1';if(p===2)return'P2';if(p===3)return'P3';return`P${p}`;}
+function posColor(p){if(p===0)return'var(--muted)';if(p===1)return'var(--yellow)';if(p===2)return'#c0c0c0';if(p===3)return'#cd7f32';if(p<=10)return'var(--green)';return'var(--muted)';}
+
+function renderDriverBreakdown(name,team,totalPts){
+  const races=DRIVER_RACE_POINTS[name]||[];
+  if(!races.length)return'';
+  const raceRows=races.map(r=>`
+    <div style="display:grid;grid-template-columns:28px 1fr auto auto;align-items:center;padding:8px 16px;border-bottom:1px solid #141414;gap:10px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);text-align:center;">R${r.round}</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:13px;">${r.flag}</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text);">${r.race}</span>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:${posColor(r.pos)};text-align:right;">${posLabel(r.pos)}</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:13px;color:${r.pts>0?'var(--yellow)':'var(--muted)'};text-align:right;min-width:36px;">${r.pts>0?'+'+r.pts:'—'}</div>
+    </div>`).join('');
+
+  // Mini bar chart of points per race
+  const maxPts=25;
+  const bars=races.map(r=>{
+    const h=r.pts>0?Math.max(4,Math.round((r.pts/maxPts)*40)):2;
+    return`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:${r.pts>0?'var(--yellow)':'var(--muted)'};">${r.pts>0?r.pts:''}</div>
+      <div style="width:100%;max-width:32px;height:${h}px;background:${r.pts>0?'var(--red)':'var(--dim)'};border-radius:2px 2px 0 0;"></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.04em;">${r.flag}</div>
+    </div>`;
+  }).join('');
+
+  return`<div style="background:var(--surface2);border-top:1px solid var(--border);border-bottom:2px solid var(--red);">
+    <div style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--white);">${name} — Points by Race</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:11px;color:${tc(team)};margin-top:2px;">${team} · ${totalPts} pts total</div>
+      </div>
+      <button onclick="selectedDriverChamp=null;renderDrivers();" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px;">✕</button>
+    </div>
+    <div style="padding:12px 16px 8px;display:flex;align-items:flex-end;gap:6px;height:80px;border-bottom:1px solid var(--border);">${bars}</div>
+    ${raceRows}
+  </div>`;
+}
+
 async function renderDrivers(){
   const content=document.getElementById('main-content');
   content.innerHTML=`<div class="state-screen"><div class="state-icon">⟳</div><div class="state-title">Loading...</div></div>`;
@@ -560,7 +624,7 @@ async function renderDrivers(){
     const standings=await fetchDriverStandings();
     if(!standings.length){content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">No Data Yet</div></div>`;return;}
     const leader=standings[0];
-    const hdr=`<div class="section-title"><span>Drivers Championship · 2026</span><span>After R${leader.wins||'?'}</span></div>`;
+    const hdr=`<div class="section-title"><span>Drivers Championship · 2026</span><span>Tap driver for breakdown</span></div>`;
     const rows=standings.map((d,i)=>{
       const name=d.Driver?.familyName||'—';
       const team=d.Constructors?.[0]?.name||'—';
@@ -569,16 +633,31 @@ async function renderDrivers(){
       const pts=parseFloat(d.points)||0;
       const leaderPts=parseFloat(standings[0].points)||0;
       const gap=i===0?'LEADER':`-${leaderPts-pts}`;
-      return`<div class="champ-row">
-        <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
-        <div class="flag-cell">${flag}</div>
-        <div><div class="champ-name">${name}</div><div class="champ-team-sm" style="color:${tc(team)}">${team}</div></div>
-        <div class="champ-pts">${pts}</div>
-        <div class="champ-gap" style="color:${i===0?'var(--yellow)':'var(--muted)'}">${gap}</div>
+      const isSelected=selectedDriverChamp===name;
+      const breakdown=isSelected?renderDriverBreakdown(name,team,pts):'';
+      return`<div>
+        <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--red);':''}" onclick="selectedDriverChamp=selectedDriverChamp==='${name}'?null:'${name}';renderDrivers();">
+          <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
+          <div class="flag-cell">${flag}</div>
+          <div>
+            <div class="champ-name">${name}</div>
+            <div class="champ-team-sm" style="color:${tc(team)}">${team}</div>
+          </div>
+          <div class="champ-pts">${pts}</div>
+          <div class="champ-gap" style="color:${i===0?'var(--yellow)':'var(--muted)'}">${gap}</div>
+        </div>
+        ${breakdown}
       </div>`;
     }).join('');
     content.innerHTML=hdr+rows;
     setStats(`${standings[0]?.points||'—'} pts`,standings[0]?.Driver?.familyName||'—','DRIVERS','2026');
+    // Scroll to selected driver
+    if(selectedDriverChamp){
+      setTimeout(()=>{
+        const el=document.querySelector('[style*="border-left:2px solid var(--red)"]');
+        if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});
+      },50);
+    }
   }catch(e){content.innerHTML=`<div class="state-screen"><div class="state-icon">⚠️</div><div class="state-title">Couldn't Load</div><div class="state-sub">Tap ⟳ to retry.</div></div>`;}
 }
 
@@ -698,6 +777,7 @@ function switchF1Tab(tab){
   currentF1Tab=tab;
   selectedRace=null;
   selectedDriver=null;
+  selectedDriverChamp=null;
   document.querySelectorAll('.f1-sub-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab)?.classList.add('active');
   renderF1();
