@@ -75,10 +75,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .p1-item .podium-name{color:var(--yellow);}
 .p2-item .podium-name{color:#c0c0c0;}
 .p3-item .podium-name{color:#cd7f32;}
-.results-table-header{display:grid;grid-template-columns:28px 20px 1fr 44px 78px 20px 24px;padding:5px 12px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:5;}
-.rth{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;text-align:right;}
+.results-table-header{display:grid;grid-template-columns:28px 20px 1fr 38px 70px 64px 18px;padding:5px 10px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:5;gap:4px;}
+.rth{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;text-align:right;}
 .rth.left{text-align:left;}
-.result-row{display:grid;grid-template-columns:28px 20px 1fr 44px 78px 20px 24px;padding:7px 12px;border-bottom:1px solid #141414;align-items:center;cursor:pointer;transition:background 0.1s;}
+.result-row{display:grid;grid-template-columns:28px 20px 1fr 38px 70px 64px 18px;padding:7px 10px;border-bottom:1px solid #141414;align-items:center;cursor:pointer;transition:background 0.1s;gap:4px;}
 .result-row:active{background:var(--surface2);}
 .result-row.p1-row{background:#0d1a08;}
 .result-row.dnf-row{opacity:0.5;}
@@ -95,6 +95,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .res-pts{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--yellow);text-align:right;}
 .res-gap{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);text-align:right;}
 .res-gap.leader-gap{color:var(--yellow);font-family:'Barlow Condensed',sans-serif;font-size:10px;}
+.res-fastest{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);text-align:right;}
+.res-fastest.is-fastest{color:var(--green);font-weight:700;}
 .res-fl{font-size:11px;text-align:center;}
 .tire-sm{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-left:auto;}
 .tire-s{background:#c00020;color:#fff;}
@@ -207,6 +209,7 @@ const DT={1:'Red Bull',6:'Red Bull',44:'Ferrari',16:'Ferrari',4:'McLaren',81:'Mc
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let currentSeries='f1',currentF1Tab='live',selectedRace=null,isLive=false;
 let cachedResults={},cachedStandings=null,cachedConstructors=null,cachedLaps={};
+let cachedFastestLaps={}; // {round: {driverId: {time, lap, rank}}}
 let selectedDriver=null;
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
@@ -296,6 +299,41 @@ async function fetchLapTimes(round,driverId){
   cachedLaps[key]=laps;
   return laps;
 }
+
+// Fetch each driver's personal fastest lap for a given round.
+// Tries Jolpica's fastest endpoint (1..20). Falls back to seeded data for
+// hardcoded races. Returns {driverId: {time, lap, rank}}.
+async function fetchFastestLaps(round){
+  if(cachedFastestLaps[round])return cachedFastestLaps[round];
+  const out={};
+  // Seed verified overall race fastest laps so they appear instantly
+  const seeded=SEEDED_FASTEST_LAPS[round]||{};
+  Object.assign(out,seeded);
+  // Try Jolpica — it has FastestLap embedded in /results, sometimes
+  try{
+    const data=await jolpica(`2026/${round}/results/?limit=30`);
+    const results=data.MRData.RaceTable.Races[0]?.Results||[];
+    results.forEach(r=>{
+      if(r.FastestLap&&r.FastestLap.Time){
+        const drvId=r.Driver?.driverId;
+        if(drvId&&!out[drvId]){
+          out[drvId]={time:r.FastestLap.Time.time,lap:r.FastestLap.lap,rank:r.FastestLap.rank};
+        }
+      }
+    });
+  }catch(e){}
+  cachedFastestLaps[round]=out;
+  return out;
+}
+
+// Seeded fastest laps from official sources for rounds where Jolpica may lag.
+// Each entry: {driverId: {time, lap, rank}} — rank "1" = overall race fastest.
+// Only includes drivers whose fastest lap is publicly confirmed.
+const SEEDED_FASTEST_LAPS={
+  2:{'antonelli':{time:'1:35.275',lap:'52',rank:'1'}},
+  3:{'antonelli':{time:'1:32.432',lap:'49',rank:'1'}},
+  4:{'norris':{time:'1:31.869',lap:'35',rank:'1'}},
+};
 
 // ── NEXT RACE ─────────────────────────────────────────────────────────────────
 const NEXT_RACES=[
@@ -516,8 +554,9 @@ async function buildRaceResultsHTML(round){
   const top3=results.slice(0,3);
   const fl=results.find(r=>r.FastestLap?.rank==='1');
   const totalLaps=results[0]?.laps||'—';
-  // Get sprint info for this race if applicable
   const sprint=SPRINT_RESULTS[round];
+  // Pull per-driver fastest laps (seeded + whatever Jolpica returns)
+  const flMap=await fetchFastestLaps(round);
 
   const podium=`<div class="podium-bar">
     <div class="podium-item p2-item">
@@ -555,7 +594,7 @@ async function buildRaceResultsHTML(round){
     <div class="rth left">POS</div><div class="rth"></div>
     <div class="rth left">DRIVER</div>
     <div class="rth">PTS</div><div class="rth">GAP / TIME</div>
-    <div class="rth">FL</div><div class="rth">LAPS</div>
+    <div class="rth">FASTEST</div><div class="rth"></div>
   </div>`;
 
   const rows=results.map((r,i)=>{
@@ -569,11 +608,16 @@ async function buildRaceResultsHTML(round){
     const isDnf=pos==='DNF'||(r.status&&r.status.includes('DNF'));
     const numPos=isDnf||isDns?null:parseInt(pos);
     const gap=numPos===1?(r.Time?.time||'WINNER'):(r.Time?.time?r.Time.time:r.status||'—');
-    const isFl=r.FastestLap?.rank==='1';
     const driverId=r.Driver?.driverId||'';
     const isSelected=selectedDriver===driverId;
     const posLabel=isDns?'DNS':isDnf?'DNF':numPos;
     const posClass=isDns||isDnf?'pos-dnf':posC(numPos);
+    // Resolve this driver's personal fastest lap
+    const drvFl=flMap[driverId]||(r.FastestLap?{time:r.FastestLap.Time?.time,lap:r.FastestLap.lap,rank:r.FastestLap.rank}:null);
+    const flTime=drvFl?.time||'';
+    const isOverallFl=drvFl?.rank==='1';
+    const flCellClass=isOverallFl?'res-fastest is-fastest':'res-fastest';
+    const flDisplay=flTime?(isOverallFl?`⚡${flTime}`:flTime):'—';
     return`<div class="result-row ${numPos===1?'p1-row':''} ${isDnf||isDns?'dnf-row':''} ${isSelected?'selected-driver':''}" onclick="toggleLaps('${driverId}','${name}','${round}')">
       <div class="res-pos ${posClass}">${posLabel}</div>
       <div class="flag-cell">${flag}</div>
@@ -583,8 +627,8 @@ async function buildRaceResultsHTML(round){
       </div>
       <div class="res-pts">${pts>0?'+'+pts:'—'}</div>
       <div class="res-gap ${numPos===1?'leader-gap':''}">${gap}</div>
-      <div class="res-fl">${isFl?'⚡':''}</div>
-      <div class="flag-cell" style="color:var(--muted);font-size:10px;font-family:'Share Tech Mono',monospace;">${r.laps||'—'}</div>
+      <div class="${flCellClass}">${flDisplay}</div>
+      <div></div>
     </div>`;
   }).join('');
 
@@ -915,6 +959,35 @@ async function renderConstructors(){
 }
 
 // ── LIVE TIMING ───────────────────────────────────────────────────────────────
+// Builds a friendly "between races" view for the LIVE tab when no session is running.
+// Shows the next race banner + last completed race recap, instead of empty/error states.
+function renderLiveOffAir(reason){
+  const banner=renderNextBanner();
+  // Last completed race recap from hardcoded data
+  const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(b.round)-parseInt(a.round));
+  const last=completed[0];
+  let recap='';
+  if(last){
+    const w=last.Results[0],p2=last.Results[1],p3=last.Results[2];
+    recap=`<div class="section-title"><span>Last Race · Round ${last.round}</span><span>${fmtDate(last.date)}</span></div>
+    <div style="padding:14px 16px;background:var(--surface2);border-bottom:1px solid var(--border);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:var(--white);">${last.Circuit?.Location?.country||''} ${last.raceName}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);margin-top:3px;">${last.Circuit?.circuitName||''}</div>
+      <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;">
+        <div><span style="color:var(--yellow);font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.1em;">🏆 P1</span><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:${tc(w?.Constructor?.name)};">${w?.Driver?.familyName||'—'}</div></div>
+        <div><span style="color:#c0c0c0;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.1em;">🥈 P2</span><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:${tc(p2?.Constructor?.name)};">${p2?.Driver?.familyName||'—'}</div></div>
+        <div><span style="color:#cd7f32;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.1em;">🥉 P3</span><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:${tc(p3?.Constructor?.name)};">${p3?.Driver?.familyName||'—'}</div></div>
+      </div>
+      <div onclick="switchF1Tab('races')" style="margin-top:12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--red);letter-spacing:0.08em;cursor:pointer;">VIEW FULL RESULTS →</div>
+    </div>`;
+  }
+  const status=`<div style="padding:18px 16px;text-align:center;background:var(--bg);">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.1em;">⬤ NO SESSION ON TRACK</div>
+    <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);margin-top:4px;">Live timing will activate when the next session starts.</div>
+  </div>`;
+  return banner+status+recap;
+}
+
 async function renderLive(){
   const content=document.getElementById('main-content');
   content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">Connecting...</div><div class="state-sub">Fetching live F1 timing data</div></div>`;
@@ -924,11 +997,10 @@ async function renderLive(){
     const now=new Date();
     let session=sessions.find(s=>new Date(s.date_start)<=now&&new Date(s.date_end)>=now);
     isLive=!!session;
-    if(!session)session=sessions.filter(s=>new Date(s.date_end)<now).pop();
     document.getElementById('live-pill').style.display=isLive?'flex':'none';
     if(!session){
-      content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Live Session</div><div class="state-sub">No F1 session running right now. Check Race Results for the latest standings.</div></div>`;
-      setStats('—','—','OFFLINE','—');return;
+      content.innerHTML=renderLiveOffAir('no-session');
+      setStats('—','—','STANDBY','R4');return;
     }
     const sk=session.session_key,st=session.session_type||'Session';
     const [drs,pos,lps,sts,ivs]=await Promise.all([
@@ -952,8 +1024,8 @@ async function renderLive(){
       if(p.position===1)leader=dm[p.driver_number];
     });
     if(!sorted.length){
-      content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Session Data</div><div class="state-sub">Check Race Results for latest standings.</div></div>`;
-      setStats('—','—','OFFLINE','—');return;
+      content.innerHTML=renderLiveOffAir('no-data');
+      setStats('—','—','STANDBY','R4');return;
     }
     const thRow=`<div class="timing-header-row"><div class="th left">POS</div><div class="th"></div><div class="th left">DRIVER</div><div class="th">GAP</div><div class="th">LAST LAP</div><div class="th">TIRE</div></div>`;
     const rows=sorted.map((p,i)=>{
@@ -978,7 +1050,9 @@ async function renderLive(){
     setStats(ft<Infinity?fmtLap(ft):'—',leader?.name_acronym||'—',isLive?'LIVE':st.substring(0,4).toUpperCase(),maxLap>0?`L${maxLap}`:session.meeting_name?.substring(0,6).toUpperCase()||'—');
   }catch(e){
     console.error(e);
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">⚠️</div><div class="state-title">Connection Error</div><div class="state-sub">Couldn't load data. Tap ⟳ to retry.</div></div>`;
+    // On connection failure show the same friendly off-air view, not a scary error screen
+    content.innerHTML=renderLiveOffAir('error');
+    setStats('—','—','STANDBY','R4');
   }
 }
 
@@ -1012,7 +1086,7 @@ function switchF1Tab(tab){
 }
 
 function refresh(){
-  cachedResults={};cachedStandings=null;cachedConstructors=null;cachedLaps={};
+  cachedResults={};cachedStandings=null;cachedConstructors=null;cachedLaps={};cachedFastestLaps={};
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   renderF1().finally(()=>btn.classList.remove('spinning'));
