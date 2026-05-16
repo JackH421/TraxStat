@@ -2081,9 +2081,13 @@ function renderN24(){
       </div>
     </div>`;
     const timingBtn=`<a href="${N24_TIMING_URL}" target="_blank" rel="noopener" onclick="track('n24:open-timing')" style="display:block;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 16px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;color:var(--yellow);text-transform:uppercase;">⤴ Open Live Timing on 24h-rennen.de</a>`;
-    const gridTitle=`<div class="section-title"><span>Starting Grid · TQ3</span><span>${ph.phase==='pre'?'Tap ⬤ LIVE FEED to open onboard':'Tap ⬤ LIVE FEED to open onboard'}</span></div>`;
+    const gridTitle=`<div class="section-title"><span>Starting Grid · TQ3</span><span>${N24_GRID.length} entries</span></div>`;
+    // Clarify that this section is the qualifying grid order, not the live race order.
+    // No third-party timing host allows iframe embedding (X-Frame-Options: SAMEORIGIN),
+    // so the running order during the race lives on 24h-rennen.de via the timing button.
+    const gridNote=`<div style="padding:9px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-family:'Barlow',sans-serif;font-size:10.5px;color:var(--muted);text-align:center;line-height:1.4;">Positions reflect the <span style="color:var(--text);">TQ3 starting grid</span> — not live race order. Tap the timing button above ↑ for the current running order.</div>`;
     const grid=`<div id="n24-grid">${buildN24GridHTML()}</div>`;
-    body=stream+verstappenCard+timingBtn+gridTitle+grid;
+    body=stream+verstappenCard+timingBtn+gridTitle+gridNote+grid;
   }
 
   content.innerHTML=header+subBar+body;
