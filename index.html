@@ -1693,7 +1693,54 @@ function renderSchedule(){
     round:r.round, sprint:false, chase:!!r.chase, type:r.type,
     dateObj:new Date(r.date+'T18:00:00Z')
   }));
+
+  // N24 TEMPORARY (DELETE AFTER MAY 17 2026): integrate Nürburgring 24 into the schedule.
+  // - pre-race: push it into the sorted pool; if it's the soonest it becomes the hero naturally.
+  // - live: render a dedicated hero-sized card at the top with elapsed time (replaces the regular hero).
+  // - post: don't show.
+  const n24p=typeof n24Phase==='function'?n24Phase():null;
+  const n24Live=n24p&&n24p.phase==='live';
+  const n24Pre=n24p&&n24p.phase==='pre';
+  if(n24Pre){
+    f1Up.push({
+      series:'n24', tag:'N24', tagColor:'var(--red)',
+      name:'Nürburgring 24 Hours', circuit:'Nürburgring Nordschleife · Verstappen Racing #3 (P4)',
+      country:'🇩🇪', date:'2026-05-16', round:null,
+      dateObj:new Date(N24_START_UTC), isN24:true
+    });
+  }
+  // END N24 TEMPORARY
+
   const all=[...f1Up,...nascarUp].sort((a,b)=>a.dateObj-b.dateObj);
+
+  // N24 TEMPORARY: if live, N24 owns the hero card at full size.
+  if(n24Live){
+    const ph=n24Phase();
+    const liveHero=`<div onclick="switchSeries('n24')" style="background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:22px 16px;cursor:pointer;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;color:var(--red);text-transform:uppercase;margin-bottom:6px;">⬤ LIVE NOW · N24 · 24-HOUR RACE</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--white);line-height:1.05;">🇩🇪 NÜRBURGRING 24 HOURS</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:5px;">Nordschleife · Verstappen Racing #3 (starting P4)</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:3px;">Tap to open the live view</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div id="n24-sched-elapsed" style="font-family:'Share Tech Mono',monospace;font-size:38px;color:var(--green);line-height:1;">${ph.label}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;margin-top:3px;text-transform:uppercase;">ELAPSED</div>
+        </div>
+      </div>
+    </div>`;
+    // Below the live hero: existing upcoming-races list, taking the full pool (no NEXT UP hero consuming all[0]).
+    const upcoming=all.slice(0,4);
+    const rows=upcoming.map(r=>renderScheduleRow(r)).join('');
+    const sectionTitle=upcoming.length?`<div class="section-title"><span>Coming Up · Next ${upcoming.length}</span><span>Tap to open series</span></div>`:'';
+    content.innerHTML=liveHero+sectionTitle+rows;
+    setStats('LIVE','#3 P4','N24',ph.label.split(':').slice(0,2).join(':'));
+    startSchedN24Timer();
+    return;
+  }
+  // END N24 TEMPORARY
+
   if(!all.length){
     content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Upcoming Races</div><div class="state-sub">Season schedule complete.</div></div>`;
     setStats('—','—','SCHED','—');return;
@@ -1703,10 +1750,11 @@ function renderSchedule(){
   const cdNum=cd?cd.num:'GO';
   const cdUnit=cd?cd.unit+' AWAY':'STARTING';
   const tags=[next.sprint?'SPRINT':'',next.chase?'CHASE':'',next.type==='R'?'ROAD':next.type==='S'?'STREET':''].filter(Boolean).join(' · ');
+  const heroRoundLabel=next.isN24?'24-HOUR RACE':`Round ${next.round}`;
   const hero=`<div onclick="switchSeries('${next.series}')" style="background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:22px 16px;cursor:pointer;">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;color:${next.tagColor};text-transform:uppercase;margin-bottom:6px;">⬤ NEXT UP · ${next.tag} · Round ${next.round}${tags?' · '+tags:''}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;color:${next.tagColor};text-transform:uppercase;margin-bottom:6px;">⬤ NEXT UP · ${next.tag} · ${heroRoundLabel}${tags?' · '+tags:''}</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--white);line-height:1.05;">${next.country} ${next.name.toUpperCase()}</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:5px;">${next.circuit}</div>
         <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:3px;">${fmtDate(next.date)}</div>
@@ -1718,33 +1766,36 @@ function renderSchedule(){
     </div>
   </div>`;
 
-  // Next 3 races after the hero
   const upcoming=all.slice(1,4);
-  const rows=upcoming.map(r=>{
-    const cd2=countdown(r.date);
-    const cdNum2=cd2?cd2.num:'-';
-    const cdUnit2=cd2?(cd2.unit==='DAYS'||cd2.unit==='DAY'?'D':cd2.unit==='HOURS'?'H':'M'):'';
-    const rowTags=[r.sprint?'SPRINT':'',r.chase?'CHASE':'',r.type==='R'?'RC':r.type==='S'?'ST':''].filter(Boolean).join(' · ');
-    return`<div class="race-item" onclick="switchSeries('${r.series}')">
-      <div style="width:44px;text-align:center;">
-        <div style="display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.06em;color:${r.tagColor};border:1px solid ${r.tagColor};padding:2px 5px;border-radius:3px;">${r.tag}</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.05em;margin-top:3px;">R${r.round}</div>
-      </div>
-      <div>
-        <div class="race-item-country">${r.country}${rowTags?' · '+rowTags:''}</div>
-        <div class="race-item-name">${r.name}</div>
-        <div class="race-item-date">${fmtDate(r.date)}</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--yellow);line-height:1;">${cdNum2}${cdUnit2}</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.08em;margin-top:3px;">AWAY</div>
-      </div>
-    </div>`;
-  }).join('');
+  const rows=upcoming.map(r=>renderScheduleRow(r)).join('');
   const sectionTitle=upcoming.length?`<div class="section-title"><span>Coming Up · Next ${upcoming.length}</span><span>Tap to open series</span></div>`:'';
 
   content.innerHTML=hero+sectionTitle+rows;
   setStats(next.tag,next.name.split(' ').slice(0,2).join(' '),'SCHED',cd?`${cd.num}${cd.unit[0]}`:'NOW');
+}
+
+// Schedule row template extracted so the live-N24 path and the normal path share it.
+function renderScheduleRow(r){
+  const cd2=countdown(r.date);
+  const cdNum2=cd2?cd2.num:'-';
+  const cdUnit2=cd2?(cd2.unit==='DAYS'||cd2.unit==='DAY'?'D':cd2.unit==='HOURS'?'H':'M'):'';
+  const rowTags=[r.sprint?'SPRINT':'',r.chase?'CHASE':'',r.type==='R'?'RC':r.type==='S'?'ST':''].filter(Boolean).join(' · ');
+  const subLabel=r.isN24?'24h':(r.round?'R'+r.round:'');
+  return`<div class="race-item" onclick="switchSeries('${r.series}')">
+    <div style="width:44px;text-align:center;">
+      <div style="display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.06em;color:${r.tagColor};border:1px solid ${r.tagColor};padding:2px 5px;border-radius:3px;">${r.tag}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.05em;margin-top:3px;">${subLabel}</div>
+    </div>
+    <div>
+      <div class="race-item-country">${r.country}${rowTags?' · '+rowTags:''}</div>
+      <div class="race-item-name">${r.name}</div>
+      <div class="race-item-date">${fmtDate(r.date)}</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--yellow);line-height:1;">${cdNum2}${cdUnit2}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.08em;margin-top:3px;">AWAY</div>
+    </div>
+  </div>`;
 }
 
 function switchF1Tab(tab){
@@ -1826,6 +1877,18 @@ function n24Phase(){
     return{phase:'live',label:`+${pad(hrs)}:${pad(mins)}:${pad(secs)}`,sub:'ELAPSED',color:'var(--green)'};
   }
   return{phase:'post',label:'FINISHED',sub:'24 HOURS COMPLETE',color:'var(--muted)'};
+}
+
+// Schedule-page live-N24 elapsed updater. Mirrors startN24Timer but runs
+// only while the user is on the schedule tab and the race is live.
+let schedN24Timer=null;
+function startSchedN24Timer(){
+  if(schedN24Timer)return;
+  schedN24Timer=setInterval(()=>{
+    if(currentSeries!=='schedule'||n24Phase().phase!=='live'){clearInterval(schedN24Timer);schedN24Timer=null;return;}
+    const el=document.getElementById('n24-sched-elapsed');
+    if(el)el.textContent=n24Phase().label;
+  },1000);
 }
 
 let n24Timer=null;
