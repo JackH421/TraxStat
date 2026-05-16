@@ -1860,6 +1860,33 @@ const N24_GRID=[
   {pos:12,car:'67', team:'HRT Ford Racing',       driver:'Vervisch',         time:'8:16.144', gap:'+5.021'},
 ];
 
+// N24 sub-tab state: 'live' (default) or 'qualifying'.
+let currentN24Tab='live';
+
+// Qualifying recap videos. All three are official Nürburgring channel uploads,
+// verified existence + embeddability via oEmbed on 2026-05-16. The channel did
+// not post separate TQ1 / TQ2 videos; only the combined TQ recap.
+const N24_QUALIFYING=[
+  {
+    label:'Top Qualifying · Friday',
+    sub:"Pole shootout — set today's grid",
+    videoId:'1d65EKT5MKQ',
+    caption:"Combined TQ1 + TQ2 + TQ3 (English). Juncadella locked in P4 with 8:12.005 in TQ3, 0.882s off pole."
+  },
+  {
+    label:'Qualifying 2 · Thursday Night',
+    sub:"Wet, dark — Verstappen's required night lap",
+    videoId:'clsMDdPd9Bo',
+    caption:"FIA-required night lap completed. Juncadella best for #3 at 9:34.713 in wet conditions."
+  },
+  {
+    label:'Qualifying 1 · Thursday',
+    sub:'Mixed wet/dry into hail',
+    videoId:'HAQ3te4ZfTw',
+    caption:"Verstappen first in the car for the team. #3 third-fastest behind #80 RAVENOL Merc and #1 ROWE BMW."
+  }
+];
+
 function n24Phase(){
   const now=Date.now();
   const start=new Date(N24_START_UTC).getTime();
@@ -1911,6 +1938,12 @@ function startN24Timer(){
   },1000);
 }
 
+function switchN24Tab(tab){
+  track('tab:n24',{tab});
+  currentN24Tab=tab;
+  renderN24();
+}
+
 function renderN24(){
   const content=document.getElementById('main-content');
   const ph=n24Phase();
@@ -1929,55 +1962,77 @@ function renderN24(){
     </div>
   </div>`;
 
-  const stream=`<div style="position:relative;padding-bottom:56.25%;height:0;background:var(--bg);">
-    <iframe src="https://www.youtube.com/embed/live_stream?channel=${N24_STREAM_CHANNEL}"
-            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen></iframe>
+  // Sub-tab pills (LIVE | QUALIFYING). Styled to match F1 sub-tab look:
+  // LIVE active = green underline (consistent with F1 .live-tab.active),
+  // QUALIFYING active = red underline (default sub-tab active style).
+  const liveActive=currentN24Tab==='live', qualActive=currentN24Tab==='qualifying';
+  const pillBase="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;";
+  const subBar=`<div style="background:var(--surface2);border-bottom:1px solid var(--border);display:flex;">
+    <div onclick="switchN24Tab('live')" style="${pillBase}${liveActive?'color:var(--green);border-bottom-color:var(--green);':'color:var(--muted);'}">⬤ LIVE</div>
+    <div onclick="switchN24Tab('qualifying')" style="${pillBase}${qualActive?'color:var(--red);border-bottom-color:var(--red);':'color:var(--muted);'}">QUALIFYING</div>
   </div>`;
 
-  const verstappenCard=`<div style="background:var(--surface);border-top:1px solid var(--border);border-left:3px solid var(--red);padding:14px 16px;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-      <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:var(--red);background:#1a0005;border:1px solid var(--red);padding:2px 8px;border-radius:3px;">#${v.car}</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:var(--white);letter-spacing:0.04em;">${v.team.toUpperCase()}</div>
+  let body;
+  if(currentN24Tab==='qualifying'){
+    body=N24_QUALIFYING.map(q=>`
+      <div class="section-title"><span>${q.label}</span><span>${q.sub}</span></div>
+      <div style="position:relative;padding-bottom:56.25%;height:0;background:var(--bg);">
+        <iframe src="https://www.youtube.com/embed/${q.videoId}"
+                style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen></iframe>
+      </div>
+      <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;font-family:'Barlow',sans-serif;font-size:11px;color:var(--text);line-height:1.5;">${q.caption}</div>
+    `).join('');
+  } else {
+    const stream=`<div style="position:relative;padding-bottom:56.25%;height:0;background:var(--bg);">
+      <iframe src="https://www.youtube.com/embed/live_stream?channel=${N24_STREAM_CHANNEL}"
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen></iframe>
+    </div>`;
+    const verstappenCard=`<div style="background:var(--surface);border-top:1px solid var(--border);border-left:3px solid var(--red);padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:var(--red);background:#1a0005;border:1px solid var(--red);padding:2px 8px;border-radius:3px;">#${v.car}</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:var(--white);letter-spacing:0.04em;">${v.team.toUpperCase()}</div>
+          </div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:2px;">${v.carModel} · operated by ${v.operator}</div>
+          <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--text);margin-top:8px;line-height:1.4;">${v.drivers.join(' · ')}</div>
         </div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:2px;">${v.carModel} · operated by ${v.operator}</div>
-        <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--text);margin-top:8px;line-height:1.4;">${v.drivers.join(' · ')}</div>
-      </div>
-      <div style="text-align:right;flex-shrink:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;">QUAL</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--yellow);line-height:1;">P${v.qualifying.pos}</div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;">${v.qualifying.time}</div>
-      </div>
-    </div>
-  </div>`;
-
-  const timingBtn=`<a href="${N24_TIMING_URL}" target="_blank" rel="noopener" onclick="track('n24:open-timing')" style="display:block;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 16px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;color:var(--yellow);text-transform:uppercase;">⤴ Open Live Timing on 24h-rennen.de</a>`;
-
-  const gridTitle=`<div class="section-title"><span>${ph.phase==='pre'?'Starting Grid · TQ3':'Starting Grid · TQ3'}</span><span>${ph.phase==='pre'?'Top 12 of '+N24_GRID.length:'Race underway — tap timing for live order'}</span></div>`;
-  const gridRows=N24_GRID.map(r=>{
-    const posColor=r.pos===1?'var(--yellow)':r.pos<=3?'var(--white)':r.highlight?'var(--red)':'var(--muted)';
-    return`<div class="race-item" style="${r.highlight?'background:#1a0005;border-left:2px solid var(--red);':''}">
-      <div style="width:36px;text-align:center;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:${posColor};">P${r.pos}</div>
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:${r.highlight?'var(--red)':'var(--text)'};background:${r.highlight?'#1a0005':'var(--surface2)'};border:1px solid ${r.highlight?'var(--red)':'var(--border)'};padding:1px 5px;border-radius:2px;">#${r.car}</span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${r.driver}</span>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;">QUAL</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--yellow);line-height:1;">P${v.qualifying.pos}</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;">${v.qualifying.time}</div>
         </div>
-        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${r.team}</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1;">${r.time}</div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${r.pos===1?'var(--yellow)':'var(--muted)'};margin-top:3px;">${r.gap}</div>
       </div>
     </div>`;
-  }).join('');
+    const timingBtn=`<a href="${N24_TIMING_URL}" target="_blank" rel="noopener" onclick="track('n24:open-timing')" style="display:block;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 16px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;color:var(--yellow);text-transform:uppercase;">⤴ Open Live Timing on 24h-rennen.de</a>`;
+    const gridTitle=`<div class="section-title"><span>Starting Grid · TQ3</span><span>${ph.phase==='pre'?'Top 12 of '+N24_GRID.length:'Race underway — tap timing for live order'}</span></div>`;
+    const gridRows=N24_GRID.map(r=>{
+      const posColor=r.pos===1?'var(--yellow)':r.pos<=3?'var(--white)':r.highlight?'var(--red)':'var(--muted)';
+      return`<div class="race-item" style="${r.highlight?'background:#1a0005;border-left:2px solid var(--red);':''}">
+        <div style="width:36px;text-align:center;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:${posColor};">P${r.pos}</div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:${r.highlight?'var(--red)':'var(--text)'};background:${r.highlight?'#1a0005':'var(--surface2)'};border:1px solid ${r.highlight?'var(--red)':'var(--border)'};padding:1px 5px;border-radius:2px;">#${r.car}</span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${r.driver}</span>
+          </div>
+          <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${r.team}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1;">${r.time}</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${r.pos===1?'var(--yellow)':'var(--muted)'};margin-top:3px;">${r.gap}</div>
+        </div>
+      </div>`;
+    }).join('');
+    body=stream+verstappenCard+timingBtn+gridTitle+gridRows;
+  }
 
-  content.innerHTML=header+stream+verstappenCard+timingBtn+gridTitle+gridRows;
+  content.innerHTML=header+subBar+body;
   setStats(`P${v.qualifying.pos}`,`#${v.car}`,ph.phase.toUpperCase(),v.qualifying.time);
   startN24Timer();
 }
