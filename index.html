@@ -180,6 +180,9 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
   <div class="series-tab" onclick="switchSeries('wrc')"><div class="series-dot"></div>WRC</div>
   <div class="series-tab" onclick="switchSeries('indycar')"><div class="series-dot"></div>INDYCAR</div>
   <div class="series-tab" onclick="switchSeries('gt3')"><div class="series-dot"></div>GT3/WEC</div>
+  <!-- N24 TEMPORARY (DELETE AFTER MAY 17 2026) -->
+  <div class="series-tab" onclick="switchSeries('n24')"><div class="series-dot" id="n24-dot"></div>N24</div>
+  <!-- END N24 TEMPORARY -->
 </div>
 <div class="f1-submenu" id="f1-submenu" style="display:none;">
   <div class="f1-sub-tab live-tab active" onclick="switchF1Tab('live')" id="tab-live">⬤ LIVE</div>
@@ -1657,7 +1660,7 @@ function renderF1Schedule(){
 function switchSeries(s){
   track('tab:series',{series:s});
   currentSeries=s;
-  document.querySelectorAll('.series-tab').forEach((t,i)=>t.classList.toggle('active',['schedule','f1','nascar','motogp','wrc','indycar','gt3'][i]===s));
+  document.querySelectorAll('.series-tab').forEach((t,i)=>t.classList.toggle('active',['schedule','f1','nascar','motogp','wrc','indycar','gt3','n24'][i]===s));
   // Toggle the right submenu and tier bar
   document.getElementById('f1-submenu').style.display=s==='f1'?'flex':'none';
   document.getElementById('nascar-submenu').style.display=s==='nascar'?'flex':'none';
@@ -1665,6 +1668,7 @@ function switchSeries(s){
   if(s==='schedule'){renderSchedule();return;}
   if(s==='f1'){renderF1();return;}
   if(s==='nascar'){renderNascar();return;}
+  if(s==='n24'){renderN24();return;} // N24 TEMPORARY (DELETE AFTER MAY 17 2026)
   // All other series — placeholder
   document.getElementById('main-content').innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">${s.toUpperCase()} Coming Soon</div><div class="state-sub">F1 and NASCAR are live now. More series launching soon.</div></div>`;
   setStats('—','—',s.toUpperCase(),'—');
@@ -1766,11 +1770,163 @@ function refresh(){
   p.finally(()=>btn.classList.remove('spinning'));
 }
 
+// ── N24 TEMPORARY (DELETE AFTER MAY 17 2026) ─────────────────────────────────
+// Nürburgring 24 Hours 2026 view. Race window: 2026-05-16T13:00:00Z → 2026-05-17T13:00:00Z.
+// To remove: delete this block plus the matching markers in:
+//   - the .series-bar HTML (the N24 tab)
+//   - switchSeries (the if(s==='n24') line)
+// Search the file for "N24 TEMPORARY" to find every site.
+const N24_START_UTC='2026-05-16T13:00:00Z';
+const N24_END_UTC='2026-05-17T13:00:00Z';
+const N24_STREAM_CHANNEL='UCKgMzHVA7nsDsDEKKMc9bKA';
+const N24_TIMING_URL='https://www.24h-rennen.de/en/live-en/';
+
+// Verstappen Racing entry — Wikipedia + ESPN verified.
+const N24_VERSTAPPEN={
+  car:'3',
+  team:'Verstappen Racing',
+  operator:'Winward Racing',
+  carModel:'Mercedes-AMG GT3 Evo',
+  drivers:['Max Verstappen','Lucas Auer','Daniel Juncadella','Jules Gounon'],
+  qualifying:{pos:4,time:'8:12.005',driver:'Juncadella',session:'TQ3'},
+};
+
+// Top Qualifying 3 starting grid, sourced from PlanetF1 (verified 2026-05-16).
+// This is the starting grid, not live race order. Once the race starts use the
+// "Open Live Timing" button to see live positions.
+const N24_GRID=[
+  {pos:1, car:'84', team:'Red Bull Team ABT',     driver:'Engstler',         time:'8:11.123', gap:'POLE'},
+  {pos:2, car:'130',team:'Red Bull Team ABT',     driver:'Mapelli',          time:'8:11.468', gap:'+0.345'},
+  {pos:3, car:'16', team:'Scherer Sport PHX',     driver:'Haase',            time:'8:11.984', gap:'+0.861'},
+  {pos:4, car:'3',  team:'Verstappen Racing',     driver:'Juncadella',       time:'8:12.005', gap:'+0.882', highlight:true},
+  {pos:5, car:'45', team:'REALIZE KONDO RACING',  driver:'Neubauer',         time:'8:12.221', gap:'+1.098'},
+  {pos:6, car:'7',  team:'Konrad Motorsport',     driver:'Paul Franz Konrad',time:'8:12.256', gap:'+1.133'},
+  {pos:7, car:'64', team:'HRT Ford Racing',       driver:'Stippler',         time:'8:13.676', gap:'+2.553'},
+  {pos:8, car:'911',team:'Manthey Racing',        driver:'Preining',         time:'8:13.939', gap:'+2.816'},
+  {pos:9, car:'1',  team:'ROWE RACING',           driver:'Marciello',        time:'8:14.256', gap:'+3.133'},
+  {pos:10,car:'47', team:'KCMG',                  driver:'Pittard',          time:'8:14.627', gap:'+3.504'},
+  {pos:11,car:'34', team:'Walkenhorst Motorsport',driver:'Thiim',            time:'8:15.250', gap:'+4.127'},
+  {pos:12,car:'67', team:'HRT Ford Racing',       driver:'Vervisch',         time:'8:16.144', gap:'+5.021'},
+];
+
+function n24Phase(){
+  const now=Date.now();
+  const start=new Date(N24_START_UTC).getTime();
+  const end=new Date(N24_END_UTC).getTime();
+  const pad=n=>String(n).padStart(2,'0');
+  if(now<start){
+    const d=start-now;
+    const days=Math.floor(d/86400000),hrs=Math.floor((d%86400000)/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);
+    const label=days>0?`${days}D ${pad(hrs)}:${pad(mins)}:${pad(secs)}`:`${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+    return{phase:'pre',label,sub:'TO GREEN FLAG',color:'var(--yellow)'};
+  }
+  if(now<end){
+    const d=now-start;
+    const hrs=Math.floor(d/3600000),mins=Math.floor((d%3600000)/60000),secs=Math.floor((d%60000)/1000);
+    return{phase:'live',label:`+${pad(hrs)}:${pad(mins)}:${pad(secs)}`,sub:'ELAPSED',color:'var(--green)'};
+  }
+  return{phase:'post',label:'FINISHED',sub:'24 HOURS COMPLETE',color:'var(--muted)'};
+}
+
+let n24Timer=null;
+function startN24Timer(){
+  if(n24Timer)return;
+  // Also light up the series-bar dot if race is live.
+  const updateDot=()=>{
+    const dot=document.getElementById('n24-dot');
+    if(dot)dot.classList.toggle('live',n24Phase().phase==='live');
+  };
+  updateDot();
+  n24Timer=setInterval(()=>{
+    if(currentSeries!=='n24'){clearInterval(n24Timer);n24Timer=null;return;}
+    const ph=n24Phase();
+    const elNum=document.getElementById('n24-cd-num');
+    const elSub=document.getElementById('n24-cd-sub');
+    if(elNum){elNum.textContent=ph.label;elNum.style.color=ph.color;}
+    if(elSub)elSub.textContent=ph.sub;
+    updateDot();
+  },1000);
+}
+
+function renderN24(){
+  const content=document.getElementById('main-content');
+  const ph=n24Phase();
+  const v=N24_VERSTAPPEN;
+
+  const header=`<div style="background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:14px 16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;color:var(--red);text-transform:uppercase;">N24 · NÜRBURGRING 24 · NORDSCHLEIFE</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;">Sat 16 May 2026 · 15:00 CEST · 24-Hour Race</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div id="n24-cd-num" style="font-family:'Share Tech Mono',monospace;font-size:22px;color:${ph.color};line-height:1;">${ph.label}</div>
+        <div id="n24-cd-sub" style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;margin-top:3px;text-transform:uppercase;">${ph.sub}</div>
+      </div>
+    </div>
+  </div>`;
+
+  const stream=`<div style="position:relative;padding-bottom:56.25%;height:0;background:var(--bg);">
+    <iframe src="https://www.youtube.com/embed/live_stream?channel=${N24_STREAM_CHANNEL}"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen></iframe>
+  </div>`;
+
+  const verstappenCard=`<div style="background:var(--surface);border-top:1px solid var(--border);border-left:3px solid var(--red);padding:14px 16px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:var(--red);background:#1a0005;border:1px solid var(--red);padding:2px 8px;border-radius:3px;">#${v.car}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:var(--white);letter-spacing:0.04em;">${v.team.toUpperCase()}</div>
+        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:2px;">${v.carModel} · operated by ${v.operator}</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--text);margin-top:8px;line-height:1.4;">${v.drivers.join(' · ')}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;">QUAL</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--yellow);line-height:1;">P${v.qualifying.pos}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;">${v.qualifying.time}</div>
+      </div>
+    </div>
+  </div>`;
+
+  const timingBtn=`<a href="${N24_TIMING_URL}" target="_blank" rel="noopener" onclick="track('n24:open-timing')" style="display:block;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 16px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;color:var(--yellow);text-transform:uppercase;">⤴ Open Live Timing on 24h-rennen.de</a>`;
+
+  const gridTitle=`<div class="section-title"><span>${ph.phase==='pre'?'Starting Grid · TQ3':'Starting Grid · TQ3'}</span><span>${ph.phase==='pre'?'Top 12 of '+N24_GRID.length:'Race underway — tap timing for live order'}</span></div>`;
+  const gridRows=N24_GRID.map(r=>{
+    const posColor=r.pos===1?'var(--yellow)':r.pos<=3?'var(--white)':r.highlight?'var(--red)':'var(--muted)';
+    return`<div class="race-item" style="${r.highlight?'background:#1a0005;border-left:2px solid var(--red);':''}">
+      <div style="width:36px;text-align:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:${posColor};">P${r.pos}</div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:${r.highlight?'var(--red)':'var(--text)'};background:${r.highlight?'#1a0005':'var(--surface2)'};border:1px solid ${r.highlight?'var(--red)':'var(--border)'};padding:1px 5px;border-radius:2px;">#${r.car}</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${r.driver}</span>
+        </div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${r.team}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1;">${r.time}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${r.pos===1?'var(--yellow)':'var(--muted)'};margin-top:3px;">${r.gap}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  content.innerHTML=header+stream+verstappenCard+timingBtn+gridTitle+gridRows;
+  setStats(`P${v.qualifying.pos}`,`#${v.car}`,ph.phase.toUpperCase(),v.qualifying.time);
+  startN24Timer();
+}
+// ── END N24 TEMPORARY ────────────────────────────────────────────────────────
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 // Default to the SCHEDULE landing page. switchSeries handles hiding the F1/NASCAR
 // submenu bars (which are display:flex by default in CSS).
 switchSeries('schedule');
 setInterval(()=>{if(currentSeries==='f1'&&currentF1Tab==='live'&&isLive)renderLive();},30000);
+// N24 TEMPORARY (DELETE AFTER MAY 17 2026): light up the N24 dot in the series bar if the race is live, even before the user opens the tab.
+{const d=document.getElementById('n24-dot');if(d&&n24Phase().phase==='live')d.classList.add('live');}
 </script>
 <!-- Vercel Web Analytics: cookieless pageviews + custom events.
      Init stub creates window.va as a queue-pushing shim; the deferred
