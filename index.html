@@ -174,7 +174,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 </div>
 <div class="series-bar">
   <div class="series-tab active" onclick="switchSeries('schedule')">SCHEDULE</div>
-  <div class="series-tab" onclick="switchSeries('f1')"><div class="series-dot live"></div>F1</div>
+  <div class="series-tab" onclick="switchSeries('f1')"><div class="series-dot"></div>F1</div>
   <div class="series-tab" onclick="switchSeries('nascar')"><div class="series-dot"></div>NASCAR</div>
   <div class="series-tab" onclick="switchSeries('motogp')"><div class="series-dot"></div>MOTOGP</div>
   <div class="series-tab" onclick="switchSeries('wrc')"><div class="series-dot"></div>WRC</div>
@@ -1983,13 +1983,50 @@ function renderN24(){
 }
 // ── END N24 TEMPORARY ────────────────────────────────────────────────────────
 
+// ── LIVE DOTS ─────────────────────────────────────────────────────────────────
+// Lights up each series-bar dot only when that series has a real live session.
+// Sources, per tab:
+//   - F1: OpenF1 /sessions, gated on being within ±2 days of a NEXT_RACES entry
+//         so we don't hit their API on idle weekdays.
+//   - NASCAR: date-based heuristic — today matches a NASCAR_CUP_SCHEDULE entry
+//             AND we're inside the 17:00–23:00 UTC window (covers any Cup race).
+//             No public live API for NASCAR; this is the best signal we have.
+//   - N24:    reads n24Phase() if the temp module is present.
+// Other tabs (motogp/wrc/indycar/gt3): no data source, stay dim.
+async function updateLiveDots(){
+  const setDot=(sel,on)=>{const el=document.querySelector(sel);if(el)el.classList.toggle('live',!!on);};
+  const now=new Date();
+
+  // F1 — only query OpenF1 if we're within ±2 days of a NEXT_RACES entry.
+  let f1Live=false;
+  const inF1Weekend=NEXT_RACES.some(r=>Math.abs(now.getTime()-new Date(r.date+'T13:00:00Z').getTime())/86400000<=2);
+  if(inF1Weekend){
+    try{
+      const sessions=await fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026').then(r=>r.json());
+      f1Live=sessions.some(s=>new Date(s.date_start)<=now&&new Date(s.date_end)>=now);
+    }catch(e){/* network failure — leave f1Live=false */}
+  }
+  setDot('.series-tab[onclick*="\'f1\'"] .series-dot',f1Live);
+  isLive=f1Live;
+
+  // NASCAR — today is a race day AND we're in the race-window.
+  const todayUTC=now.toISOString().slice(0,10);
+  const todayRace=NASCAR_CUP_SCHEDULE.find(r=>r.date===todayUTC);
+  const nascarLive=!!(todayRace&&now>=new Date(todayRace.date+'T17:00:00Z')&&now<=new Date(todayRace.date+'T23:00:00Z'));
+  setDot('.series-tab[onclick*="\'nascar\'"] .series-dot',nascarLive);
+
+  // N24 TEMPORARY (DELETE AFTER MAY 17 2026): dot follows race phase.
+  const n24On=typeof n24Phase==='function'&&n24Phase().phase==='live';
+  setDot('#n24-dot',n24On);
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 // Default to the SCHEDULE landing page. switchSeries handles hiding the F1/NASCAR
 // submenu bars (which are display:flex by default in CSS).
 switchSeries('schedule');
 setInterval(()=>{if(currentSeries==='f1'&&currentF1Tab==='live'&&isLive)renderLive();},30000);
-// N24 TEMPORARY (DELETE AFTER MAY 17 2026): light up the N24 dot in the series bar if the race is live, even before the user opens the tab.
-{const d=document.getElementById('n24-dot');if(d&&n24Phase().phase==='live')d.classList.add('live');}
+updateLiveDots();
+setInterval(updateLiveDots,60000);
 </script>
 <!-- Vercel Web Analytics: cookieless pageviews + custom events.
      Init stub creates window.va as a queue-pushing shim; the deferred
