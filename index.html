@@ -1883,6 +1883,10 @@ function refresh(){
 const N24_START_UTC='2026-05-16T13:00:00Z';
 const N24_END_UTC='2026-05-17T13:00:00Z';
 const N24_STREAM_CHANNEL='UCKgMzHVA7nsDsDEKKMc9bKA';
+// Specific race-day broadcast video ID — official channel English race feed,
+// verified embeddable 2026-05-16. Used instead of the channel auto-resolver
+// (live_stream?channel=...), which was resolving to the wrong session/language.
+const N24_RACE_VIDEO_ID='ykB5jleVsAM';
 const N24_TIMING_URL='https://www.24h-rennen.de/en/live-en/';
 
 // Verstappen Racing entry — Wikipedia + ESPN verified.
@@ -1997,16 +2001,16 @@ function switchN24Tab(tab){
   renderN24();
 }
 
-// Per-car onboard video IDs from the official ADAC RAVENOL 24h Nürburgring
-// channel (UCKgMzHVA7nsDsDEKKMc9bKA). Each verified via oEmbed + embed
-// playability on 2026-05-16. Only cars in N24_GRID get expandable rows;
-// cars without an entry here render as plain rows (no LIVE FEED affordance).
+// Per-car onboard video IDs. Updated 2026-05-16 mid-race after the original
+// pre-race onboard streams (X2Icmd1PXOU / xiw4y2W71wA / chfYT_QM59k /
+// uofChxeVADU / Keqjx5zqeDE) all stopped working — likely because they were
+// pre-race holding streams that ended once the race went green, and the
+// channel started fresh race-day streams under new video IDs.
+// #3 has a verified replacement (the official combined race+onboard upload);
+// for #1, #16, #67, #911 I couldn't find verified race-day replacements,
+// so those rows fall back to the non-expandable plain-row state.
 const N24_ONBOARDS={
-  '1':   'X2Icmd1PXOU',  // ROWE RACING (BMW M4 GT3)
-  '3':   'Keqjx5zqeDE',  // Verstappen Racing (Mercedes-AMG GT3 Evo)
-  '16':  'xiw4y2W71wA',  // Scherer Sport PHX (Audi R8 LMS GT3 evo II)
-  '67':  'chfYT_QM59k',  // HRT Ford Racing (Ford Mustang GT3)
-  '911': 'uofChxeVADU',  // Manthey (Porsche 911 GT3 R)
+  '3': 'McQfO3FbXWQ',  // Verstappen Racing — race-day combined feed (verified 2026-05-16)
 };
 
 // Currently expanded car number (string) or null. Only one at a time so we
@@ -2111,7 +2115,7 @@ function renderN24(){
     `).join('');
   } else {
     const stream=`<div style="position:relative;padding-bottom:56.25%;height:0;background:var(--bg);">
-      <iframe src="https://www.youtube.com/embed/live_stream?channel=${N24_STREAM_CHANNEL}"
+      <iframe src="https://www.youtube.com/embed/${N24_RACE_VIDEO_ID}"
               style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
               allow="autoplay; encrypted-media; picture-in-picture"
               allowfullscreen></iframe>
