@@ -64,7 +64,7 @@ node verify-nascar.js
 
 Report the output before declaring the change done. If a check fails, **fix it before pushing**. Never push broken data.
 
-> **Status:** these scripts do not yet exist as of 2026-05-15. Create them before the next round of data updates. The specs above are their requirements.
+> **Status:** both scripts exist at the repo root as of 2026-05-16 and pass against current data. Run them before declaring any F1 or NASCAR data change done.
 
 ## Git workflow
 
@@ -268,7 +268,6 @@ The function is generic over series via a `ctx` object. F1 uses default ctx; NAS
 
 ## What's missing / known limitations
 
-- **`verify.js` and `verify-nascar.js` are specified but not yet implemented.** See Automated checks. Build them before the next data update.
 - No persistence (no localStorage, no service worker — despite the `apple-mobile-web-app-*` meta tags suggesting PWA intent).
 - No tests, no linting, no type checking.
 - MotoGP / WRC / IndyCar / GT3 tabs are inert placeholders.
