@@ -83,6 +83,7 @@ Architectural decisions made and the reasoning behind them. Do not propose rever
 - **"Off-air" live view over error states.** When no session is on track (the common case), the LIVE tab shows the next-race banner plus the most recent race recap — not an error screen. Friendlier and more useful.
 - **Real data only, ever.** No mock data, no `Math.random()` filler, no Lorem ipsum stand-ins. See cardinal rule. Worth restating because it's load-bearing.
 - **SCHEDULE as default landing tab.** Avoids dropping users into F1 specifically; the upcoming-races view is series-neutral and answers the most common question ("what's next?") immediately.
+- **Vercel Web Analytics over alternatives** (Plausible, GA4, self-hosted). Native integration (no DNS lookup, same-origin script path survives more ad blockers, edge-served), cookieless by default so no consent banner, zero extra dependencies. Pageviews work on Hobby; custom events require Pro+. See Analytics section for the event taxonomy.
 
 ## Current season state (as of 2026-05-15)
 
@@ -98,6 +99,52 @@ When you update the hardcoded constants past these rounds, also update this sect
 - **Domains**: `traxstat.com`, `traxstat.app`, `traxstat.live` (all point to the same deployment)
 - **Build**: none — Vercel serves `index.html` as a static file. Deploy takes ~30 s from push to live.
 - To ship a change: edit `index.html`, commit, push. That's the whole pipeline.
+
+## Analytics
+
+We use **Vercel Web Analytics** for pageview + custom event tracking. Cookieless and GDPR-compliant — no consent banner required.
+
+### How it's wired
+
+- **Init stub + deferred loader** at the bottom of `<body>` in `index.html`:
+  ```html
+  <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  ```
+  Same-origin path (no third-party DNS, no CORS) and Vercel auto-rewrites it from the edge once Analytics is enabled in the dashboard.
+- **`track(name, data)` helper** lives near the top of the script section (just after `setStats`). Fail-silent: if `window.va` isn't a function (ad-blocked, network failure, CSP), the call is a no-op. The site never breaks when analytics is unavailable.
+- **Pageviews** fire automatically on every page load. Custom events fire on user actions via `track()` calls embedded in handlers and template-literal `onclick` attributes.
+
+### Events being tracked
+
+| Event | Data | Fired on |
+|---|---|---|
+| `tab:series` | `{ series }` | Top-level series tab click |
+| `tab:f1` | `{ tab }` | F1 sub-tab |
+| `tab:nascar` | `{ tab }` | NASCAR sub-tab |
+| `tab:nascar-series` | `{ series }` | Cup / Xfinity / Trucks toggle |
+| `race:open:f1` | `{ round }` | Tap a completed F1 race |
+| `race:open:nascar` | `{ round }` | Tap a completed NASCAR race |
+| `driver:expand:f1` | `{ name }` | Expand F1 driver championship breakdown |
+| `driver:expand:nascar` | `{ name }` | Expand NASCAR driver championship breakdown |
+| `constructor:expand:f1` | `{ name }` | Expand F1 constructor breakdown |
+| `mfr:expand:nascar` | `{ name }` | Expand NASCAR manufacturer breakdown |
+| `refresh` | — | Refresh button click |
+
+### Privacy / PII rules
+
+**Never track user PII.** This is non-negotiable:
+- **Do not track** anything identifying the visitor: IPs (Vercel handles those server-side, anonymized), email addresses, session tokens, free-text user input, URL query strings carrying personal data, anything the user typed.
+- **OK to track** which public sports figure / team / manufacturer the user clicked. Names like "Antonelli", "Mercedes", "Reddick", "Toyota" are public references the user selected from our static list — not data they provided about themselves. If a feature ever lets users *type* a name (search box, custom note), that text **must not** go into `data`.
+- Vercel's per-event constraints: `data` values must be `string | number | boolean | null` (no nested objects), 255-char limit per name / key / value, plan-dependent cap on distinct event names.
+- **Custom events require Pro plan or higher**; pageviews work on Hobby. If we ever downgrade, the `track()` calls become silent no-ops on the dashboard side but the site keeps working.
+
+### Adding a new event
+
+1. Pick a `name` using the existing `category:action[:scope]` convention (e.g. `lap:expand:f1`).
+2. Call `track('your-event-name', { ... })` at the action site. Keep `data` to flat key-value pairs of allowed types.
+3. Verify no PII can leak into `data`. If the value comes from user input rather than a static list, don't pass it.
+4. Add a row to the event table in this section, deploy, and confirm the event appears in the Vercel Analytics dashboard within a few hours.
 
 ## File layout
 
