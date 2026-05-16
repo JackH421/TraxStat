@@ -1944,6 +1944,78 @@ function switchN24Tab(tab){
   renderN24();
 }
 
+// Per-car onboard video IDs from the official ADAC RAVENOL 24h Nürburgring
+// channel (UCKgMzHVA7nsDsDEKKMc9bKA). Each verified via oEmbed + embed
+// playability on 2026-05-16. Only cars in N24_GRID get expandable rows;
+// cars without an entry here render as plain rows (no LIVE FEED affordance).
+const N24_ONBOARDS={
+  '1':   'X2Icmd1PXOU',  // ROWE RACING (BMW M4 GT3)
+  '3':   'Keqjx5zqeDE',  // Verstappen Racing (Mercedes-AMG GT3 Evo)
+  '16':  'xiw4y2W71wA',  // Scherer Sport PHX (Audi R8 LMS GT3 evo II)
+  '67':  'chfYT_QM59k',  // HRT Ford Racing (Ford Mustang GT3)
+  '911': 'uofChxeVADU',  // Manthey (Porsche 911 GT3 R)
+};
+
+// Currently expanded car number (string) or null. Only one at a time so we
+// never hold more than one onboard iframe in the DOM simultaneously.
+let selectedN24Onboard=null;
+
+function toggleN24Onboard(car){
+  track('n24:onboard-open',{car});
+  selectedN24Onboard=selectedN24Onboard===car?null:car;
+  renderN24Grid();
+}
+
+// Surgical DOM update — replaces just the #n24-grid contents so the main
+// LIVE stream iframe above it stays alive (no playback reset on expand).
+function renderN24Grid(){
+  const el=document.getElementById('n24-grid');
+  if(el)el.innerHTML=buildN24GridHTML();
+}
+
+function buildN24GridHTML(){
+  return N24_GRID.map(r=>{
+    const onboardId=N24_ONBOARDS[r.car];
+    const hasOnboard=!!onboardId;
+    const expanded=selectedN24Onboard===r.car;
+    const posColor=r.pos===1?'var(--yellow)':r.pos<=3?'var(--white)':r.highlight?'var(--red)':'var(--muted)';
+    const rowStyle=`${hasOnboard?'cursor:pointer;':''}${r.highlight?'background:#1a0005;border-left:2px solid var(--red);':''}`;
+    const rowOnclick=hasOnboard?` onclick="toggleN24Onboard('${r.car}')"`:'';
+    const liveFeedLabel=hasOnboard
+      ?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.12em;color:${expanded?'var(--red)':'var(--green)'};margin-left:6px;white-space:nowrap;">⬤ LIVE FEED</span>`
+      :'';
+    const row=`<div class="race-item" style="${rowStyle}"${rowOnclick}>
+      <div style="width:36px;text-align:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:${posColor};">P${r.pos}</div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:${r.highlight?'var(--red)':'var(--text)'};background:${r.highlight?'#1a0005':'var(--surface2)'};border:1px solid ${r.highlight?'var(--red)':'var(--border)'};padding:1px 5px;border-radius:2px;">#${r.car}</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${r.driver}</span>
+          ${liveFeedLabel}
+        </div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${r.team}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1;">${r.time}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${r.pos===1?'var(--yellow)':'var(--muted)'};margin-top:3px;">${r.gap}</div>
+      </div>
+    </div>`;
+    // Expansion panel: lazy iframe — only built when this row is the selected one.
+    const panel=(expanded&&hasOnboard)?`<div style="background:var(--bg);border-bottom:1px solid var(--border);">
+      <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;color:var(--green);">⬤ ONBOARD · #${r.car} · ${r.driver.toUpperCase()}</div>
+        <div onclick="event.stopPropagation();toggleN24Onboard('${r.car}');" style="cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);padding:0 4px;">✕</div>
+      </div>
+      <div style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
+        <iframe src="https://www.youtube.com/embed/${onboardId}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <a href="https://www.youtube.com/watch?v=${onboardId}" target="_blank" rel="noopener" onclick="event.stopPropagation();" style="display:block;padding:9px 16px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border);">Open in YouTube ↗</a>
+    </div>`:'';
+    return row+panel;
+  }).join('');
+}
+
 function renderN24(){
   const content=document.getElementById('main-content');
   const ph=n24Phase();
@@ -2009,27 +2081,9 @@ function renderN24(){
       </div>
     </div>`;
     const timingBtn=`<a href="${N24_TIMING_URL}" target="_blank" rel="noopener" onclick="track('n24:open-timing')" style="display:block;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 16px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;color:var(--yellow);text-transform:uppercase;">⤴ Open Live Timing on 24h-rennen.de</a>`;
-    const gridTitle=`<div class="section-title"><span>Starting Grid · TQ3</span><span>${ph.phase==='pre'?'Top 12 of '+N24_GRID.length:'Race underway — tap timing for live order'}</span></div>`;
-    const gridRows=N24_GRID.map(r=>{
-      const posColor=r.pos===1?'var(--yellow)':r.pos<=3?'var(--white)':r.highlight?'var(--red)':'var(--muted)';
-      return`<div class="race-item" style="${r.highlight?'background:#1a0005;border-left:2px solid var(--red);':''}">
-        <div style="width:36px;text-align:center;">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:${posColor};">P${r.pos}</div>
-        </div>
-        <div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:${r.highlight?'var(--red)':'var(--text)'};background:${r.highlight?'#1a0005':'var(--surface2)'};border:1px solid ${r.highlight?'var(--red)':'var(--border)'};padding:1px 5px;border-radius:2px;">#${r.car}</span>
-            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${r.driver}</span>
-          </div>
-          <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${r.team}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1;">${r.time}</div>
-          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${r.pos===1?'var(--yellow)':'var(--muted)'};margin-top:3px;">${r.gap}</div>
-        </div>
-      </div>`;
-    }).join('');
-    body=stream+verstappenCard+timingBtn+gridTitle+gridRows;
+    const gridTitle=`<div class="section-title"><span>Starting Grid · TQ3</span><span>${ph.phase==='pre'?'Tap ⬤ LIVE FEED to open onboard':'Tap ⬤ LIVE FEED to open onboard'}</span></div>`;
+    const grid=`<div id="n24-grid">${buildN24GridHTML()}</div>`;
+    body=stream+verstappenCard+timingBtn+gridTitle+grid;
   }
 
   content.innerHTML=header+subBar+body;
