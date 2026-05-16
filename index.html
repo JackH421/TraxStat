@@ -240,6 +240,15 @@ function fmtDate(ds){return new Date(ds+'T12:00:00Z').toLocaleDateString('en-US'
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function setStats(a,b,c,d){['stat-1','stat-2','stat-3','stat-4'].forEach((id,i)=>document.getElementById(id).textContent=[a,b,c,d][i]);}
 
+// Vercel Web Analytics — fail-silent custom event tracking.
+// window.va is initialized by the inline stub at the bottom of <body>;
+// the deferred script.js replaces it with the real implementation and
+// drains the queue. Safe to call before script.js loads or if blocked.
+function track(name,data){
+  if(typeof window.va!=='function')return;
+  try{window.va('event',data?{name,data}:{name});}catch(e){/* never break the app */}
+}
+
 // Country flags by nationality
 const NAT_FLAGS={'British':'🇬🇧','German':'🇩🇪','Spanish':'🇪🇸','Finnish':'🇫🇮','French':'🇫🇷','Australian':'🇦🇺','Dutch':'🇳🇱','Monegasque':'🇲🇨','Mexican':'🇲🇽','Canadian':'🇨🇦','Japanese':'🇯🇵','Chinese':'🇨🇳','Thai':'🇹🇭','Argentine':'🇦🇷','Italian':'🇮🇹','Danish':'🇩🇰','Brazilian':'🇧🇷','American':'🇺🇸','New Zealander':'🇳🇿','Swiss':'🇨🇭','Belgian':'🇧🇪','Austrian':'🇦🇹','Swedish':'🇸🇪'};
 const driverFlag=nat=>NAT_FLAGS[nat]||'🏳️';
@@ -706,6 +715,7 @@ function closeLaps(){
 }
 
 async function selectRace(round){
+  track('race:open:f1',{round:parseInt(round)});
   selectedRace={round};
   selectedDriver=null;
   await renderRaceSelector();
@@ -823,7 +833,7 @@ async function renderDrivers(){
       const isSelected=selectedDriverChamp===name;
       const breakdown=isSelected?renderDriverBreakdown(name,team,pts):'';
       return`<div>
-        <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--red);':''}" onclick="selectedDriverChamp=selectedDriverChamp==='${name}'?null:'${name}';renderDrivers();">
+        <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--red);':''}" onclick="track('driver:expand:f1',{name:'${name}'});selectedDriverChamp=selectedDriverChamp==='${name}'?null:'${name}';renderDrivers();">
           <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
           <div class="flag-cell">${flag}</div>
           <div>
@@ -951,7 +961,7 @@ async function renderConstructors(){
       const isSelected=selectedConstructorChamp===name;
       const breakdown=isSelected?renderConstructorBreakdown(name,pts):'';
       return`<div>
-        <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${tc(name)};`:''}" onclick="selectedConstructorChamp=selectedConstructorChamp==='${name}'?null:'${name}';renderConstructors();">
+        <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${tc(name)};`:''}" onclick="track('constructor:expand:f1',{name:'${name}'});selectedConstructorChamp=selectedConstructorChamp==='${name}'?null:'${name}';renderConstructors();">
           <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
           <div class="flag-cell">${flag}</div>
           <div>
@@ -1391,6 +1401,7 @@ function buildNascarRaceDetailHTML(round){
 }
 
 function selectNascarRace(round){
+  track('race:open:nascar',{round});
   selectedNascarRace=selectedNascarRace&&selectedNascarRace.round===round?null:{round};
   renderNascarRaces();
 }
@@ -1415,7 +1426,7 @@ function renderNascarDrivers(){
     const posColor=d.pos===1?'var(--yellow)':d.pos<=3?'var(--green)':inChase?'var(--text)':'var(--muted)';
     return`<div>
       ${isCutline?'':''}
-      <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--yellow);':''}" onclick="selectedNascarDriverChamp=selectedNascarDriverChamp==='${d.driver}'?null:'${d.driver}';renderNascarDrivers();">
+      <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--yellow);':''}" onclick="track('driver:expand:nascar',{name:'${d.driver}'});selectedNascarDriverChamp=selectedNascarDriverChamp==='${d.driver}'?null:'${d.driver}';renderNascarDrivers();">
         <div class="champ-pos" style="color:${posColor}">${d.pos}</div>
         <div class="flag-cell" style="color:${nascarMfrColor(info.mfr)};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">#${info.num}</div>
         <div>
@@ -1487,7 +1498,7 @@ function renderNascarMfrs(){
     const isSelected=selectedNascarMfrChamp===m.mfr;
     const breakdown=isSelected?renderNascarMfrBreakdown(m):'';
     return`<div>
-      <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${nascarMfrColor(m.mfr)};`:''}" onclick="selectedNascarMfrChamp=selectedNascarMfrChamp==='${m.mfr}'?null:'${m.mfr}';renderNascarMfrs();">
+      <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${nascarMfrColor(m.mfr)};`:''}" onclick="track('mfr:expand:nascar',{name:'${m.mfr}'});selectedNascarMfrChamp=selectedNascarMfrChamp==='${m.mfr}'?null:'${m.mfr}';renderNascarMfrs();">
         <div class="champ-pos" style="color:${m.pos===1?'var(--yellow)':m.pos===2?'#c0c0c0':'#cd7f32'}">${m.pos}</div>
         <div class="flag-cell" style="color:${nascarMfrColor(m.mfr)};font-size:18px;">●</div>
         <div>
@@ -1579,6 +1590,7 @@ function renderNascarSchedule(){
 }
 
 function switchNascarTab(tab){
+  track('tab:nascar',{tab});
   currentNascarTab=tab;
   selectedNascarRace=null;
   selectedNascarDriverChamp=null;
@@ -1589,6 +1601,7 @@ function switchNascarTab(tab){
 }
 
 function switchNascarSeries(s){
+  track('tab:nascar-series',{series:s});
   currentNascarSeries=s;
   selectedNascarRace=null;
   selectedNascarDriverChamp=null;
@@ -1642,6 +1655,7 @@ function renderF1Schedule(){
 }
 
 function switchSeries(s){
+  track('tab:series',{series:s});
   currentSeries=s;
   document.querySelectorAll('.series-tab').forEach((t,i)=>t.classList.toggle('active',['schedule','f1','nascar','motogp','wrc','indycar','gt3'][i]===s));
   // Toggle the right submenu and tier bar
@@ -1730,6 +1744,7 @@ function renderSchedule(){
 }
 
 function switchF1Tab(tab){
+  track('tab:f1',{tab});
   currentF1Tab=tab;
   selectedRace=null;
   selectedDriver=null;
@@ -1741,6 +1756,7 @@ function switchF1Tab(tab){
 }
 
 function refresh(){
+  track('refresh');
   cachedResults={};cachedStandings=null;cachedConstructors=null;cachedLaps={};cachedFastestLaps={};
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
@@ -1756,5 +1772,12 @@ function refresh(){
 switchSeries('schedule');
 setInterval(()=>{if(currentSeries==='f1'&&currentF1Tab==='live'&&isLive)renderLive();},30000);
 </script>
+<!-- Vercel Web Analytics: cookieless pageviews + custom events.
+     Init stub creates window.va as a queue-pushing shim; the deferred
+     script.js (same-origin, no third-party DNS) replaces it with the
+     real implementation and drains buffered calls. See CLAUDE.md
+     "Analytics" section for the event taxonomy. -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
