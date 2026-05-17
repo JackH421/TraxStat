@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-// verify-nascar.js — NASCAR Cup data integrity checks for TraxStat's
-// index.html. See CLAUDE.md "Automated checks" for spec.
+// verify-nascar.js — NASCAR Cup data integrity checks for TraxStat.
+// See CLAUDE.md "Automated checks" for spec.
 //
-// Reads index.html, extracts the four hardcoded Cup constants by
-// brace-counting their literal expressions, evals them, and runs three
+// Reads js/series/nascar.js, extracts the four hardcoded Cup constants
+// by brace-counting their literal expressions, evals them, and runs three
 // categories of consistency checks. Exit 0 on pass, 1 on any failure
 // so it composes with shell scripts and skills.
 
 const fs = require('fs');
 const path = require('path');
 
-const HTML_PATH = path.join(__dirname, 'index.html');
-const source = fs.readFileSync(HTML_PATH, 'utf8');
+const SOURCE_PATH = path.join(__dirname, 'js', 'series', 'nascar.js');
+const source = fs.readFileSync(SOURCE_PATH, 'utf8');
 
 // ── Extraction ────────────────────────────────────────────────────────────────
 // (Same brace-counting strategy as verify.js. Duplicated here on purpose —
@@ -20,7 +20,7 @@ const source = fs.readFileSync(HTML_PATH, 'utf8');
 function extractConst(src, name) {
   const re = new RegExp(`const\\s+${name}\\s*=\\s*`);
   const m = src.match(re);
-  if (!m) throw new Error(`Constant ${name} not found in index.html`);
+  if (!m) throw new Error(`Constant ${name} not found in ${SOURCE_PATH}`);
   let i = m.index + m[0].length;
   const open = src[i];
   if (open !== '{' && open !== '[') {
