@@ -1,0 +1,151 @@
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#181818;--border:#242424;
+  --text:#f0f0f0;--muted:#666;--dim:#2a2a2a;
+  --red:#e8002d;--green:#00d84a;--yellow:#ffd600;--blue:#4fc3f7;--orange:#ff6b00;--white:#fff;
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;display:flex;flex-direction:column;}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:50px;flex-shrink:0;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);}
+.logo span{color:var(--red);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.live-pill{display:flex;align-items:center;gap:5px;background:#1a0000;border:1px solid #3a0000;padding:3px 8px;border-radius:3px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.live-text{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--red);}
+.refresh-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px;}
+.refresh-btn.spinning{animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.series-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+.series-bar::-webkit-scrollbar{display:none;}
+.series-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;padding:10px 16px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
+.series-tab.active{color:var(--white);border-bottom-color:var(--red);}
+.series-dot{width:5px;height:5px;border-radius:50%;background:var(--dim);}
+.series-dot.live{background:var(--green);}
+.f1-submenu{background:var(--surface2);border-bottom:1px solid var(--border);display:flex;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.f1-submenu::-webkit-scrollbar{display:none;}
+.f1-sub-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:0.1em;padding:10px 16px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;}
+.f1-sub-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.f1-sub-tab.live-tab.active{color:var(--green);border-bottom-color:var(--green);}
+.nascar-series-bar{display:flex;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;}
+.nascar-series-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;padding:8px 14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;flex:1;text-align:center;}
+.nascar-series-tab.active{color:var(--yellow);border-bottom-color:var(--yellow);}
+.main-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.next-race-banner{background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:14px 16px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;}
+.next-race-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;color:var(--red);text-transform:uppercase;margin-bottom:4px;}
+.next-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:24px;color:var(--white);line-height:1;}
+.next-race-circuit{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);margin-top:3px;}
+.next-race-date{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px;}
+.countdown-box{text-align:right;flex-shrink:0;}
+.countdown-num{font-family:'Share Tech Mono',monospace;font-size:30px;color:var(--yellow);line-height:1;}
+.countdown-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;padding:11px 16px 7px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.race-item{display:grid;grid-template-columns:44px 1fr auto;align-items:center;padding:9px 16px;border-bottom:1px solid #151515;cursor:pointer;transition:background 0.1s;gap:12px;}
+.race-item:active,.race-item.selected{background:#1a0005;}
+.round-badge{width:36px;height:36px;border-radius:4px;background:var(--surface2);border:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.round-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;color:var(--white);line-height:1;}
+.round-label{font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+.race-item-country{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+.race-item-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--white);line-height:1.1;margin-top:1px;}
+.race-item-date{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px;}
+.winner-name{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--text);text-align:right;}
+.winner-flag{font-size:13px;text-align:right;display:block;}
+.winner-team{font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);text-align:right;}
+.results-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.results-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;color:var(--white);}
+.results-race-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.podium-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
+.podium-item{background:var(--surface2);padding:10px 8px;text-align:center;}
+.podium-pos{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--muted);margin-bottom:4px;}
+.podium-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;line-height:1;}
+.podium-flag{font-size:14px;display:block;margin-bottom:2px;}
+.podium-team{font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);margin-top:2px;}
+.podium-gap{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:3px;}
+.p1-item .podium-name{color:var(--yellow);}
+.p2-item .podium-name{color:#c0c0c0;}
+.p3-item .podium-name{color:#cd7f32;}
+.results-table-header{display:grid;grid-template-columns:28px 20px 1fr 38px 70px 64px 18px;padding:5px 10px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:5;gap:4px;}
+.rth{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;text-align:right;}
+.rth.left{text-align:left;}
+.result-row{display:grid;grid-template-columns:28px 20px 1fr 38px 70px 64px 18px;padding:7px 10px;border-bottom:1px solid #141414;align-items:center;cursor:pointer;transition:background 0.1s;gap:4px;}
+.result-row:active{background:var(--surface2);}
+.result-row.p1-row{background:#0d1a08;}
+.result-row.dnf-row{opacity:0.5;}
+.result-row.selected-driver{background:#0a0a1a;border-left:2px solid var(--blue);}
+.res-pos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;text-align:center;}
+.pos-1{color:var(--white);}
+.pos-2{color:#c0c0c0;}
+.pos-3{color:#cd7f32;}
+.pos-other{color:var(--muted);}
+.pos-dnf{color:var(--red);font-size:12px;text-align:center;}
+.flag-cell{font-size:13px;text-align:center;}
+.res-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;line-height:1.1;}
+.res-team-sm{font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:1px;}
+.res-pts{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--yellow);text-align:right;}
+.res-gap{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);text-align:right;}
+.res-gap.leader-gap{color:var(--yellow);font-family:'Barlow Condensed',sans-serif;font-size:11px;}
+.res-fastest{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);text-align:right;}
+.res-fastest.is-fastest{color:var(--green);font-weight:700;}
+.res-fl{font-size:11px;text-align:center;}
+.tire-sm{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+.tire-s{background:#c00020;color:#fff;}
+.tire-m{background:#c8a800;color:#000;}
+.tire-h{background:#e0e0e0;color:#000;}
+
+/* LAP TIMES PANEL */
+.lap-panel{background:var(--surface2);border-top:1px solid var(--border);padding:0;}
+.lap-panel-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.lap-panel-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--white);}
+.lap-panel-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:2px 6px;}
+.lap-panel-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);}
+.lap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:1px;background:var(--border);max-height:240px;overflow-y:auto;}
+.lap-cell-item{background:var(--bg);padding:7px 10px;display:flex;flex-direction:column;}
+.lap-num{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px;}
+.lap-time{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--text);}
+.lap-time.fastest-lap{color:var(--green);}
+.lap-time.slow-lap{color:var(--orange);}
+.lap-pos{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);margin-top:1px;}
+.lap-loading{padding:20px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted);}
+
+/* CHAMPIONSHIP */
+.champ-row{display:grid;grid-template-columns:28px 20px 1fr 60px 52px;padding:8px 14px;border-bottom:1px solid #141414;align-items:center;}
+.champ-pos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--muted);text-align:center;}
+.champ-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;}
+.champ-team-sm{font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);}
+.champ-pts{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--yellow);text-align:right;}
+.champ-gap{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);text-align:right;}
+
+/* LIVE TIMING */
+.timing-header-row{display:grid;grid-template-columns:32px 36px 1fr 70px 80px 56px;padding:5px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;}
+.th{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;text-align:right;}
+.th.left{text-align:left;}
+.driver-row{display:grid;grid-template-columns:32px 36px 1fr 70px 80px 56px;padding:7px 12px;border-bottom:1px solid #141414;align-items:center;}
+.driver-row.p1-live{background:#0d1a08;}
+.pos-cell{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;text-align:center;}
+.team-color-bar{width:3px;height:28px;border-radius:2px;margin:0 auto;}
+.d-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.02em;line-height:1.1;}
+.d-team{font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);margin-top:1px;}
+.gap-cell{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);text-align:right;}
+.gap-leader-cell{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--yellow);text-align:right;letter-spacing:0.05em;}
+.lap-cell{font-family:'Share Tech Mono',monospace;font-size:12px;text-align:right;}
+.lap-fastest{color:var(--green);}
+.lap-normal{color:var(--text);}
+.lap-pit{color:var(--orange);}
+.tire-cell{display:flex;align-items:center;justify-content:flex-end;gap:3px;}
+.tire-badge{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.tire-laps{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);flex-shrink:0;}
+.stat-box{background:var(--surface);padding:8px 10px;}
+.stat-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px;}
+.stat-val{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--text);}
+.stat-val.green{color:var(--green);}
+.stat-val.yellow{color:var(--yellow);}
+.state-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 20px;text-align:center;}
+.state-icon{font-size:32px;opacity:0.4;}
+.state-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--text);}
+.state-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px;}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:13px;padding:9px 16px;border-radius:20px;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:100;}
+.toast.show{opacity:1;}
+.spin-inline{display:inline-block;animation:spin 1s linear infinite;}
+.sprint-tag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;letter-spacing:0.1em;background:var(--orange);color:#000;padding:1px 4px;border-radius:2px;margin-left:4px;vertical-align:middle;}
