@@ -2154,15 +2154,57 @@ const N24_VERSTAPPEN={
 
 // Top-20 final classification. Top-20 only — full classification (P21+, lap
 // counts, gaps, fastest laps, grid positions) pending official ADAC PDF.
-const N24_2026_RESULTS=[];
+// Sources verified 2026-05-17: RacingNews365 (top-20 table), dailysportscar.com,
+// Wikipedia entry list (car make/model + class), motorsport-total.com.
+const N24_2026_RESULTS=[
+  {pos:1,  car:'80',  team:'Mercedes-AMG Team RAVENOL',           carModel:'Mercedes-AMG GT3 Evo',             cls:'SP9 Pro',    drivers:['Engel','Stolz','Schiller','Martin'],                 classWin:true,  note:null},
+  {pos:2,  car:'84',  team:'Red Bull Team ABT',                   carModel:'Lamborghini Huracán GT3 Evo 2',    cls:'SP9 Pro',    drivers:['Engstler','Bortolotti','Niederhauser'],              classWin:false, note:'(started P1)'},
+  {pos:3,  car:'34',  team:'Walkenhorst Motorsport',              carModel:'Aston Martin Vantage AMR GT3 Evo', cls:'SP9 Pro',    drivers:['Krognes','Drudi','Thiim','Fernandez Laser'],         classWin:false, note:null},
+  {pos:4,  car:'99',  team:'ROWE Racing',                         carModel:'BMW M4 GT3 Evo',                   cls:'SP9 Pro',    drivers:['Harper','Hesse','S. van der Linde','D. Vanthoor'],   classWin:false, note:null},
+  {pos:5,  car:'81',  team:'Schubert Motorsport',                 carModel:'BMW M3 Touring 24H',               cls:'SP-X',       drivers:['Klingmann','de Phillippi','Verhagen','de Wilde'],    classWin:true,  note:null},
+  {pos:6,  car:'24',  team:'Lionspeed GP',                        carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro',    drivers:['Heinrich','L. Vanthoor','Feller'],                   classWin:false, note:null},
+  {pos:7,  car:'67',  team:'HRT Ford Racing',                     carModel:'Ford Mustang GT3 Evo',             cls:'SP9 Pro',    drivers:['Olsen','Mies','Vervisch','Stippler'],                classWin:false, note:null},
+  {pos:8,  car:'54',  team:'Dinamic GT',                          carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro',    drivers:['Buus','Christensen','Sturm','Hartog'],               classWin:false, note:null},
+  {pos:9,  car:'77',  team:'Schubert Motorsport',                 carModel:'BMW M4 GT3 Evo',                   cls:'SP9 Pro',    drivers:['Wittmann','Eng','Weerts','Frijns'],                  classWin:false, note:null},
+  {pos:10, car:'48',  team:'48LOSCH Motorsport by Black Falcon',  carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro-Am', drivers:['"Daan Arrow"','Assenheimer','T. Müller','Pereira'],  classWin:false, note:null},
+  {pos:11, car:'18',  team:'Lionspeed GP',                        carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro-Am', drivers:['Tilley','Hill','Kolb','(Hofer)'],                    classWin:false, note:null},
+  {pos:12, car:'123', team:'Mühlner Motorsport',                  carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro-Am', drivers:['Rump','Bünnagel','Brundle'],                         classWin:false, note:null},
+  {pos:13, car:'30',  team:'Hankook Competition',                 carModel:'Porsche 911 GT3 R (992)',          cls:'SP9 Pro-Am', drivers:['Kim','Bruins','Cho','Seefried'],                     classWin:false, note:null},
+  {pos:14, car:'4',   team:'Goroyan RT by Car Collection',        carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro-Am', drivers:['Goroyan','Kvitka','Fontana','Berthon'],              classWin:false, note:null},
+  {pos:15, car:'86',  team:'High Class Racing',                   carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro-Am', drivers:['Li','Fjordbach','Ye','King'],                        classWin:false, note:null},
+  {pos:16, car:'69',  team:'Dörr Motorsport',                     carModel:'McLaren 720S GT3 Evo',             cls:'SP9 Pro',    drivers:['Scheider','Dörr','Kirchhöfer','Glock (DSQ)'],        classWin:false, note:'Glock DSQ mid-race'},
+  {pos:17, car:'55',  team:'Dinamic GT',                          carModel:'Porsche 911 GT3 R (992.2)',        cls:'SP9 Pro',    drivers:['Beretta','Ghiretti','Sturm','Hartog'],               classWin:false, note:null},
+  {pos:18, car:'32',  team:'Toyo Tires with Ring Racing',         carModel:'Mercedes-AMG GT3 Evo',             cls:'SP9 Pro-Am', drivers:['Nakayama','Gülden','Sandtler'],                      classWin:false, note:null},
+  {pos:19, car:'900', team:'Black Falcon Team Zimmermann',        carModel:'Porsche 911 GT3 Cup (992.1)',      cls:'Cup 2-Pro',  drivers:['Hardt','Hites','Koslowski','Meijer'],                classWin:true,  note:null},
+  {pos:20, car:'902', team:'Black Falcon Team Liqui Moly',        carModel:'Porsche 911 GT3 Cup (992.1)',      cls:'Cup 2-Pro',  drivers:['Harrison','Nagelsdiek','Rennhofer','Wassertheuer'],  classWin:false, note:null},
+];
 
 // Top Qualifying 3 — pole shootout. 12 cars (positions P13+ are set by prior
 // qualifying sessions and aren't part of the pole-shootout view).
-const N24_2026_QUALIFYING=[];
+// Source verified 2026-05-17: pitdebrief.com, motorsport-total.com.
+const N24_2026_QUALIFYING=[
+  {pos:1,  car:'84', team:'Red Bull Team ABT',              driver:'Engstler',    time:'8:11.123', gap:'POLE'},
+  {pos:2,  car:'130',team:'Schaeffler Team ABT (Red Bull)', driver:'Mapelli',     time:'8:11.468', gap:'+0.345'},
+  {pos:3,  car:'16', team:'Scherer Sport PHX',              driver:'Haase',       time:'8:11.984', gap:'+0.861'},
+  {pos:4,  car:'3',  team:'Verstappen Racing',              driver:'Juncadella',  time:'8:12.005', gap:'+0.882', highlight:true},
+  {pos:5,  car:'45', team:'Realize Kondo Racing',           driver:'Neubauer',    time:'8:12.221', gap:'+1.098'},
+  {pos:6,  car:'7',  team:'Konrad Motorsport',              driver:'M. Paul',     time:'8:12.256', gap:'+1.133'},
+  {pos:7,  car:'64', team:'HRT Ford Racing',                driver:'Stippler',    time:'8:13.676', gap:'+2.553'},
+  {pos:8,  car:'911',team:'Manthey Racing',                 driver:'Preining',    time:'8:13.939', gap:'+2.816'},
+  {pos:9,  car:'1',  team:'ROWE Racing',                    driver:'Marciello',   time:'8:14.256', gap:'+3.133'},
+  {pos:10, car:'47', team:'KCMG',                           driver:'Pittard',     time:'8:14.627', gap:'+3.504'},
+  {pos:11, car:'34', team:'Walkenhorst Motorsport',         driver:'Thiim',       time:'8:15.250', gap:'+4.127'},
+  {pos:12, car:'67', team:'HRT Ford Racing',                driver:'Vervisch',    time:'8:16.144', gap:'+5.021'},
+];
 
 // Recap videos — official ADAC RAVENOL 24h Nürburgring channel and GT World
-// (official SRO channel). All embeddable; verified via oEmbed.
-const N24_2026_RECAP=[];
+// (official SRO channel). All embeddable; verified via oEmbed 2026-05-17.
+const N24_2026_RECAP=[
+  {title:'Race Highlights: Last 4 Hours',     videoId:'MZDpeHnkZSI', caption:"Official ADAC RAVENOL 24h highlights from the final 4 hours of the 2026 race — the Verstappen drama and Mercedes' first overall win since 2016."},
+  {title:'Race Highlights: First 6 Hours',    videoId:'MG2LrnmfUck', caption:"Official highlights from the opening 6 hours — chaos, crashes, and Verstappen's wet-weather charge from P10 to the lead."},
+  {title:'Verstappen Onboard at Night',       videoId:'B5IXDZlWLIU', caption:'Max Verstappen night-time onboard during Top Qualifying 2 — first time on the Nordschleife in the dark.'},
+  {title:'#80 Mercedes (Race Winner) Onboard',videoId:'diS_9fO2uQE', caption:'Live onboard of the winning #80 Mercedes-AMG Team RAVENOL — Engel, Stolz, Schiller, Martin.'},
+];
 
 // Sub-tab state. 'results' is the default (post-race classification first).
 let currentN24Tab='results';

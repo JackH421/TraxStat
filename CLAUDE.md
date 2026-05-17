@@ -131,6 +131,9 @@ We use **Vercel Web Analytics** for pageview + custom event tracking. Cookieless
 | `driver:expand:nascar` | `{ name }` | Expand NASCAR driver championship breakdown |
 | `constructor:expand:f1` | `{ name }` | Expand F1 constructor breakdown |
 | `mfr:expand:nascar` | `{ name }` | Expand NASCAR manufacturer breakdown |
+| `tab:n24` | `{ tab }` | N24 sub-tab click (results / qualifying / recap) |
+| `result:expand:n24` | `{ car }` | Expand an N24 top-20 results row |
+| `recap:open:n24` | `{ index }` | Tap an N24 recap thumbnail |
 | `refresh` | — | Refresh button click |
 
 ### Privacy / PII rules
@@ -150,7 +153,7 @@ We use **Vercel Web Analytics** for pageview + custom event tracking. Cookieless
 
 ## Temporary event views
 
-For major one-off events that don't deserve a permanent series tab (Le Mans 24, Indy 500, Bathurst 12h, Spa 24, Nürburgring 24, etc.), we add a **temporary view** that ships with the race week and gets deleted after. The Nürburgring 24 build (May 2026) established the pattern.
+For major one-off events that don't deserve a permanent series tab (Le Mans 24, Indy 500, Bathurst 12h, Spa 24, etc.), we add a **temporary view** that ships with the race week and gets deleted after. The Nürburgring 24 build (May 2026) established the pattern; it has since been converted to a permanent post-race module — see the [N24 module](#n24-module) section below.
 
 ### Marker convention
 
@@ -209,6 +212,7 @@ There is no `package.json`, no bundler, no tests, no README. `CLAUDE.md` is this
 | Schedule | Default landing — hero card for next race across all series + next 3 closest races |
 | F1      | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive per [race-weekend state machine](#f1-race-weekend-state-machine). |
 | NASCAR  | Cup fully built (results, drivers, manufacturers, schedule). Xfinity/Trucks are placeholder "coming soon" screens (`renderNascar*` functions early-return when `currentNascarSeries !== 'cup'`) |
+| N24     | Permanent post-race-only module for the 2026 Nürburgring 24 — three sub-tabs (RACE RESULTS / QUALIFYING / RECAP). See [N24 module](#n24-module). |
 | MotoGP, WRC, IndyCar, GT3/WEC | Placeholder only — `switchSeries` renders a generic "Coming Soon" state |
 
 ## F1 data sources
@@ -371,6 +375,33 @@ Entirely hardcoded — there is no NASCAR API call anywhere in the file.
 - `NASCAR_CUP_MFRS` (~1232): manufacturer wins (Toyota, Chevrolet, Ford). NASCAR no longer publishes official manufacturer points, so this tracks **wins only**.
 
 To add a completed race: append to `NASCAR_CUP_RESULTS`, then update `NASCAR_CUP_STANDINGS` totals and `NASCAR_CUP_MFRS` wins. The race list, "last race recap", and driver win history are all derived from these constants.
+
+## N24 module
+
+Permanent **post-race-only** module for the 2026 Nürburgring 24 Hours (16–17 May 2026). No countdown, no timers, no live polling, no schedule-page integration — the data is frozen at the moment the race finished. Three sub-tabs:
+
+- **RACE RESULTS** (default) — Verstappen card on top (Q4 → P38 DNF, driveshaft reason), then top-20 compact rows with tap-to-expand for full driver list + car model + class-win badge + any per-entry note.
+- **QUALIFYING** — Top Qualifying 3 pole shootout (12 cars). P1 yellow text, Verstappen Racing row (#3, P4) red border-left highlight.
+- **RECAP** — 2×2 grid of recap-video thumbnails using static `img.youtube.com/vi/{ID}/mqdefault.jpg` URLs; tap to expand into a full-width iframe + caption, one at a time.
+
+### Data constants
+
+- `N24_VERSTAPPEN` — the highlighted Verstappen Racing entry. Includes `qualifying` and `finalResult` ({position, classifiedPos, reason}).
+- `N24_2026_RESULTS` — top-20 final classification. Top-20 only — **full classification (P21+, lap counts, gaps, fastest laps, grid positions, sector splits) is pending the official ADAC PDF.** Planned future task: extend to top-30 + per-car stats once the PDF publishes.
+- `N24_2026_QUALIFYING` — TQ3 pole-shootout, 12 entries. Positions P13+ are set from prior qualifying sessions and aren't in scope for this view.
+- `N24_2026_RECAP` — 4 verified videos from the official ADAC RAVENOL 24h Nürburgring channel and GT World (official SRO channel).
+
+### State variables
+
+- `currentN24Tab` — `'results'` (default) | `'qualifying'` | `'recap'`
+- `selectedN24Entry` — car # of the expanded results row, or `null`
+- `selectedN24RecapIndex` — index of the expanded recap video, or `null` (one iframe at a time)
+
+### Verification
+
+No dedicated `verify-n24.js` script. Rationale: the three constants are a frozen snapshot, no per-race ongoing updates, no cross-constant invariants worth machine-checking. **When adding or changing recap video IDs**, run the YouTube oEmbed + embed-page check that `HARDCODED_QUALI_VIDEOS` uses (see the F1 module's QUALIFYING section). Per the cardinal rule, every other field (driver name, car number, qualifying time, class, team name) must be verified manually against the named sources before being added.
+
+Revisit a dedicated script only when the top-30 + per-car-stats expansion lands — at that point cross-checks become useful (e.g. qualifying position referenced from a results entry must exist in `N24_2026_QUALIFYING`; positions strictly ascending; laps strictly descending).
 
 ## "Off-air" live view
 
