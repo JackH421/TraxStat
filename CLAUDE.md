@@ -84,6 +84,8 @@ Architectural decisions made and the reasoning behind them. Do not propose rever
 - **Real data only, ever.** No mock data, no `Math.random()` filler, no Lorem ipsum stand-ins. See cardinal rule. Worth restating because it's load-bearing.
 - **SCHEDULE as default landing tab.** Avoids dropping users into F1 specifically; the upcoming-races view is series-neutral and answers the most common question ("what's next?") immediately.
 - **Vercel Web Analytics over alternatives** (Plausible, GA4, self-hosted). Native integration (no DNS lookup, same-origin script path survives more ad blockers, edge-served), cookieless by default so no consent banner, zero extra dependencies. Pageviews work on Hobby; custom events require Pro+. See Analytics section for the event taxonomy.
+- **F1 race-weekend state machine over a static LIVE tab.** Users want to see whatever's currently relevant — qualifying when it's published, live timing during sessions, post-race recap with diff badges after. Four states with strict precedence (`session-live > post-race > qualifying-available > between-races`) drive the LIVE tab's render path. State is cached 60 s; `?devstate=` URL param forces a state for testing. See the [F1 race weekend state machine](#f1-race-weekend-state-machine) section. Polling **proposes** diffs via badge, never modifies hardcoded data — manual approval until Session 3 automates via GitHub Action PRs.
+- **Open backlog (deferred sessions).** Session 2 = mirror the same state-machine / polling shape onto NASCAR. Session 3 = GitHub Action that watches the badge state, opens a PR with the proposed hardcoded-data update, and lets a human merge. Do not start either without explicit user direction.
 
 ## Current season state (as of 2026-05-15)
 
@@ -205,7 +207,7 @@ There is no `package.json`, no bundler, no tests, no README. `CLAUDE.md` is this
 | Series  | Status                                                                 |
 |---------|------------------------------------------------------------------------|
 | Schedule | Default landing — hero card for next race across all series + next 3 closest races |
-| F1      | Fully built — live timing, results, drivers, constructors, schedule    |
+| F1      | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive per [race-weekend state machine](#f1-race-weekend-state-machine). |
 | NASCAR  | Cup fully built (results, drivers, manufacturers, schedule). Xfinity/Trucks are placeholder "coming soon" screens (`renderNascar*` functions early-return when `currentNascarSeries !== 'cup'`) |
 | MotoGP, WRC, IndyCar, GT3/WEC | Placeholder only — `switchSeries` renders a generic "Coming Soon" state |
 
@@ -258,6 +260,105 @@ Driver-number → team for the OpenF1 live view. Notable 2026 seats baked in:
 - Haas: Bearman (87), Ocon (31)
 - Audi: Hulkenberg (27), Bortoleto (5)
 - Cadillac: Perez (11), Bottas (77)
+
+## F1 race weekend state machine
+
+The LIVE tab is adaptive — it renders one of three views depending on the current weekend state. Other F1 sub-tabs gain a yellow-dot diff badge when post-race polling detects Jolpica disagrees with our hardcoded constants.
+
+### Four states (precedence: highest wins)
+
+1. **`session-live`** — OpenF1 reports a session currently in progress (practice / qualifying / race). LIVE tab → live timing.
+2. **`post-race`** — A race in `NEXT_RACES` is past `start + 4h`, within 24h of start, and not yet in `HARDCODED_RACES`. LIVE tab → off-air recap; polling runs in background.
+3. **`qualifying-available`** — Jolpica returned non-empty qualifying for the upcoming round, and that round isn't yet hardcoded. LIVE tab → banner + compact top-10 quali + "Full Qualifying →" CTA.
+4. **`between-races`** — Default. LIVE tab → next-race banner + last-race recap.
+
+### Caching and idle-window gating
+
+- State is cached in `_f1StateCache` for 60 s. Repeated calls within a minute return the cached value.
+- OpenF1 sessions endpoint is only fetched when today is within ±3 days of a `NEXT_RACES` entry — keeps idle-week traffic to zero.
+- Jolpica qualifying endpoint is only fetched when there's an upcoming round not yet hardcoded.
+
+### `?devstate=` URL param for testing
+
+Bypasses cache and computation. Accepts `between-races` / `qualifying-available` / `session-live` / `post-race`. Any other value (or no param) falls through to the real state machine.
+
+```
+https://traxstat.com/?devstate=qualifying-available
+```
+
+### What each F1 sub-tab renders per state
+
+| Sub-tab | `between-races` | `qualifying-available` | `session-live` | `post-race` |
+|---|---|---|---|---|
+| **LIVE** | banner + last-race recap | banner + top-10 quali + CTA | OpenF1 live timing | banner + recap (polling in bg) |
+| **QUALIFYING** | most-recent quali Jolpica has data for (any round) | same | same | same |
+| **RACE RESULTS** | hardcoded races only | same | same | same + yellow `•` if diff detected |
+| **DRIVERS** | hardcoded standings | same | same | same + yellow `•` if diff |
+| **CONSTRUCTORS** | hardcoded standings | same | same | same + yellow `•` if diff |
+
+### `HARDCODED_QUALI_VIDEOS`
+
+Per-round, per-driver qualifying highlight video IDs for the QUALIFYING tab's expandable rows. Empty initially. Same verification workflow as N24 onboards.
+
+Shape:
+```js
+const HARDCODED_QUALI_VIDEOS = {
+  <roundNumber>: {
+    '<jolpicaDriverId>': 'youtubeVideoId',
+    ...
+  },
+};
+```
+
+To add per weekend:
+1. Find a YouTube video for the driver's qualifying run from the official F1, FIA, or Formula1 channels (or a reputable third-party with an embeddable upload).
+2. Verify both existence and embeddability:
+   ```sh
+   curl -sS "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=ID&format=json"
+   curl -sS "https://www.youtube.com/embed/ID" | grep -E "ytcfg.set|playerResponse|Video unavailable|EMBED_NOT_ALLOWED"
+   ```
+   oEmbed must return HTTP 200; the embed page must contain `ytcfg.set` or `playerResponse` and must **not** contain `EMBED_NOT_ALLOWED` or `Video unavailable`.
+3. Add the entry to `HARDCODED_QUALI_VIDEOS[round]` keyed by Jolpica `driverId` (e.g. `'verstappen'`, `'leclerc'`).
+
+Rows without a verified entry render as plain rows — no green LIVE FEED label, no tap-to-expand. Per the cardinal rule, never add an unverified video ID.
+
+### Post-race polling
+
+When state transitions to `'post-race'` and no poll timer is active, `startF1PostRacePolling(round)` fires. Polling proposes via badge; it **never** modifies hardcoded data.
+
+**Cadence — 35 polls over 24h:**
+- 0–60 min after race end → every 5 min (12 polls)
+- 1–24 hr after race end → every 1 hr (23 polls)
+- 24 hr+ → stop
+
+**Race-end anchor:** `determineRaceEndAnchor(round)` tries OpenF1 `session_end_time` for the race session first; falls back to `race.date + 'T13:00:00Z' + 4h` if OpenF1 doesn't have it. Once set, the anchor is locked in `localStorage` so the 35-poll sequence survives reloads.
+
+**Endpoints polled in parallel each tick:**
+- `${JOLPICA}/2026/{round}/results/?limit=30`
+- `${JOLPICA}/current/driverStandings/`
+- `${JOLPICA}/current/constructorStandings/`
+
+**`localStorage` keys:**
+- `traxstat:f1:pollStart:{round}` — race-end anchor timestamp
+- `traxstat:f1:lastPoll:{round}` — last successful poll timestamp
+- `traxstat:f1:lastResults:{round}` — JSON snapshot of last race results
+- `traxstat:f1:lastDriverStandings` — JSON snapshot
+- `traxstat:f1:lastConstructorStandings` — JSON snapshot
+- `traxstat:f1:badge:{tab}` — `'1'` when diff detected for that tab; absent when dismissed
+
+**Yellow-dot badge UI.** When `diffAndBadge` sees a JSON snapshot mismatch, it appends a small `•×` to the affected sub-tab label (RACE RESULTS / DRIVERS / CONSTRUCTORS). Two dismiss paths converge on `dismissF1Badge(tab)`:
+- **Tab visit** — tapping the affected sub-tab auto-clears the badge ("I've seen it").
+- **`×` click** — explicit dismiss without visiting. `event.stopPropagation()` prevents accidental tab switch.
+
+**`startF1PostRacePolling` trigger points** (only two — no other code path can start polling):
+1. **Init IIFE** — walks `NEXT_RACES` for any saved poll anchor still within 24h, then checks `findPostRaceRound()` for first-time post-race detection on page load.
+2. **`getF1RaceWeekendState` mid-session hook** — when state resolves to `'post-race'` and `f1PollTimer` is null. Closes the gap where a user keeps the page open across a `session-live → post-race` transition without reloading.
+
+Both paths are gated on per-round post-race conditions (within 24h of start, not yet hardcoded). `startF1PostRacePolling` is idempotent — first statement is `if(f1PollTimer)return;` — so re-entries don't stack timers.
+
+### Cardinal rule reinforcement
+
+Polling **proposes** diffs via badge. It **never** writes to `HARDCODED_RACES`, `HARDCODED_DRIVER_STANDINGS`, or `HARDCODED_CONSTRUCTOR_STANDINGS`. The user reviews the diff (console-logged on each detection) and updates the canonical constants manually. Session 3 — deferred — will automate this loop via a GitHub Action that opens a pull request when a badge fires.
 
 ## NASCAR Cup data
 
