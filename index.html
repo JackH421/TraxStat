@@ -2152,14 +2152,217 @@ const N24_VERSTAPPEN={
   },
 };
 
+// Top-20 final classification. Top-20 only — full classification (P21+, lap
+// counts, gaps, fastest laps, grid positions) pending official ADAC PDF.
+const N24_2026_RESULTS=[];
+
+// Top Qualifying 3 — pole shootout. 12 cars (positions P13+ are set by prior
+// qualifying sessions and aren't part of the pole-shootout view).
+const N24_2026_QUALIFYING=[];
+
+// Recap videos — official ADAC RAVENOL 24h Nürburgring channel and GT World
+// (official SRO channel). All embeddable; verified via oEmbed.
+const N24_2026_RECAP=[];
+
+// Sub-tab state. 'results' is the default (post-race classification first).
+let currentN24Tab='results';
+// Expanded results-row car number (string), or null. One open at a time.
+let selectedN24Entry=null;
+// Expanded recap-video index (number), or null. One iframe at a time so the
+// DOM never holds more than one YouTube embed simultaneously.
+let selectedN24RecapIndex=null;
+
+function switchN24Tab(tab){
+  track('tab:n24',{tab});
+  currentN24Tab=tab;
+  selectedN24Entry=null;
+  selectedN24RecapIndex=null;
+  renderN24();
+}
+
+function toggleN24Entry(car){
+  track('result:expand:n24',{car});
+  selectedN24Entry=selectedN24Entry===car?null:car;
+  renderN24();
+}
+
+function toggleN24Recap(i){
+  track('recap:open:n24',{index:i});
+  selectedN24RecapIndex=selectedN24RecapIndex===i?null:i;
+  renderN24();
+}
+
+function renderN24VerstappenCard(){
+  const v=N24_VERSTAPPEN, fr=v.finalResult;
+  return `<div style="background:var(--surface);border-top:1px solid var(--border);border-left:3px solid var(--red);padding:14px 16px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:var(--red);background:#1a0005;border:1px solid var(--red);padding:2px 8px;border-radius:3px;">#${v.car}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:var(--white);letter-spacing:0.04em;">${v.team.toUpperCase()}</div>
+        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:2px;">${v.carModel} · operated by ${v.operator}</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--text);margin-top:8px;line-height:1.4;">${v.drivers.join(' · ')}</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4;">${fr.reason}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;">Q${v.qualifying.pos} →</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--red);line-height:1;">P${fr.classifiedPos}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);margin-top:3px;">${fr.position}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderN24ResultsBody(){
+  const verstappenCard=renderN24VerstappenCard();
+  const title=`<div class="section-title"><span>Top 20 — full classification pending official ADAC results</span><span>${N24_2026_RESULTS.length||''} cars</span></div>`;
+
+  if(!N24_2026_RESULTS.length){
+    return verstappenCard+title+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Final Classification</div><div class="state-sub">Top-20 data lands in the next commit.</div></div>`;
+  }
+
+  const rows=N24_2026_RESULTS.map(r=>{
+    const expanded=selectedN24Entry===r.car;
+    const posColor=r.pos===1?'var(--yellow)':r.pos<=3?'var(--white)':'var(--muted)';
+    const classWinBadge=r.classWin
+      ?`<span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:0.1em;color:#000;background:var(--yellow);padding:2px 5px;border-radius:2px;white-space:nowrap;">‡ CLASS WIN</span>`
+      :'';
+    const leadDriver=r.drivers[0];
+    const moreCount=r.drivers.length-1;
+    const moreLabel=moreCount>0?`<span style="color:var(--muted);font-size:11px;">+${moreCount}</span>`:'';
+
+    const row=`<div class="race-item" style="cursor:pointer;${expanded?'background:#0a0005;':''}" onclick="toggleN24Entry('${r.car}')">
+      <div style="width:36px;text-align:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:${posColor};">P${r.pos}</div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--text);background:var(--surface2);border:1px solid var(--border);padding:1px 5px;border-radius:2px;">#${r.car}</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${leadDriver}</span>
+          ${moreLabel}
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:0.08em;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:2px;white-space:nowrap;">${r.cls}</span>
+        </div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${r.team}</div>
+      </div>
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+        ${classWinBadge}
+      </div>
+    </div>`;
+
+    const panel=expanded?`<div style="background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Drivers</div>
+      <div style="font-family:'Barlow',sans-serif;font-size:12px;color:var(--text);line-height:1.5;">${r.drivers.join(' · ')}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:8px;margin-bottom:4px;">Car</div>
+      <div style="font-family:'Barlow',sans-serif;font-size:12px;color:var(--text);line-height:1.5;">${r.carModel}</div>
+      ${r.note?`<div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--yellow);margin-top:8px;line-height:1.4;">${r.note}</div>`:''}
+    </div>`:'';
+
+    return row+panel;
+  }).join('');
+
+  return verstappenCard+title+rows;
+}
+
+function renderN24QualifyingBody(){
+  const title=`<div class="section-title"><span>Top Qualifying 3 — pole shootout (12 cars)</span><span>TQ3</span></div>`;
+
+  if(!N24_2026_QUALIFYING.length){
+    return title+`<div class="state-screen"><div class="state-icon">⏱</div><div class="state-title">TQ3 Pole Shootout</div><div class="state-sub">12-car classification lands in the next commit.</div></div>`;
+  }
+
+  const rows=N24_2026_QUALIFYING.map(r=>{
+    const posColor=r.pos===1?'var(--yellow)':r.pos<=3?'var(--white)':r.highlight?'var(--red)':'var(--muted)';
+    const rowStyle=r.highlight?'background:#1a0005;border-left:2px solid var(--red);':'';
+    return `<div class="race-item" style="${rowStyle}">
+      <div style="width:36px;text-align:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:${posColor};">P${r.pos}</div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:${r.highlight?'var(--red)':'var(--text)'};background:${r.highlight?'#1a0005':'var(--surface2)'};border:1px solid ${r.highlight?'var(--red)':'var(--border)'};padding:1px 5px;border-radius:2px;">#${r.car}</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${r.driver}</span>
+        </div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${r.team}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1;">${r.time}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${r.pos===1?'var(--yellow)':'var(--muted)'};margin-top:3px;">${r.gap}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return title+rows;
+}
+
+function renderN24RecapBody(){
+  const title=`<div class="section-title"><span>Recap highlights</span><span>${N24_2026_RECAP.length||''} videos</span></div>`;
+
+  if(!N24_2026_RECAP.length){
+    return title+`<div class="state-screen"><div class="state-icon">🎬</div><div class="state-title">Recap Highlights</div><div class="state-sub">Verified videos land in the next commit.</div></div>`;
+  }
+
+  const tiles=N24_2026_RECAP.map((v,i)=>{
+    const active=selectedN24RecapIndex===i;
+    return `<div onclick="toggleN24Recap(${i})" style="position:relative;background-image:url('https://img.youtube.com/vi/${v.videoId}/mqdefault.jpg');background-size:cover;background-position:center;background-color:#000;padding-bottom:56.25%;cursor:pointer;outline:${active?'2px solid var(--red)':'none'};outline-offset:-2px;">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:6px 8px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;color:#fff;line-height:1.15;letter-spacing:0.02em;">${v.title}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:${active?'var(--red)':'#fff'};margin-top:2px;letter-spacing:0.06em;">${active?'▶ NOW PLAYING':'▶ TAP TO PLAY'}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const grid=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);">${tiles}</div>`;
+
+  let player='';
+  if(selectedN24RecapIndex!==null && N24_2026_RECAP[selectedN24RecapIndex]){
+    const v=N24_2026_RECAP[selectedN24RecapIndex];
+    player=`<div style="background:var(--bg);">
+      <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;color:var(--red);">▶ ${v.title.toUpperCase()}</div>
+        <div onclick="toggleN24Recap(${selectedN24RecapIndex})" style="cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);padding:0 4px;">✕</div>
+      </div>
+      <div style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
+        <iframe src="https://www.youtube.com/embed/${v.videoId}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;font-family:'Barlow',sans-serif;font-size:11px;color:var(--text);line-height:1.5;">${v.caption}</div>
+    </div>`;
+  }
+
+  return title+grid+player;
+}
+
 function renderN24(){
   const content=document.getElementById('main-content');
+  const v=N24_VERSTAPPEN;
+
   const header=`<div style="background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:14px 16px;">
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;color:var(--red);text-transform:uppercase;">🇩🇪 N24 · NÜRBURGRING 24 HOURS 2026 · FINAL CLASSIFICATION</div>
     <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;">Nordschleife · 16–17 May 2026</div>
   </div>`;
-  content.innerHTML=header+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Final Classification</div><div class="state-sub">Sub-tabs coming next commit.</div></div>`;
-  setStats(`P${N24_VERSTAPPEN.finalResult.classifiedPos}`,`#${N24_VERSTAPPEN.car}`,'N24','DNF');
+
+  const pillBase="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;";
+  const activeStyle="color:var(--red);border-bottom-color:var(--red);";
+  const idleStyle="color:var(--muted);";
+  const pill=(tab,label)=>`<div onclick="switchN24Tab('${tab}')" style="${pillBase}${currentN24Tab===tab?activeStyle:idleStyle}">${label}</div>`;
+  const subBar=`<div style="background:var(--surface2);border-bottom:1px solid var(--border);display:flex;">
+    ${pill('results','Race Results')}
+    ${pill('qualifying','Qualifying')}
+    ${pill('recap','Recap')}
+  </div>`;
+
+  const body =
+    currentN24Tab==='qualifying' ? renderN24QualifyingBody() :
+    currentN24Tab==='recap'      ? renderN24RecapBody()      :
+                                   renderN24ResultsBody();
+
+  content.innerHTML=header+subBar+body;
+
+  if(currentN24Tab==='qualifying'){
+    setStats(`P${v.qualifying.pos}`,`#${v.car}`,'N24 QUAL',v.qualifying.time);
+  }else{
+    setStats(`P${v.finalResult.classifiedPos}`,`#${v.car}`,'N24',v.finalResult.position);
+  }
 }
 // ── END N24 ───────────────────────────────────────────────────────────────────
 
