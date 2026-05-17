@@ -186,10 +186,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 </div>
 <div class="f1-submenu" id="f1-submenu" style="display:none;">
   <div class="f1-sub-tab live-tab active" onclick="switchF1Tab('live')" id="tab-live">⬤ LIVE</div>
+  <div class="f1-sub-tab" onclick="switchF1Tab('qualifying')" id="tab-qualifying">QUALIFYING</div>
   <div class="f1-sub-tab" onclick="switchF1Tab('races')" id="tab-races">RACE RESULTS</div>
   <div class="f1-sub-tab" onclick="switchF1Tab('drivers')" id="tab-drivers">DRIVERS</div>
   <div class="f1-sub-tab" onclick="switchF1Tab('constructors')" id="tab-constructors">CONSTRUCTORS</div>
-  <div class="f1-sub-tab" onclick="switchF1Tab('schedule')" id="tab-schedule">SCHEDULE</div>
 </div>
 <div class="f1-submenu" id="nascar-submenu" style="display:none;">
   <div class="f1-sub-tab live-tab active" onclick="switchNascarTab('live')" id="ntab-live">⬤ LIVE</div>
@@ -1022,7 +1022,23 @@ function renderLiveOffAir(reason, ctx){
   return banner+status+recap;
 }
 
+// LIVE tab is an adaptive dispatcher: it renders one of three views based on
+// the current F1 race-weekend state. See getF1RaceWeekendState() for state logic.
 async function renderLive(){
+  const state=await getF1RaceWeekendState();
+  if(state==='session-live')return renderLiveSession();
+  if(state==='qualifying-available')return renderLiveWithQualifying();
+  // 'between-races' and 'post-race' both render the off-air view (banner + last
+  // race recap). Polling runs in background for post-race.
+  document.getElementById('live-pill').style.display='none';
+  const content=document.getElementById('main-content');
+  content.innerHTML=renderLiveOffAir(state);
+  setStats('—','—','STANDBY',state==='post-race'?'POST-RACE':'BETWEEN');
+}
+
+// Renamed: original renderLive body. Renders OpenF1 live timing when a session
+// is actively running. Called by renderLive() dispatcher when state==='session-live'.
+async function renderLiveSession(){
   const content=document.getElementById('main-content');
   content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">Connecting...</div><div class="state-sub">Fetching live F1 timing data</div></div>`;
   try{
@@ -1087,6 +1103,314 @@ async function renderLive(){
     // On connection failure show the same friendly off-air view, not a scary error screen
     content.innerHTML=renderLiveOffAir('error');
     setStats('—','—','STANDBY','R4');
+  }
+}
+
+// ─── F1 RACE WEEKEND STATE MACHINE ───────────────────────────────────────────
+// Four states with precedence: session-live > post-race > qualifying-available > between-races.
+// 60s cache so we don't hammer OpenF1/Jolpica. ?devstate= URL param forces a
+// specific state for manual testing (between-races|qualifying-available|session-live|post-race).
+let _f1StateCache=null;
+let _f1StateCacheAt=0;
+const F1_STATES=['between-races','qualifying-available','session-live','post-race'];
+
+async function getF1RaceWeekendState(){
+  const dev=new URLSearchParams(location.search).get('devstate');
+  if(dev&&F1_STATES.includes(dev))return dev;
+  if(_f1StateCache&&(Date.now()-_f1StateCacheAt)<60000)return _f1StateCache;
+  const state=await computeF1State();
+  _f1StateCache=state;_f1StateCacheAt=Date.now();
+  // Mid-session transition hook: when the state machine resolves to 'post-race'
+  // and we're not already polling, start polling. Idempotent (startF1PostRacePolling
+  // early-returns if f1PollTimer is set) and per-round-gated (findPostRaceRound
+  // returns null unless a round is actually in its post-race window). Closes the
+  // gap where a user keeps the page open through a session-live → post-race
+  // transition without reloading.
+  if(state==='post-race'&&!f1PollTimer){
+    const round=findPostRaceRound();
+    if(round!==null)startF1PostRacePolling(round);
+  }
+  return state;
+}
+
+// Returns the round number of any race in post-race window (past start+4h,
+// within 24h of start, not yet hardcoded). Returns null otherwise. Used both
+// by the state machine and the polling system, decoupled from each other.
+function findPostRaceRound(){
+  const now=Date.now();
+  const hardcoded=new Set(Object.keys(HARDCODED_RACES).map(Number));
+  for(const r of NEXT_RACES){
+    const start=new Date(r.date+'T13:00:00Z').getTime();
+    if(now>start+4*3600*1000&&now<start+24*3600*1000&&!hardcoded.has(r.round))return r.round;
+  }
+  return null;
+}
+
+async function computeF1State(){
+  const now=Date.now();
+  const hardcoded=new Set(Object.keys(HARDCODED_RACES).map(Number));
+
+  // Only check OpenF1 within ±3 days of a scheduled race — avoid idle-week traffic.
+  const inRaceWindow=NEXT_RACES.some(r=>{
+    const days=(now-new Date(r.date+'T13:00:00Z').getTime())/86400000;
+    return days>=-3&&days<=1;
+  });
+  if(inRaceWindow){
+    try{
+      const sessions=await fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026').then(r=>r.json());
+      if(sessions.some(s=>new Date(s.date_start).getTime()<=now&&new Date(s.date_end).getTime()>=now))return 'session-live';
+    }catch(e){}
+  }
+
+  // Post-race wins over qualifying-available per precedence rule.
+  if(findPostRaceRound()!==null)return 'post-race';
+
+  // Qualifying-available: Jolpica has non-empty qualifying for the upcoming round.
+  const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>now);
+  if(upcoming&&!hardcoded.has(upcoming.round)){
+    try{
+      const data=await fetch(`${JOLPICA}/2026/${upcoming.round}/qualifying/`).then(r=>r.json());
+      const q=data.MRData?.RaceTable?.Races?.[0]?.QualifyingResults;
+      if(q&&q.length>0)return 'qualifying-available';
+    }catch(e){}
+  }
+
+  return 'between-races';
+}
+
+// ─── QUALIFYING TAB ──────────────────────────────────────────────────────────
+// Per-round, per-driver qualifying highlight video IDs. Empty initially.
+// Add per weekend after verifying each ID with the oEmbed + embed-page check
+// workflow used for N24 onboards. See CLAUDE.md "HARDCODED_QUALI_VIDEOS".
+//
+// Shape:
+//   <round number>: { '<jolpica driverId>': 'youtubeVideoId', ... }
+//
+// Example (once data exists):
+//   5: {
+//     'verstappen': 'abc123def45',
+//     'leclerc':    'xyz987uvw65',
+//   },
+const HARDCODED_QUALI_VIDEOS={};
+
+let selectedQualiDriver=null;
+let _qualiDataCache=null;
+let _qualiDataCacheRound=null;
+
+function toggleQualiDriver(driverId){
+  track('f1:quali-expand',{driver:driverId});
+  selectedQualiDriver=selectedQualiDriver===driverId?null:driverId;
+  renderQualifying();
+}
+
+async function renderQualifying(){
+  const content=document.getElementById('main-content');
+  if(!_qualiDataCache){
+    content.innerHTML=`<div class="state-screen"><div class="state-icon">⟳</div><div class="state-title">Loading qualifying…</div></div>`;
+    setStats('—','—','QUAL','—');
+  }
+  // Walk rounds backward from upcoming to find the most recent with quali data.
+  let qualiData=null,qualiRound=null;
+  if(_qualiDataCache){qualiData=_qualiDataCache;qualiRound=_qualiDataCacheRound;}
+  else{
+    const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>Date.now());
+    const startRound=upcoming?upcoming.round:24;
+    for(let round=startRound;round>=1;round--){
+      try{
+        const data=await fetch(`${JOLPICA}/2026/${round}/qualifying/`).then(r=>r.json());
+        const races=data.MRData?.RaceTable?.Races;
+        const q=races?.[0]?.QualifyingResults;
+        if(q&&q.length>0){qualiData=races[0];qualiRound=round;break;}
+      }catch(e){}
+    }
+    _qualiDataCache=qualiData;_qualiDataCacheRound=qualiRound;
+  }
+
+  if(!qualiData){
+    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Qualifying Data Yet</div><div class="state-sub">Check back closer to race weekend.</div></div>`;
+    setStats('—','—','QUAL','—');return;
+  }
+
+  const results=qualiData.QualifyingResults;
+  const country=qualiData.Circuit?.Location?.country||'';
+  const header=`<div class="results-header">
+    <div class="results-race-name">${country} ${qualiData.raceName} Qualifying</div>
+    <div class="results-race-sub">${qualiData.Circuit?.circuitName||''} · Round ${qualiRound} · ${results.length} drivers${Object.keys(HARDCODED_QUALI_VIDEOS[qualiRound]||{}).length?' · ⬤ VIDEO = tap to expand':''}</div>
+  </div>`;
+
+  const videos=HARDCODED_QUALI_VIDEOS[qualiRound]||{};
+  const tableHeader=`<div style="display:grid;grid-template-columns:32px 20px 1fr 60px 60px 60px;padding:6px 10px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:5;gap:4px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;text-align:left;">POS</div>
+    <div></div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;text-align:left;">DRIVER</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;text-align:right;">Q1</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;text-align:right;">Q2</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;text-align:right;">Q3</div>
+  </div>`;
+  const rows=results.map(r=>{
+    const driverId=r.Driver?.driverId||'';
+    const videoId=videos[driverId];
+    const hasVideo=!!videoId;
+    const expanded=selectedQualiDriver===driverId;
+    const pos=parseInt(r.position);
+    const team=normalizeTeam(r.Constructor?.name||'—');
+    const flag=driverFlag(r.Driver?.nationality);
+    const name=r.Driver?.familyName||driverId;
+    const q1=r.Q1||'—',q2=r.Q2||'—',q3=r.Q3||'—';
+    const posColor=pos===1?'var(--yellow)':pos===2?'#c0c0c0':pos===3?'#cd7f32':'var(--muted)';
+    const bg=pos===1?'background:#0d1a08;':'';
+    const cursor=hasVideo?'cursor:pointer;':'';
+    const onclickAttr=hasVideo?` onclick="toggleQualiDriver('${driverId}')"`:'';
+    const videoLabel=hasVideo?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.12em;color:${expanded?'var(--red)':'var(--green)'};margin-left:6px;white-space:nowrap;">⬤ VIDEO</span>`:'';
+    const row=`<div class="race-item" style="display:grid;grid-template-columns:32px 20px 1fr 60px 60px 60px;padding:7px 10px;align-items:center;gap:4px;${cursor}${bg}"${onclickAttr}>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:${posColor};text-align:center;">${pos}</div>
+      <div class="flag-cell">${flag}</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:${tc(team)};line-height:1.1;">${name}</span>${videoLabel}
+        </div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:1px;">${team}</div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);text-align:right;">${q1}</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);text-align:right;">${q2}</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:${pos<=10?'var(--text)':'var(--muted)'};text-align:right;">${q3}</div>
+    </div>`;
+    // Lazy iframe: only built when this row is the selected one
+    const panel=(expanded&&hasVideo)?`<div style="background:var(--bg);border-bottom:1px solid var(--border);">
+      <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;color:var(--green);">⬤ QUALI VIDEO · ${name.toUpperCase()}</div>
+        <div onclick="event.stopPropagation();toggleQualiDriver('${driverId}');" style="cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);padding:0 4px;">✕</div>
+      </div>
+      <div style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
+        <iframe src="https://www.youtube.com/embed/${videoId}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener" onclick="event.stopPropagation();" style="display:block;padding:9px 16px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border);">Open in YouTube ↗</a>
+    </div>`:'';
+    return row+panel;
+  }).join('');
+
+  content.innerHTML=header+tableHeader+rows;
+  setStats(`R${qualiRound}`,qualiData.raceName.split(' ').slice(0,2).join(' '),'QUAL',`${results.length}`);
+}
+
+// LIVE tab variant: between-races banner + compact top-10 qualifying.
+async function renderLiveWithQualifying(){
+  const content=document.getElementById('main-content');
+  document.getElementById('live-pill').style.display='none';
+  const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>Date.now());
+  if(!upcoming){content.innerHTML=renderLiveOffAir('between-races');return;}
+  let quali=null;
+  try{
+    const data=await fetch(`${JOLPICA}/2026/${upcoming.round}/qualifying/`).then(r=>r.json());
+    quali=data.MRData?.RaceTable?.Races?.[0]?.QualifyingResults;
+  }catch(e){}
+  if(!quali||!quali.length){content.innerHTML=renderLiveOffAir('between-races');return;}
+  const top10=quali.slice(0,10);
+  const rows=top10.map(r=>{
+    const pos=parseInt(r.position);
+    const name=r.Driver?.familyName||'—';
+    const team=normalizeTeam(r.Constructor?.name||'—');
+    const q3=r.Q3||r.Q2||r.Q1||'—';
+    const posColor=pos===1?'var(--yellow)':pos===2?'#c0c0c0':pos===3?'#cd7f32':'var(--muted)';
+    const bg=pos===1?'background:#0d1a08;':'';
+    return`<div style="display:grid;grid-template-columns:32px 1fr 80px;padding:7px 12px;border-bottom:1px solid #141414;align-items:center;gap:6px;${bg}">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:${posColor};text-align:center;">${pos}</div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:${tc(team)};">${name}</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);">${team}</div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);text-align:right;">${q3}</div>
+    </div>`;
+  }).join('');
+  const cta=`<div onclick="switchF1Tab('qualifying')" style="background:var(--surface2);padding:12px 16px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--red);cursor:pointer;text-transform:uppercase;border-top:1px solid var(--border);">Full Qualifying →</div>`;
+  content.innerHTML=renderNextBanner()+`<div class="section-title"><span>Qualifying · Round ${upcoming.round} · Top 10</span><span>Most recent</span></div>`+rows+cta;
+  setStats('QUAL',`R${upcoming.round}`,'QUAL',`${quali.length}`);
+}
+
+// ─── POST-RACE POLLING ───────────────────────────────────────────────────────
+// On entering 'post-race' state for a round, start a setTimeout-driven poll
+// scheduler: 12 × 5min for the first hour, 23 × 1hr for hours 1-24, then stop.
+// Diffs against localStorage snapshots and surfaces a yellow-dot badge on the
+// affected sub-tab. Polling NEVER auto-modifies HARDCODED_* constants — only
+// proposes via badge. User reviews and updates manually. Session 3 will automate.
+let f1PollTimer=null;
+
+async function determineRaceEndAnchor(round){
+  const key=`traxstat:f1:pollStart:${round}`;
+  const existing=localStorage.getItem(key);
+  if(existing)return +existing;
+  const race=NEXT_RACES.find(r=>r.round===round);
+  if(!race)return null;
+  // Try OpenF1 Race session_end_time first; fall back to 13:00 UTC + 4h.
+  let anchor=null;
+  try{
+    const sessions=await fetch('https://api.openf1.org/v1/sessions?session_type=Race&year=2026').then(r=>r.json());
+    const session=sessions.find(s=>s.date_start&&s.date_start.startsWith(race.date));
+    if(session?.date_end)anchor=new Date(session.date_end).getTime();
+  }catch(e){}
+  if(!anchor)anchor=new Date(race.date+'T13:00:00Z').getTime()+4*3600*1000;
+  localStorage.setItem(key,String(anchor));
+  return anchor;
+}
+
+async function startF1PostRacePolling(round){
+  if(f1PollTimer)return;
+  const raceEnd=await determineRaceEndAnchor(round);
+  if(!raceEnd)return;
+  const tick=async()=>{
+    const elapsed=Date.now()-raceEnd;
+    if(elapsed>24*3600*1000){console.log(`F1 polling: 24h elapsed for R${round}, stopping`);f1PollTimer=null;return;}
+    try{await pollOnce(round);}catch(e){console.warn('F1 poll failed',e);}
+    const delay=elapsed<3600*1000?5*60*1000:60*60*1000;
+    f1PollTimer=setTimeout(tick,delay);
+  };
+  tick();
+}
+
+async function pollOnce(round){
+  const [resultsJson,drvJson,ctrJson]=await Promise.all([
+    fetch(`${JOLPICA}/2026/${round}/results/?limit=30`).then(r=>r.json()),
+    fetch(`${JOLPICA}/current/driverStandings/`).then(r=>r.json()),
+    fetch(`${JOLPICA}/current/constructorStandings/`).then(r=>r.json()),
+  ]);
+  localStorage.setItem(`traxstat:f1:lastPoll:${round}`,String(Date.now()));
+  diffAndBadge(`traxstat:f1:lastResults:${round}`,resultsJson,'races');
+  diffAndBadge(`traxstat:f1:lastDriverStandings`,drvJson,'drivers');
+  diffAndBadge(`traxstat:f1:lastConstructorStandings`,ctrJson,'constructors');
+}
+
+function diffAndBadge(storageKey,fresh,tabKey){
+  const prev=localStorage.getItem(storageKey);
+  const freshJson=JSON.stringify(fresh);
+  if(prev&&prev!==freshJson){
+    console.log(`F1 diff detected on ${tabKey}`,{prev:JSON.parse(prev),fresh});
+    localStorage.setItem(`traxstat:f1:badge:${tabKey}`,'1');
+    updateF1Badges();
+  }
+  localStorage.setItem(storageKey,freshJson);
+}
+
+function updateF1Badges(){
+  for(const tab of ['races','drivers','constructors']){
+    const has=localStorage.getItem(`traxstat:f1:badge:${tab}`)==='1';
+    const el=document.getElementById('tab-'+tab);
+    if(!el)continue;
+    el.querySelector('.f1-diff-badge')?.remove();
+    if(!has)continue;
+    const badge=document.createElement('span');
+    badge.className='f1-diff-badge';
+    badge.style.cssText='margin-left:5px;cursor:default;font-size:11px;';
+    badge.innerHTML=' <span style="color:var(--yellow);">•</span><span class="dismiss" style="margin-left:3px;color:var(--muted);font-size:9px;cursor:pointer;">×</span>';
+    badge.title='Jolpica reports changes since last sync. Tap the tab or × to dismiss.';
+    badge.querySelector('.dismiss').onclick=(e)=>{e.stopPropagation();dismissF1Badge(tab);track('f1:badge-dismiss',{tab});};
+    el.appendChild(badge);
+  }
+}
+
+function dismissF1Badge(tab){
+  if(localStorage.getItem(`traxstat:f1:badge:${tab}`)==='1'){
+    localStorage.removeItem(`traxstat:f1:badge:${tab}`);
+    updateF1Badges();
   }
 }
 
@@ -1669,46 +1993,18 @@ function switchNascarSeries(s){
 
 
 async function renderF1(){
+  // Refresh the diff badges on every F1 render so they reflect current localStorage.
+  setTimeout(updateF1Badges,0);
   if(currentF1Tab==='races')return renderRaceSelector();
   if(currentF1Tab==='drivers')return renderDrivers();
   if(currentF1Tab==='constructors')return renderConstructors();
-  if(currentF1Tab==='schedule')return renderF1Schedule();
+  if(currentF1Tab==='qualifying')return renderQualifying();
   return renderLive();
 }
 
-function renderF1Schedule(){
-  const content=document.getElementById('main-content');
-  const now=new Date();
-  const upcoming=NEXT_RACES.filter(r=>new Date(r.date+'T13:00:00Z')>now);
-  if(!upcoming.length){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Season Complete</div><div class="state-sub">No more F1 races on the 2026 calendar.</div></div>`;
-    setStats('—','—','SCHED','—');return;
-  }
-  const lastRound=upcoming[upcoming.length-1].round;
-  const hdr=`<div class="section-title"><span>F1 2026 · ${upcoming.length} Upcoming</span><span>Through R${lastRound}</span></div>`;
-  const rows=upcoming.map(r=>{
-    const cd=countdown(r.date);
-    const cdNum=cd?cd.num:'-';
-    const cdUnit=cd?(cd.unit==='DAYS'||cd.unit==='DAY'?'D':cd.unit==='HOURS'?'H':'M'):'';
-    const sprintTag=r.sprint?'<span class="sprint-tag">SPRINT</span>':'';
-    return`<div class="race-item">
-      <div class="round-badge"><div class="round-num">${r.round}</div><div class="round-label">RND</div></div>
-      <div>
-        <div class="race-item-country">${r.country}</div>
-        <div class="race-item-name">${r.name.replace(' Grand Prix','')}${sprintTag}</div>
-        <div class="race-item-date">${fmtDate(r.date)} · ${r.circuit}</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--yellow);line-height:1;">${cdNum}${cdUnit}</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.08em;margin-top:3px;">AWAY</div>
-      </div>
-    </div>`;
-  }).join('');
-  content.innerHTML=hdr+rows;
-  const next=upcoming[0];
-  const cd=countdown(next.date);
-  setStats(`R${next.round}`,next.name.replace(' Grand Prix',''),'SCHED',cd?`${cd.num}${cd.unit[0]}`:'NOW');
-}
+// renderF1Schedule removed — F1 SCHEDULE sub-tab was dropped in favor of the
+// global SCHEDULE landing tab. Upcoming F1 races are listed there alongside
+// other series chronologically.
 
 function switchSeries(s){
   track('tab:series',{series:s});
@@ -1858,6 +2154,9 @@ function switchF1Tab(tab){
   selectedDriver=null;
   selectedDriverChamp=null;
   selectedConstructorChamp=null;
+  selectedQualiDriver=null;
+  // Auto-dismiss diff badge for the tab we just visited (visit = "I've seen it")
+  dismissF1Badge(tab);
   document.querySelectorAll('.f1-sub-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab)?.classList.add('active');
   renderF1();
@@ -2197,6 +2496,22 @@ switchSeries('schedule');
 setInterval(()=>{if(currentSeries==='f1'&&currentF1Tab==='live'&&isLive)renderLive();},30000);
 updateLiveDots();
 setInterval(updateLiveDots,60000);
+// Resume F1 post-race polling on page load if a round is still in its 24h window.
+// Persisting `pollStart:{round}` in localStorage means a refresh doesn't reset
+// the 35-poll sequence — we pick up where we left off.
+(async()=>{
+  const hardcoded=new Set(Object.keys(HARDCODED_RACES).map(Number));
+  // First check: any saved poll anchor still in 24h window?
+  for(const r of NEXT_RACES){
+    if(hardcoded.has(r.round))continue;
+    const anchor=+localStorage.getItem(`traxstat:f1:pollStart:${r.round}`);
+    if(anchor&&(Date.now()-anchor)<24*3600*1000){startF1PostRacePolling(r.round);return;}
+  }
+  // No saved anchor: detect if we're currently in a post-race window
+  const round=findPostRaceRound();
+  if(round!==null)startF1PostRacePolling(round);
+})();
+updateF1Badges();
 </script>
 <!-- Vercel Web Analytics: cookieless pageviews + custom events.
      Init stub creates window.va as a queue-pushing shim; the deferred
