@@ -224,12 +224,13 @@ function nascarOffAirContext(){
 // ── NASCAR LIVE (off-air view) ────────────────────────────────────────────────
 function renderNascarLive(){
   const content=document.getElementById('main-content');
+  const top=renderSeriesBanner('nascar','live')+renderBackToSeriesHome('nascar');
   if(currentNascarSeries!=='cup'){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries==='xfinity'?"O'Reilly Auto Parts Series":'Craftsman Truck Series'} Coming Soon</div><div class="state-sub">Cup Series data is live now. ${currentNascarSeries==='xfinity'?'Xfinity':'Trucks'} support launching in a future update.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries==='xfinity'?"O'Reilly Auto Parts Series":'Craftsman Truck Series'} Coming Soon</div><div class="state-sub">Cup Series data is live now. ${currentNascarSeries==='xfinity'?'Xfinity':'Trucks'} support launching in a future update.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');
     return;
   }
-  content.innerHTML=renderLiveOffAir('no-session',nascarOffAirContext());
+  content.innerHTML=top+renderLiveOffAir('no-session',nascarOffAirContext());
   const lastRound=Object.keys(NASCAR_CUP_RESULTS).sort((a,b)=>parseInt(b)-parseInt(a))[0];
   setStats('—','—','STANDBY',lastRound?`R${lastRound}`:'—');
 }
@@ -237,8 +238,9 @@ function renderNascarLive(){
 // ── NASCAR RACE RESULTS ───────────────────────────────────────────────────────
 function renderNascarRaces(){
   const content=document.getElementById('main-content');
+  const top=renderSeriesBanner('nascar','races')+renderBackToSeriesHome('nascar');
   if(currentNascarSeries!=='cup'){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries.toUpperCase()} Coming Soon</div><div class="state-sub">Cup Series race results are populated. Other series launching soon.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries.toUpperCase()} Coming Soon</div><div class="state-sub">Cup Series race results are populated. Other series launching soon.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');
     return;
   }
@@ -250,12 +252,15 @@ function renderNascarRaces(){
     const w=nascarDrv(res.winner);
     const isSelected=selectedNascarRace&&selectedNascarRace.round===s.round;
     const typeLabel=s.type==='R'?' · 🛣 RC':s.type==='S'?' · 🛣 ST':'';
+    const slug=nascarTrackSlug(s.track);
+    const hlId=`highlights-nascar-r${s.round}-${slug}`;
     return`<div class="race-item ${isSelected?'selected':''}" onclick="selectNascarRace(${s.round})">
       <div class="round-badge"><div class="round-num">${s.round}</div><div class="round-label">RND</div></div>
       <div>
         <div class="race-item-country">${s.country}${typeLabel}</div>
         <div class="race-item-name">${s.race}</div>
         <div class="race-item-date">${fmtDate(s.date)}</div>
+        <span class="tx-race-highlights-link" onclick="event.stopPropagation();navigateToHighlights('nascar','${hlId}')">▶ Highlights</span>
       </div>
       <div>
         <span class="winner-flag" style="color:${nascarMfrColor(w.mfr)};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">#${w.num}</span>
@@ -264,7 +269,7 @@ function renderNascarRaces(){
       </div>
     </div>`;
   }).join('');
-  let html=banner+`<div class="section-title"><span>2026 Cup Series · ${completed.length} of 36 races</span><span>Tap for details</span></div>`+rows;
+  let html=top+banner+`<div class="section-title"><span>2026 Cup Series · ${completed.length} of 36 races</span><span>Tap for details</span></div>`+rows;
   // Selected race detail panel
   if(selectedNascarRace){
     html+=buildNascarRaceDetailHTML(selectedNascarRace.round);
@@ -276,7 +281,16 @@ function renderNascarRaces(){
   }
 }
 
+// Helper for NASCAR highlights anchor slugs. Matches the F1 pattern.
+function nascarTrackSlug(track){
+  return (track||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'race';
+}
+
 function buildNascarRaceDetailHTML(round){
+  // TODO (Session 7 fact-check): backfill verified fastest-lap data per round.
+  // When that lands, mark the fastest-lap row/cell with class `fl-row` (border
+  // accent) and/or `fastest-lap` (purple text) — see f1.js buildRaceResultsHTML
+  // for the pattern. Until then, no fastest-lap highlight here.
   const sched=NASCAR_CUP_SCHEDULE.find(s=>s.round===round);
   const res=NASCAR_CUP_RESULTS[round];
   if(!sched||!res)return'';
@@ -390,7 +404,7 @@ function renderNascarDrivers(){
     const posColor=d.pos===1?'var(--yellow)':d.pos<=3?'var(--green)':inChase?'var(--text)':'var(--muted)';
     return`<div>
       ${isCutline?'':''}
-      <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--yellow);':''}" onclick="track('driver:expand:nascar',{name:'${d.driver}'});selectedNascarDriverChamp=selectedNascarDriverChamp==='${d.driver}'?null:'${d.driver}';renderNascarDrivers();">
+      <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--yellow);':''}" onclick="track('driver:expand:nascar',{name:'${d.driver}'});selectedNascarDriverChamp=selectedNascarDriverChamp==='${d.driver}'?null:'${d.driver}';renderNascar();">
         <div class="champ-pos" style="color:${posColor}">${d.pos}</div>
         <div class="flag-cell" style="color:${nascarMfrColor(info.mfr)};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">#${info.num}</div>
         <div>
@@ -425,7 +439,7 @@ function renderNascarDriverBreakdown(name,info,points,pos){
         <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--white);">${info.first} ${name}</div>
         <div style="font-family:'Barlow',sans-serif;font-size:11px;color:${nascarMfrColor(info.mfr)};margin-top:2px;">${info.team} · #${info.num} · ${info.mfr}</div>
       </div>
-      <button onclick="selectedNascarDriverChamp=null;renderNascarDrivers();" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px;">✕</button>
+      <button onclick="selectedNascarDriverChamp=null;renderNascar();" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px;">✕</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);">
       <div style="background:var(--bg);padding:10px;text-align:center;">
@@ -462,7 +476,7 @@ function renderNascarMfrs(){
     const isSelected=selectedNascarMfrChamp===m.mfr;
     const breakdown=isSelected?renderNascarMfrBreakdown(m):'';
     return`<div>
-      <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${nascarMfrColor(m.mfr)};`:''}" onclick="track('mfr:expand:nascar',{name:'${m.mfr}'});selectedNascarMfrChamp=selectedNascarMfrChamp==='${m.mfr}'?null:'${m.mfr}';renderNascarMfrs();">
+      <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${nascarMfrColor(m.mfr)};`:''}" onclick="track('mfr:expand:nascar',{name:'${m.mfr}'});selectedNascarMfrChamp=selectedNascarMfrChamp==='${m.mfr}'?null:'${m.mfr}';renderNascar();">
         <div class="champ-pos" style="color:${m.pos===1?'var(--yellow)':m.pos===2?'#c0c0c0':'#cd7f32'}">${m.pos}</div>
         <div class="flag-cell" style="color:${nascarMfrColor(m.mfr)};font-size:18px;">●</div>
         <div>
@@ -498,7 +512,7 @@ function renderNascarMfrBreakdown(m){
         <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:${nascarMfrColor(m.mfr)};">${m.mfr} — 2026 Wins</div>
         <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);margin-top:2px;">${m.wins} race win${m.wins>1?'s':''} · ${m.drivers.join(', ')}</div>
       </div>
-      <button onclick="selectedNascarMfrChamp=null;renderNascarMfrs();" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px;">✕</button>
+      <button onclick="selectedNascarMfrChamp=null;renderNascar();" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px;">✕</button>
     </div>
     ${wins}
   </div>`;
@@ -507,23 +521,73 @@ function renderNascarMfrBreakdown(m){
 // ── NASCAR ROUTER ─────────────────────────────────────────────────────────────
 function renderNascar(){
   if(currentNascarTab==='races')return renderNascarRaces();
+  if(currentNascarTab==='standings')return renderNascarStandings();
+  if(currentNascarTab==='highlights')return renderNascarHighlights();
+  if(currentNascarTab==='schedule')return renderNascarSchedule();
+  // Legacy deep-link keys (no longer in the sub-tab strip; kept callable).
   if(currentNascarTab==='drivers')return renderNascarDrivers();
   if(currentNascarTab==='mfrs')return renderNascarMfrs();
-  if(currentNascarTab==='schedule')return renderNascarSchedule();
   return renderNascarLive();
+}
+
+// Session 7: stacked Drivers + Manufacturers view backing the new "Standings"
+// sub-tab. renderNascarDrivers / renderNascarMfrs each write the full panel
+// into main-content; we capture their output and concatenate under the banner.
+function renderNascarStandings(){
+  const content=document.getElementById('main-content');
+  const top=renderSeriesBanner('nascar','standings')+renderBackToSeriesHome('nascar');
+  if(currentNascarSeries!=='cup'){
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries.toUpperCase()} Coming Soon</div><div class="state-sub">Cup Series standings are populated. Other series launching soon.</div></div>`;
+    setStats('—','—',currentNascarSeries.toUpperCase(),'—');
+    return;
+  }
+  renderNascarDrivers();
+  const driversHTML=content.innerHTML;
+  renderNascarMfrs();
+  const mfrsHTML=content.innerHTML;
+  content.innerHTML=top+driversHTML+mfrsHTML;
+}
+
+// Session 7: Season Highlights. One placeholder card per completed Cup race.
+// IDs follow `highlights-nascar-r{round}-{trackSlug}` for the deep-link from
+// each race-results row. No invented URLs — TODO placeholder only.
+function renderNascarHighlights(){
+  const content=document.getElementById('main-content');
+  const top=renderSeriesBanner('nascar','highlights')+renderBackToSeriesHome('nascar');
+  const completed=NASCAR_CUP_SCHEDULE.filter(s=>NASCAR_CUP_RESULTS[s.round]);
+  const cards=completed.map(s=>{
+    const res=NASCAR_CUP_RESULTS[s.round];
+    const winInfo=nascarDrv(res.winner);
+    const slug=nascarTrackSlug(s.track);
+    const id=`highlights-nascar-r${s.round}-${slug}`;
+    return`<div class="tx-highlights-card" id="${id}">
+      <div class="tx-highlights-meta">Round ${s.round} · ${s.country} · ${fmtDate(s.date)}</div>
+      <div class="tx-highlights-title">${s.race}</div>
+      <div class="tx-highlights-winner">Winner: ${res.winner} (${winInfo.mfr})</div>
+      <div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>
+    </div>`;
+  }).join('');
+  content.innerHTML=top+
+    `<div class="tx-highlights-header">
+      <div class="tx-highlights-header-title">NASCAR 2026 · Season Highlights</div>
+      <div class="tx-highlights-header-sub">Official race recaps and key moments. Videos are added after verification — placeholders shown for races without a confirmed URL yet.</div>
+    </div>`+
+    (cards||`<div class="state-screen"><div class="state-icon">🎬</div><div class="state-title">No Completed Rounds Yet</div></div>`);
+  setStats('—','—','HILITES',`${completed.length}`);
 }
 
 function renderNascarSchedule(){
   const content=document.getElementById('main-content');
+  const top=renderSeriesBanner('nascar','schedule')+renderBackToSeriesHome('nascar');
   if(currentNascarSeries!=='cup'){
     const label=currentNascarSeries==='xfinity'?"O'Reilly Auto Parts Series":'Craftsman Truck Series';
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${label} Coming Soon</div><div class="state-sub">Cup Series schedule is live now.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${label} Coming Soon</div><div class="state-sub">Cup Series schedule is live now.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');return;
   }
   const now=new Date();
   const upcoming=NASCAR_CUP_SCHEDULE.filter(r=>new Date(r.date+'T18:00:00Z')>now);
   if(!upcoming.length){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Season Complete</div><div class="state-sub">No more Cup races on the 2026 calendar.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Season Complete</div><div class="state-sub">No more Cup races on the 2026 calendar.</div></div>`;
     setStats('—','—','SCHED','—');return;
   }
   const lastRound=upcoming[upcoming.length-1].round;
@@ -547,7 +611,7 @@ function renderNascarSchedule(){
       </div>
     </div>`;
   }).join('');
-  content.innerHTML=hdr+rows;
+  content.innerHTML=top+hdr+rows;
   const next=upcoming[0];
   const cd=countdown(next.date);
   setStats(`R${next.round}`,next.race.split(' ').slice(0,2).join(' '),'SCHED',cd?`${cd.num}${cd.unit[0]}`:'NOW');
@@ -560,7 +624,11 @@ function switchNascarTab(tab){
   selectedNascarDriverChamp=null;
   selectedNascarMfrChamp=null;
   document.querySelectorAll('#nascar-submenu .f1-sub-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('ntab-'+tab)?.classList.add('active');
+  // The legacy 'drivers'/'mfrs' keys map onto the new 'standings' tab for the
+  // active-class highlight (so deep-links into the legacy code paths still
+  // light up a visible tab in the new strip).
+  const stripId='ntab-'+({drivers:'standings',mfrs:'standings'}[tab]||tab);
+  document.getElementById(stripId)?.classList.add('active');
   renderNascar();
 }
 

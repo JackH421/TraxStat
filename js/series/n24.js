@@ -78,7 +78,12 @@ const N24_2026_RECAP=[
   {title:'#80 Mercedes (Race Winner) Onboard',videoId:'diS_9fO2uQE', caption:'Live onboard of the winning #80 Mercedes-AMG Team RAVENOL — Engel, Stolz, Schiller, Martin.'},
 ];
 
-// Sub-tab state. 'results' is the default (post-race classification first).
+// Sub-tab state. Session 7: the N24 module now uses the universal 5-tab shape
+// (live / standings / results / schedule / highlights). 'results' remains the
+// default; live/standings/schedule render brief placeholder/pointer views
+// because N24 is an annual single-race event. The legacy 'qualifying' and
+// 'recap' sub-tabs stay callable as inner toggles inside the Race Results
+// body — no existing N24 data or content was removed.
 let currentN24Tab='results';
 // Expanded results-row car number (string), or null. One open at a time.
 let selectedN24Entry=null;
@@ -91,6 +96,11 @@ function switchN24Tab(tab){
   currentN24Tab=tab;
   selectedN24Entry=null;
   selectedN24RecapIndex=null;
+  document.querySelectorAll('#n24-submenu .f1-sub-tab').forEach(t=>t.classList.remove('active'));
+  // 'qualifying' and 'recap' are inner toggles inside Race Results — highlight
+  // the 'results' tab in the persistent strip when those keys are active.
+  const stripId='n24tab-'+({qualifying:'results',recap:'results'}[tab]||tab);
+  document.getElementById(stripId)?.classList.add('active');
   renderN24();
 }
 
@@ -129,7 +139,13 @@ function renderN24VerstappenCard(){
 }
 
 function renderN24ResultsBody(){
+  // TODO (Session 7 fact-check): backfill verified per-car fastest-lap data
+  // when the official ADAC PDF publishes (top-30 + per-car stats). When that
+  // lands, mark the fastest-lap row with class `fl-row` (border accent) and/or
+  // `fastest-lap` (purple text) — see f1.js buildRaceResultsHTML for the
+  // pattern. Until then, no fastest-lap highlight here.
   const verstappenCard=renderN24VerstappenCard();
+  const highlightsLink=`<div style="padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);"><span class="tx-race-highlights-link" onclick="navigateToHighlights('n24','highlights-n24-2026')">▶ Highlights</span></div>`;
   const title=`<div class="section-title"><span>Top 20 — full classification pending official ADAC results</span><span>${N24_2026_RESULTS.length||''} cars</span></div>`;
 
   if(!N24_2026_RESULTS.length){
@@ -175,7 +191,7 @@ function renderN24ResultsBody(){
     return row+panel;
   }).join('');
 
-  return verstappenCard+title+rows;
+  return verstappenCard+highlightsLink+title+rows;
 }
 
 function renderN24QualifyingBody(){
@@ -246,34 +262,93 @@ function renderN24RecapBody(){
   return title+grid+player;
 }
 
+// Session 7: Live placeholder — N24 is an annual one-off so there's no in-
+// session live timing to render. Keep it friendly rather than empty.
+function renderN24LiveBody(){
+  return `<div class="tx-pointer-card">
+    <div class="tx-pointer-title">N24 is an annual event</div>
+    <div class="tx-pointer-sub">No live session right now. The 2026 race ran 16–17 May. Next edition: 2027 ADAC RAVENOL 24h Nürburgring (date TBD).</div>
+    <div class="tx-pointer-cta" onclick="switchN24Tab('results')">View 2026 Race Results →</div>
+  </div>`;
+}
+
+// Session 7: Standings pointer — N24 is a single-race event, the "standings"
+// effectively are the final classification, which lives under Race Results.
+function renderN24StandingsBody(){
+  return `<div class="tx-pointer-card">
+    <div class="tx-pointer-title">Single-race event</div>
+    <div class="tx-pointer-sub">N24 has no championship standings — the 2026 final classification (top-20 + Verstappen Racing entry) lives under Race Results.</div>
+    <div class="tx-pointer-cta" onclick="switchN24Tab('results')">View Final Classification →</div>
+  </div>`;
+}
+
+// Session 7: Schedule placeholder for the next edition.
+function renderN24ScheduleBody(){
+  return `<div class="tx-pointer-card">
+    <div class="tx-pointer-title">Next edition: 2027 24h Nürburgring</div>
+    <div class="tx-pointer-sub">Date TBD by ADAC. The race traditionally runs the weekend after Whitsun on the Nordschleife.</div>
+  </div>`;
+}
+
+// Session 7: Season Highlights — single placeholder card for the 2026 edition.
+// Uses the same TODO-URL shape as F1 and NASCAR Highlights. The existing
+// verified RECAP videos remain available inside Race Results' Recap toggle.
+function renderN24HighlightsBody(){
+  return `<div class="tx-highlights-header">
+      <div class="tx-highlights-header-title">N24 · Season Highlights</div>
+      <div class="tx-highlights-header-sub">Official race recaps and key moments. Videos are added after verification — placeholders shown for editions without a confirmed URL yet.</div>
+    </div>
+    <div class="tx-highlights-card" id="highlights-n24-2026">
+      <div class="tx-highlights-meta">2026 Edition · 16–17 May 2026</div>
+      <div class="tx-highlights-title">24h Nürburgring 2026</div>
+      <div class="tx-highlights-winner">Winner: #80 Mercedes-AMG Team RAVENOL — Engel · Stolz · Schiller · Martin</div>
+      <div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL<br><span style="color:var(--muted);font-family:'Barlow',sans-serif;">(Verified recap clips are also available under Race Results · Recap)</span></div>
+    </div>`;
+}
+
 function renderN24(){
   const content=document.getElementById('main-content');
   const v=N24_VERSTAPPEN;
+  const top=renderSeriesBanner('n24',currentN24Tab)+renderBackToSeriesHome('n24');
 
-  const header=`<div style="background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:14px 16px;">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;color:var(--red);text-transform:uppercase;">🇩🇪 N24 · NÜRBURGRING 24 HOURS 2026 · FINAL CLASSIFICATION</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;">Nordschleife · 16–17 May 2026</div>
-  </div>`;
+  // The Race Results body keeps an inline 3-pill toggle (Results / Qualifying
+  // / Recap) so the legacy N24 tabs remain reachable without losing data.
+  let body='';
+  if(currentN24Tab==='live'){
+    body=renderN24LiveBody();
+  }else if(currentN24Tab==='standings'){
+    body=renderN24StandingsBody();
+  }else if(currentN24Tab==='schedule'){
+    body=renderN24ScheduleBody();
+  }else if(currentN24Tab==='highlights'){
+    body=renderN24HighlightsBody();
+  }else{
+    // Race Results (default) — render the inner sub-toggle then the body.
+    const pillBase="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;";
+    const activeStyle="color:var(--red);border-bottom-color:var(--red);";
+    const idleStyle="color:var(--red);";
+    const innerKey=currentN24Tab==='qualifying'||currentN24Tab==='recap'?currentN24Tab:'results';
+    const pill=(tab,label)=>`<div onclick="switchN24Tab('${tab}')" style="${pillBase}${innerKey===tab?activeStyle:idleStyle}">${label}</div>`;
+    const subBar=`<div style="background:var(--surface2);border-bottom:1px solid var(--border);display:flex;">
+      ${pill('results','Race Results')}
+      ${pill('qualifying','Qualifying')}
+      ${pill('recap','Recap')}
+    </div>`;
+    const inner =
+      currentN24Tab==='qualifying' ? renderN24QualifyingBody() :
+      currentN24Tab==='recap'      ? renderN24RecapBody()      :
+                                     renderN24ResultsBody();
+    body=subBar+inner;
+  }
 
-  const pillBase="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;";
-  const activeStyle="color:var(--red);border-bottom-color:var(--red);";
-  const idleStyle="color:var(--red);";
-  const pill=(tab,label)=>`<div onclick="switchN24Tab('${tab}')" style="${pillBase}${currentN24Tab===tab?activeStyle:idleStyle}">${label}</div>`;
-  const subBar=`<div style="background:var(--surface2);border-bottom:1px solid var(--border);display:flex;">
-    ${pill('results','Race Results')}
-    ${pill('qualifying','Qualifying')}
-    ${pill('recap','Recap')}
-  </div>`;
-
-  const body =
-    currentN24Tab==='qualifying' ? renderN24QualifyingBody() :
-    currentN24Tab==='recap'      ? renderN24RecapBody()      :
-                                   renderN24ResultsBody();
-
-  content.innerHTML=header+subBar+body;
+  content.innerHTML=top+body;
 
   if(currentN24Tab==='qualifying'){
     setStats(`P${v.qualifying.pos}`,`#${v.car}`,'N24 QUAL',v.qualifying.time);
+  }else if(currentN24Tab==='live'||currentN24Tab==='standings'||currentN24Tab==='schedule'){
+    setStats('—','—','N24',currentN24Tab.toUpperCase());
+  }else if(currentN24Tab==='highlights'){
+    setStats('—','—','HILITES','N24 2026');
   }else{
     setStats(`P${v.finalResult.classifiedPos}`,`#${v.car}`,'N24',v.finalResult.position);
   }

@@ -32,18 +32,25 @@
   <div class="series-tab" onclick="switchSeries('n24')"><div class="series-dot" id="n24-dot"></div>N24</div>
 </div>
 <div class="f1-submenu" id="f1-submenu" style="display:none;">
-  <div class="f1-sub-tab live-tab active" onclick="switchF1Tab('live')" id="tab-live">⬤ LIVE</div>
-  <div class="f1-sub-tab" onclick="switchF1Tab('qualifying')" id="tab-qualifying">QUALIFYING</div>
+  <div class="f1-sub-tab live-tab" onclick="switchF1Tab('live')" id="tab-live">⬤ LIVE</div>
+  <div class="f1-sub-tab" onclick="switchF1Tab('standings')" id="tab-standings">STANDINGS</div>
   <div class="f1-sub-tab" onclick="switchF1Tab('races')" id="tab-races">RACE RESULTS</div>
-  <div class="f1-sub-tab" onclick="switchF1Tab('drivers')" id="tab-drivers">DRIVERS</div>
-  <div class="f1-sub-tab" onclick="switchF1Tab('constructors')" id="tab-constructors">CONSTRUCTORS</div>
+  <div class="f1-sub-tab" onclick="switchF1Tab('schedule')" id="tab-schedule">SCHEDULE</div>
+  <div class="f1-sub-tab" onclick="switchF1Tab('highlights')" id="tab-highlights">HIGHLIGHTS</div>
 </div>
 <div class="f1-submenu" id="nascar-submenu" style="display:none;">
-  <div class="f1-sub-tab live-tab active" onclick="switchNascarTab('live')" id="ntab-live">⬤ LIVE</div>
+  <div class="f1-sub-tab live-tab" onclick="switchNascarTab('live')" id="ntab-live">⬤ LIVE</div>
+  <div class="f1-sub-tab" onclick="switchNascarTab('standings')" id="ntab-standings">STANDINGS</div>
   <div class="f1-sub-tab" onclick="switchNascarTab('races')" id="ntab-races">RACE RESULTS</div>
-  <div class="f1-sub-tab" onclick="switchNascarTab('drivers')" id="ntab-drivers">DRIVERS</div>
-  <div class="f1-sub-tab" onclick="switchNascarTab('mfrs')" id="ntab-mfrs">MFRS</div>
   <div class="f1-sub-tab" onclick="switchNascarTab('schedule')" id="ntab-schedule">SCHEDULE</div>
+  <div class="f1-sub-tab" onclick="switchNascarTab('highlights')" id="ntab-highlights">HIGHLIGHTS</div>
+</div>
+<div class="f1-submenu" id="n24-submenu" style="display:none;">
+  <div class="f1-sub-tab live-tab" onclick="switchN24Tab('live')" id="n24tab-live">⬤ LIVE</div>
+  <div class="f1-sub-tab" onclick="switchN24Tab('standings')" id="n24tab-standings">STANDINGS</div>
+  <div class="f1-sub-tab" onclick="switchN24Tab('results')" id="n24tab-results">RACE RESULTS</div>
+  <div class="f1-sub-tab" onclick="switchN24Tab('schedule')" id="n24tab-schedule">SCHEDULE</div>
+  <div class="f1-sub-tab" onclick="switchN24Tab('highlights')" id="n24tab-highlights">HIGHLIGHTS</div>
 </div>
 <div class="nascar-series-bar" id="nascar-series-bar" style="display:none;">
   <div class="nascar-series-tab active" onclick="switchNascarSeries('cup')" id="nseries-cup">CUP</div>

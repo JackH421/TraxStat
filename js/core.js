@@ -16,6 +16,11 @@ let currentSeries='schedule',currentF1Tab='live',selectedRace=null,isLive=false;
 let cachedResults={},cachedStandings=null,cachedConstructors=null,cachedLaps={};
 let cachedFastestLaps={}; // {round: {driverId: {time, lap, rank}}}
 let selectedDriver=null;
+// Session 7 — hybrid landing pattern. When inSeriesHome=true and the user is on
+// one of the per-series tabs (f1/nascar/n24), we render the vertical 5-item
+// home menu instead of jumping straight into a sub-tab. Tapping a row flips
+// this false and routes to that sub-tab.
+let inSeriesHome=false;
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
 const tc=n=>TC[n]||TC['default'];
@@ -178,20 +183,147 @@ function renderLiveOffAir(reason, ctx){
   return banner+status+recap;
 }
 
+// ─── SESSION 7: SERIES BANNER + HOME MENU ────────────────────────────────────
+// Per-series metadata for the banner block and the home menu. The banner
+// renders at the top of every series view (home and each sub-tab). The home
+// menu is the vertical 5-row landing page shown when inSeriesHome is true.
+//
+// `seasonSub()` derives the round-X-of-Y context line dynamically. If we
+// can't derive a clean total, we fall back to a simpler line — per the spec.
+const TX_SERIES_META={
+  f1:{name:'Formula 1',label:'F1',seasonSub:()=>{
+    const completed=Object.keys(HARDCODED_RACES||{}).map(Number).filter(n=>!isNaN(n));
+    const max=completed.length?Math.max(...completed):0;
+    // NEXT_RACES doesn't cover the whole 24-round 2026 calendar (only the next
+    // few), so we can't claim "Round N of 24" from data alone — fall back.
+    return max>0?`2026 Season · After Round ${max}`:'2026 Season';
+  }},
+  nascar:{name:'NASCAR Cup',label:'NASCAR',seasonSub:()=>{
+    const total=NASCAR_CUP_SCHEDULE?.length||0;
+    const completed=Object.keys(NASCAR_CUP_RESULTS||{}).map(Number).filter(n=>!isNaN(n));
+    const max=completed.length?Math.max(...completed):0;
+    return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
+  }},
+  n24:{name:'Nürburgring 24',label:'N24',seasonSub:()=>'2026 Edition · Nordschleife'},
+};
+
+// Tab title + sub-tab labels. Keys match the per-series tab keys.
+const TX_TAB_LABEL={
+  live:'Live',standings:'Standings',races:'Race Results',
+  schedule:'Schedule',highlights:'Season Highlights',
+  // legacy F1 deep-link keys still routable from the LIVE state machine
+  qualifying:'Qualifying',drivers:'Drivers',constructors:'Constructors',mfrs:'Manufacturers',
+  // N24 inner toggles when the user is on the Race Results body
+  results:'Race Results',recap:'Recap',
+};
+
+// Render the big banner block (3px red left border, Share Tech label,
+// Barlow Condensed title, Share Tech sub). On the home view, subTab is null.
+function renderSeriesBanner(seriesKey,subTab){
+  const meta=TX_SERIES_META[seriesKey];
+  if(!meta)return'';
+  const sLabel=meta.label;
+  const seasonLine=meta.seasonSub();
+  const label=subTab?`${sLabel} · ${TX_TAB_LABEL[subTab]?.toUpperCase()||subTab.toUpperCase()}`:`${sLabel} · HOME`;
+  const title=subTab?TX_TAB_LABEL[subTab]||meta.name:meta.name;
+  const sub=subTab?`${meta.name} · ${seasonLine}`:seasonLine;
+  return `<div class="tx-banner">
+    <div class="tx-banner-label">${label}</div>
+    <div class="tx-banner-title">${title}</div>
+    <div class="tx-banner-sub">${sub}</div>
+  </div>`;
+}
+
+// Render the 5-row home menu for a series. The numbered rows mirror the
+// horizontal sub-tab strip order: Live → Standings → Race Results → Schedule
+// → Season Highlights. Descriptions are the exact strings the spec mandates.
+const TX_HOME_ITEMS=[
+  {key:'live',  num:'01',label:'Live',            desc:'Real-time timing during a session'},
+  {key:'standings',num:'02',label:'Standings',    desc:'Championship points and positions'},
+  {key:'races', num:'03',label:'Race Results',    desc:'Race-by-race results this season'},
+  {key:'schedule',num:'04',label:'Schedule',      desc:'Upcoming and past rounds'},
+  {key:'highlights',num:'05',label:'Season Highlights',desc:'Recap videos and key moments'},
+];
+function renderSeriesHomeMenu(seriesKey){
+  const rows=TX_HOME_ITEMS.map(it=>`<div class="tx-home-row" onclick="goToSubTab('${seriesKey}','${it.key}')">
+    <div class="tx-home-num">${it.num}</div>
+    <div>
+      <div class="tx-home-label">${it.label}</div>
+      <div class="tx-home-desc">${it.desc}</div>
+    </div>
+    <div class="tx-home-chev">›</div>
+  </div>`).join('');
+  return renderSeriesBanner(seriesKey,null)+
+    `<div class="tx-home-section">Series Home · Pick a Section</div>`+
+    `<div class="tx-home-menu">${rows}</div>`;
+}
+
+// Small "← Series home" link rendered above the body content on every sub-tab
+// view. Sits between the banner and the rest of the rendered output.
+function renderBackToSeriesHome(seriesKey){
+  return `<div class="tx-back-link" onclick="goToSeriesHome('${seriesKey}')">← Series home</div>`;
+}
+
+// Hides every per-series submenu in the HTML shell. Used both on series-home
+// landing and when switching to a series that has no submenu.
+function hideAllSubmenus(){
+  ['f1-submenu','nascar-submenu','n24-submenu'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+}
+
+// Land on a series' home menu. Hides all submenus, sets inSeriesHome=true,
+// and renders the menu into main-content.
+function goToSeriesHome(seriesKey){
+  inSeriesHome=true;
+  hideAllSubmenus();
+  // NASCAR's Cup/Xfinity/Trucks bar still applies on home for visual continuity
+  document.getElementById('nascar-series-bar').style.display=seriesKey==='nascar'?'flex':'none';
+  document.getElementById('main-content').innerHTML=renderSeriesHomeMenu(seriesKey);
+  setStats('—','—',TX_SERIES_META[seriesKey]?.label||seriesKey.toUpperCase(),'HOME');
+}
+
+// Route into a sub-tab. Shows the corresponding submenu, flips inSeriesHome
+// off, sets the per-series tab variable, then dispatches to the series renderer.
+function goToSubTab(seriesKey,subTab){
+  inSeriesHome=false;
+  hideAllSubmenus();
+  if(seriesKey==='f1'){
+    document.getElementById('f1-submenu').style.display='flex';
+    switchF1Tab(subTab);
+  }else if(seriesKey==='nascar'){
+    document.getElementById('nascar-submenu').style.display='flex';
+    document.getElementById('nascar-series-bar').style.display='flex';
+    switchNascarTab(subTab);
+  }else if(seriesKey==='n24'){
+    document.getElementById('n24-submenu').style.display='flex';
+    switchN24Tab(subTab);
+  }
+}
+
+// Highlights deep-link from a race-list row. Flips to the Highlights sub-tab,
+// re-renders, then scrolls the matching card into view on the next frame.
+function navigateToHighlights(seriesKey,slugId){
+  track('race:highlights',{series:seriesKey,slug:slugId});
+  goToSubTab(seriesKey,'highlights');
+  requestAnimationFrame(()=>{
+    const el=document.getElementById(slugId);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
 function switchSeries(s){
   track('tab:series',{series:s});
   currentSeries=s;
   document.querySelectorAll('.series-tab').forEach((t,i)=>t.classList.toggle('active',['home','schedule','f1','nascar','motogp','wrc','indycar','gt3','n24'][i]===s));
-  // Toggle the right submenu and tier bar
-  document.getElementById('f1-submenu').style.display=s==='f1'?'flex':'none';
-  document.getElementById('nascar-submenu').style.display=s==='nascar'?'flex':'none';
+  // Hide every submenu; goToSeriesHome / goToSubTab re-show the right one.
+  hideAllSubmenus();
   document.getElementById('nascar-series-bar').style.display=s==='nascar'?'flex':'none';
-  if(s==='home'){renderHome();return;}
-  if(s==='schedule'){renderSchedule();return;}
-  if(s==='f1'){renderF1();return;}
-  if(s==='nascar'){renderNascar();return;}
-  if(s==='n24'){renderN24();return;}
+  if(s==='home'){inSeriesHome=false;renderHome();return;}
+  if(s==='schedule'){inSeriesHome=false;renderSchedule();return;}
+  if(s==='f1'||s==='nascar'||s==='n24'){goToSeriesHome(s);return;}
   // All other series — placeholder
+  inSeriesHome=false;
   document.getElementById('main-content').innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">${s.toUpperCase()} Coming Soon</div><div class="state-sub">F1 and NASCAR are live now. More series launching soon.</div></div>`;
   setStats('—','—',s.toUpperCase(),'—');
 }
@@ -201,9 +333,15 @@ function refresh(){
   cachedResults={};cachedStandings=null;cachedConstructors=null;cachedLaps={};cachedFastestLaps={};
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
-  const p = currentSeries==='schedule' ? Promise.resolve(renderSchedule())
-          : currentSeries==='nascar'   ? Promise.resolve(renderNascar())
-          :                              renderF1();
+  let p;
+  if(inSeriesHome && (currentSeries==='f1'||currentSeries==='nascar'||currentSeries==='n24')){
+    goToSeriesHome(currentSeries);
+    p=Promise.resolve();
+  }else if(currentSeries==='home'){p=Promise.resolve(renderHome());}
+  else if(currentSeries==='schedule'){p=Promise.resolve(renderSchedule());}
+  else if(currentSeries==='nascar'){p=Promise.resolve(renderNascar());}
+  else if(currentSeries==='n24'){p=Promise.resolve(renderN24());}
+  else{p=renderF1();}
   p.finally(()=>btn.classList.remove('spinning'));
 }
 

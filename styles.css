@@ -3,6 +3,13 @@
   --bg:#0a0a0a;--surface:#111;--surface2:#181818;--border:#242424;
   --text:#f0f0f0;--muted:#666;--dim:#2a2a2a;
   --red:#e8002d;--green:#00d84a;--yellow:#ffd600;--blue:#4fc3f7;--orange:#ff6b00;--white:#fff;
+  --fl-purple:#9d3dcd;
+  /* Narrative/nav text bump. Applied via calc(BASE * var(--font-scale)) to
+     headings, banner text, menu items, race-list rows, section titles,
+     state-screen text, and the top + sub tab strips. Data tables (result-row,
+     champ-row, driver-row, lap grid, stats-bar) are intentionally NOT scaled
+     so dense readings stay scannable. */
+  --font-scale:1.125;
 }
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;display:flex;flex-direction:column;}
@@ -19,13 +26,13 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 @keyframes spin{to{transform:rotate(360deg);}}
 .series-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
 .series-bar::-webkit-scrollbar{display:none;}
-.series-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;padding:10px 16px;color:var(--white);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
+.series-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(13px * var(--font-scale));letter-spacing:0.08em;padding:10px 16px;color:var(--white);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
 .series-tab.active{border-bottom-color:var(--red);}
 .series-dot{width:5px;height:5px;border-radius:50%;background:var(--dim);}
 .series-dot.live{background:var(--green);}
 .f1-submenu{background:var(--surface2);border-bottom:1px solid var(--border);display:flex;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
 .f1-submenu::-webkit-scrollbar{display:none;}
-.f1-sub-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:0.1em;padding:10px 16px;color:var(--red);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;}
+.f1-sub-tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(12.5px * var(--font-scale));letter-spacing:0.1em;padding:10px 16px;color:var(--red);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;}
 .f1-sub-tab.live-tab{color:var(--green);}
 .f1-sub-tab.active{border-bottom-color:var(--red);}
 .f1-sub-tab.live-tab.active{border-bottom-color:var(--green);}
@@ -34,28 +41,28 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .nascar-series-tab.active{color:var(--yellow);border-bottom-color:var(--yellow);}
 .main-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .next-race-banner{background:linear-gradient(135deg,#0d0d0d 0%,#1a0005 50%,#0d0d0d 100%);border-bottom:1px solid var(--border);padding:14px 16px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;}
-.next-race-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;color:var(--red);text-transform:uppercase;margin-bottom:4px;}
-.next-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:24px;color:var(--white);line-height:1;}
-.next-race-circuit{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);margin-top:3px;}
-.next-race-date{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px;}
+.next-race-label{font-family:'Barlow Condensed',sans-serif;font-size:calc(11px * var(--font-scale));font-weight:700;letter-spacing:0.15em;color:var(--red);text-transform:uppercase;margin-bottom:4px;}
+.next-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:calc(24px * var(--font-scale));color:var(--white);line-height:1;}
+.next-race-circuit{font-family:'Barlow Condensed',sans-serif;font-size:calc(13px * var(--font-scale));color:var(--muted);margin-top:3px;}
+.next-race-date{font-family:'Share Tech Mono',monospace;font-size:calc(12px * var(--font-scale));color:var(--muted);margin-top:2px;}
 .countdown-box{text-align:right;flex-shrink:0;}
 .countdown-num{font-family:'Share Tech Mono',monospace;font-size:30px;color:var(--yellow);line-height:1;}
 .countdown-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
-.section-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;padding:11px 16px 7px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:calc(11px * var(--font-scale));font-weight:700;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;padding:11px 16px 7px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .race-item{display:grid;grid-template-columns:44px 1fr auto;align-items:center;padding:9px 16px;border-bottom:1px solid #151515;cursor:pointer;transition:background 0.1s;gap:12px;}
 .race-item:active,.race-item.selected{background:#1a0005;}
 .round-badge{width:36px;height:36px;border-radius:4px;background:var(--surface2);border:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .round-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;color:var(--white);line-height:1;}
 .round-label{font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
-.race-item-country{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
-.race-item-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--white);line-height:1.1;margin-top:1px;}
-.race-item-date{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px;}
-.winner-name{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--text);text-align:right;}
+.race-item-country{font-family:'Barlow Condensed',sans-serif;font-size:calc(11px * var(--font-scale));color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+.race-item-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(16px * var(--font-scale));color:var(--white);line-height:1.1;margin-top:1px;}
+.race-item-date{font-family:'Share Tech Mono',monospace;font-size:calc(11px * var(--font-scale));color:var(--muted);margin-top:2px;}
+.winner-name{font-family:'Barlow Condensed',sans-serif;font-size:calc(14px * var(--font-scale));font-weight:700;color:var(--text);text-align:right;}
 .winner-flag{font-size:13px;text-align:right;display:block;}
 .winner-team{font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);text-align:right;}
 .results-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);}
-.results-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;color:var(--white);}
-.results-race-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.results-race-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:calc(22px * var(--font-scale));color:var(--white);}
+.results-race-sub{font-family:'Barlow Condensed',sans-serif;font-size:calc(12px * var(--font-scale));color:var(--muted);margin-top:3px;line-height:1.5;}
 .podium-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
 .podium-item{background:var(--surface2);padding:10px 8px;text-align:center;}
 .podium-pos{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--muted);margin-bottom:4px;}
@@ -87,7 +94,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .res-gap{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);text-align:right;}
 .res-gap.leader-gap{color:var(--yellow);font-family:'Barlow Condensed',sans-serif;font-size:11px;}
 .res-fastest{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);text-align:right;}
-.res-fastest.is-fastest{color:var(--green);font-weight:700;}
+.res-fastest.is-fastest{color:var(--fl-purple);font-weight:700;}
+.result-row.fl-row{border-left:2px solid var(--fl-purple);}
 .res-fl{font-size:11px;text-align:center;}
 .tire-sm{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-left:auto;}
 .tire-s{background:#c00020;color:#fff;}
@@ -144,8 +152,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .stat-val.yellow{color:var(--yellow);}
 .state-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 20px;text-align:center;}
 .state-icon{font-size:32px;opacity:0.4;}
-.state-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--text);}
-.state-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px;}
+.state-title{font-family:'Barlow Condensed',sans-serif;font-size:calc(20px * var(--font-scale));font-weight:700;color:var(--text);}
+.state-sub{font-size:calc(14px * var(--font-scale));color:var(--muted);line-height:1.6;max-width:280px;}
 .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:13px;padding:9px 16px;border-radius:20px;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:100;}
 .toast.show{opacity:1;}
 .spin-inline{display:inline-block;animation:spin 1s linear infinite;}
@@ -177,6 +185,48 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;disp
 .home-article-meta{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
 .home-article-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--surface2);border-radius:4px;display:block;margin-bottom:6px;}
 .home-article-credit{font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin:-4px 0 6px;line-height:1.3;font-style:italic;}
-.home-article-headline{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--white);line-height:1.25;margin:4px 0 5px;}
-.home-article-excerpt{font-family:'Barlow',sans-serif;font-size:12px;color:var(--muted);line-height:1.4;}
+.home-article-headline{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(15px * var(--font-scale));color:var(--white);line-height:1.25;margin:4px 0 5px;}
+.home-article-excerpt{font-family:'Barlow',sans-serif;font-size:calc(12px * var(--font-scale));color:var(--muted);line-height:1.4;}
 .home-footer{padding:14px 16px 22px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;}
+
+/* ── Session 7: series banner, home menu, back-link, highlights ──────────── */
+.tx-banner{background:linear-gradient(180deg,#1a0008 0%,#0a0a0a 100%);border-left:3px solid var(--red);padding:14px;margin:10px 8px 0;}
+.tx-banner-label{font-family:'Share Tech Mono',monospace;font-size:calc(11px * var(--font-scale));color:var(--red);letter-spacing:0.125em;text-transform:uppercase;}
+.tx-banner-title{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:calc(28px * var(--font-scale));color:var(--white);line-height:1.05;margin-top:4px;}
+.tx-banner-sub{font-family:'Share Tech Mono',monospace;font-size:calc(11px * var(--font-scale));color:var(--muted);letter-spacing:0.083em;margin-top:5px;}
+
+.tx-home-section{font-family:'Barlow Condensed',sans-serif;font-size:calc(11px * var(--font-scale));font-weight:700;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;padding:18px 16px 8px;}
+.tx-home-menu{display:flex;flex-direction:column;}
+.tx-home-row{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #151515;cursor:pointer;transition:background 0.1s;}
+.tx-home-row:active{background:#1a0005;}
+.tx-home-row:last-child{border-bottom:1px solid #151515;}
+.tx-home-num{font-family:'Share Tech Mono',monospace;font-size:calc(13px * var(--font-scale));color:var(--muted);letter-spacing:0.08em;}
+.tx-home-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(18px * var(--font-scale));color:var(--white);line-height:1.05;letter-spacing:0.02em;text-transform:uppercase;}
+.tx-home-desc{font-family:'Barlow',sans-serif;font-size:calc(11px * var(--font-scale));color:var(--muted);margin-top:2px;line-height:1.35;}
+.tx-home-chev{font-family:'Barlow Condensed',sans-serif;font-size:calc(20px * var(--font-scale));color:var(--muted);}
+
+.tx-back-link{font-family:'Barlow Condensed',sans-serif;font-size:calc(11px * var(--font-scale));font-weight:700;letter-spacing:0.12em;color:var(--red);text-transform:uppercase;padding:8px 16px 0;cursor:pointer;display:inline-block;}
+.tx-back-link:active{opacity:0.7;}
+
+.tx-highlights-header{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.tx-highlights-header-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:calc(18px * var(--font-scale));color:var(--white);}
+.tx-highlights-header-sub{font-family:'Barlow',sans-serif;font-size:calc(12px * var(--font-scale));color:var(--muted);margin-top:4px;line-height:1.45;}
+.tx-highlights-card{padding:14px 16px;border-bottom:1px solid #151515;}
+.tx-highlights-meta{font-family:'Barlow Condensed',sans-serif;font-size:calc(10px * var(--font-scale));color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;}
+.tx-highlights-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(16px * var(--font-scale));color:var(--white);margin-top:3px;}
+.tx-highlights-winner{font-family:'Barlow',sans-serif;font-size:calc(12px * var(--font-scale));color:var(--text);margin-top:4px;}
+.tx-highlights-watch-todo{font-family:'Share Tech Mono',monospace;font-size:calc(11px * var(--font-scale));color:var(--yellow);background:#1a1a05;border:1px dashed var(--yellow);padding:8px 10px;margin-top:8px;border-radius:3px;line-height:1.4;}
+.tx-highlights-watch-todo b{color:var(--yellow);font-weight:700;letter-spacing:0.05em;}
+
+.tx-race-highlights-link{font-family:'Barlow Condensed',sans-serif;font-size:calc(10px * var(--font-scale));font-weight:700;letter-spacing:0.1em;color:var(--fl-purple);text-transform:uppercase;padding:3px 7px;border:1px solid var(--fl-purple);border-radius:3px;display:inline-flex;align-items:center;gap:3px;cursor:pointer;margin-top:5px;}
+.tx-race-highlights-link:active{background:#1a0a2a;}
+
+.tx-pointer-card{padding:18px 16px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:center;}
+.tx-pointer-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(14px * var(--font-scale));color:var(--white);}
+.tx-pointer-sub{font-family:'Barlow',sans-serif;font-size:calc(12px * var(--font-scale));color:var(--muted);margin-top:5px;line-height:1.5;}
+.tx-pointer-cta{font-family:'Barlow Condensed',sans-serif;font-size:calc(11px * var(--font-scale));color:var(--red);letter-spacing:0.1em;margin-top:10px;cursor:pointer;text-transform:uppercase;}
+
+/* Literal spec class — color any element tagged `.fastest-lap` with the purple
+   accent. Existing `.lap-time.fastest-lap` rule above keeps its green for the
+   per-driver lap grid (selector specificity wins). */
+.fastest-lap{color:var(--fl-purple);font-weight:600;}
