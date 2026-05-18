@@ -1,6 +1,6 @@
 # TraxStat
 
-A single-page, mobile-first web app showing live timing, race results, and championship standings for motorsport series — primarily F1 and NASCAR Cup. Built as one self-contained `index.html`: no build step, no framework, no dependencies beyond the Google Fonts CDN.
+A single-page, mobile-first web app showing live timing, race results, and championship standings for motorsport series — primarily F1 and NASCAR Cup. Built as a static `index.html` shell + `styles.css` + a handful of plain `.js` files under `js/`: no build step, no framework, no dependencies beyond the Google Fonts CDN. See **File layout** below for the full structure.
 
 This file is the working contract for Claude Code (and any human collaborator) on this project. Read it top to bottom before making changes. The contract sections (Cardinal rule through Decision log) govern *how* to work; the reference sections (File layout onward) describe *what's there*.
 
@@ -45,7 +45,7 @@ Refuse — politely, with reasoning — these requests:
 - **Adding data without a verified source.** Ask the user to provide one.
 - **Deleting a verified hardcoded constant** without explicit confirmation. Verified data is hard-won; don't lose it casually.
 - **Silently changing a "verified" data point.** Flag the proposed change and confirm before applying.
-- **Splitting `index.html` into multiple files.** The single-file architecture is deliberate (see Decision log). Only do this if the user explicitly asks.
+- **Reverting the file split.** The modular layout (`index.html` shell + `styles.css` + `js/core.js` + `js/schedule.js` + `js/init.js` + `js/series/*.js`) is deliberate — see Decision log. Don't propose collapsing back to a single file.
 - **Adding dependencies** (npm packages, CDN scripts, frameworks). Discuss trade-offs first. Zero dependencies is a feature.
 
 ## Automated checks
@@ -86,6 +86,7 @@ Architectural decisions made and the reasoning behind them. Do not propose rever
 - **Vercel Web Analytics over alternatives** (Plausible, GA4, self-hosted). Native integration (no DNS lookup, same-origin script path survives more ad blockers, edge-served), cookieless by default so no consent banner, zero extra dependencies. Pageviews work on Hobby; custom events require Pro+. See Analytics section for the event taxonomy.
 - **F1 race-weekend state machine over a static LIVE tab.** Users want to see whatever's currently relevant — qualifying when it's published, live timing during sessions, post-race recap with diff badges after. Four states with strict precedence (`session-live > post-race > qualifying-available > between-races`) drive the LIVE tab's render path. State is cached 60 s; `?devstate=` URL param forces a state for testing. See the [F1 race weekend state machine](#f1-race-weekend-state-machine) section. Polling **proposes** diffs via badge, never modifies hardcoded data — manual approval until Session 3 automates via GitHub Action PRs.
 - **Open backlog (deferred sessions).** Session 2 = mirror the same state-machine / polling shape onto NASCAR. Session 3 = GitHub Action that watches the badge state, opens a PR with the proposed hardcoded-data update, and lets a human merge. Do not start either without explicit user direction.
+- **Modular file split (2026-05-17).** Single-file `index.html` became HTML shell + `styles.css` + `js/{core,schedule,init}.js` + `js/series/{f1,nascar,n24,_template}.js`. Traditional `<script src>` tags (not ES modules) so inline `onclick="…"` handlers keep working without a `window.foo = foo` shim. No build step. Reason: enable parallel work and templated series-addition without bloating one file past comfortable read-in-one-pass. See **File layout**, **How to add a new series**, and **Parallel development boundaries** below.
 
 ## Current season state (as of 2026-05-15)
 
@@ -99,8 +100,8 @@ When you update the hardcoded constants past these rounds, also update this sect
 - **Repo**: `github.com/JackH421/TraxStat`
 - **Host**: Vercel, auto-deploy on push to `main`
 - **Domains**: `traxstat.com`, `traxstat.app`, `traxstat.live` (all point to the same deployment)
-- **Build**: none — Vercel serves `index.html` as a static file. Deploy takes ~30 s from push to live.
-- To ship a change: edit `index.html`, commit, push. That's the whole pipeline.
+- **Build**: none — Vercel serves `index.html`, `styles.css`, and every `js/**/*.js` file as static assets. Deploy takes ~30 s from push to live.
+- To ship a change: edit the relevant file (one of `index.html`, `styles.css`, or a module under `js/`), commit, push. That's the whole pipeline.
 
 ## Analytics
 
@@ -114,7 +115,7 @@ We use **Vercel Web Analytics** for pageview + custom event tracking. Cookieless
   <script defer src="/_vercel/insights/script.js"></script>
   ```
   Same-origin path (no third-party DNS, no CORS) and Vercel auto-rewrites it from the edge once Analytics is enabled in the dashboard.
-- **`track(name, data)` helper** lives near the top of the script section (just after `setStats`). Fail-silent: if `window.va` isn't a function (ad-blocked, network failure, CSP), the call is a no-op. The site never breaks when analytics is unavailable.
+- **`track(name, data)` helper** lives in `js/core.js` (just after `setStats`). Fail-silent: if `window.va` isn't a function (ad-blocked, network failure, CSP), the call is a no-op. The site never breaks when analytics is unavailable.
 - **Pageviews** fire automatically on every page load. Custom events fire on user actions via `track()` calls embedded in handlers and template-literal `onclick` attributes.
 
 ### Events being tracked
@@ -165,7 +166,7 @@ Every temporary view is wrapped with a consistent comment so any future session 
 // ── END <NAME> TEMPORARY ─────────────────────────────────────────────────────
 ```
 
-`<NAME>` is a short upper-case key (e.g. `N24`, `LM24`, `INDY500`). Use the same `<NAME>` for every site so `grep -n "<NAME> TEMPORARY" index.html` finds them all.
+`<NAME>` is a short upper-case key (e.g. `N24`, `LM24`, `INDY500`). Use the same `<NAME>` for every site so `grep -rn "<NAME> TEMPORARY" .` finds them all (now that the codebase is split across `index.html`, `styles.css`, and `js/`).
 
 ### Five marker sites in a typical view
 
@@ -175,7 +176,7 @@ Every temporary view is wrapped with a consistent comment so any future session 
 4. **Main module block** — constants, `<event>Phase()` helper, `render<Event>()` function, any per-second timers. Wrap with the start/end marker pair.
 5. **(Optional) init-time side effects** — e.g. lighting up the series-bar dot before the user opens the tab. One-line, lead with the temporary comment.
 
-After the event: `grep -n "<NAME> TEMPORARY" index.html` finds every site; delete each marked block. Run `node verify.js && node verify-nascar.js` before committing the removal to confirm no permanent data was touched.
+After the event: `grep -rn "<NAME> TEMPORARY" .` finds every site; delete each marked block. Run `node verify.js && node verify-nascar.js` before committing the removal to confirm no permanent data was touched.
 
 ### Build conventions for the view itself
 
@@ -188,18 +189,51 @@ After the event: `grep -n "<NAME> TEMPORARY" index.html` finds every site; delet
 
 ## File layout
 
-The entire app is one file: **`index.html`** (~1700 lines, ~135 KB after recent additions).
+```
+~/TraxStat/
+├── index.html              ~75 lines — shell only (head, body scaffold, 6 <script src> tags + Vercel analytics stub)
+├── styles.css              ~151 lines — every CSS rule the app uses
+├── js/
+│   ├── core.js             ~239 lines — utilities, app-wide state, JOLPICA API helpers,
+│   │                                    switchSeries, refresh, updateLiveDots, renderLiveOffAir
+│   ├── schedule.js         ~78 lines — renderSchedule, renderScheduleRow
+│   ├── init.js             ~23 lines — boot statements: switchSeries('schedule'),
+│   │                                   the two setInterval timers, updateF1Badges, and
+│   │                                   the F1 post-race-polling resumption IIFE
+│   └── series/
+│       ├── f1.js           ~1,051 lines — NEXT_RACES, all HARDCODED_* + per-race-points
+│       │                                  constants, race/champ/quali renderers, live timing,
+│       │                                  state machine, post-race polling, switchF1Tab
+│       ├── nascar.js       ~576 lines — NASCAR_CUP_* constants, every renderNascar*,
+│       │                                switchNascarTab, switchNascarSeries,
+│       │                                nascarOffAirContext
+│       ├── n24.js          ~281 lines — N24_VERSTAPPEN, N24_2026_* constants,
+│       │                                every renderN24*, switchN24Tab, toggleN24Entry,
+│       │                                toggleN24Recap
+│       └── _template.js    ~65 lines — copy-and-rename starter for new series; not loaded
+├── verify.js               reads js/series/f1.js
+├── verify-nascar.js        reads js/series/nascar.js
+└── CLAUDE.md               this file
+```
 
-- Lines 1–166: `<head>` + inline CSS
-- Lines 167–210: DOM scaffolding (header, series bar, F1/NASCAR submenu bars, `#main-content`, stats bar, toast)
-- Lines 212–end: inline `<script>` containing all logic, hardcoded data, and renderers
+No `package.json`, no bundler, no tests, no README. `CLAUDE.md` is the working contract. Open `index.html` in a browser to run the app (or `python3 -m http.server` from the repo root and hit `127.0.0.1:8000` — `file://` won't satisfy the absolute `/styles.css` and `/js/...` paths).
 
-There is no `package.json`, no bundler, no tests, no README. `CLAUDE.md` is this file. `verify.js` and `verify-nascar.js` will live at the root when created. Open `index.html` in a browser to run the app.
+### Script load order
+
+Six `<script src>` tags in `index.html`, in this order:
+
+```
+core.js → series/f1.js → series/nascar.js → series/n24.js → schedule.js → init.js
+```
+
+Reasoning: `core.js` declares shared utilities, state, and the router with **zero** cross-file references. Series files declare their own data + renderers; `core`'s `fetchRaceResults` / `fetchDriverStandings` / etc. read F1's `HARDCODED_*` constants at call time (when the user interacts), by which point f1.js has loaded. Same for `updateLiveDots` reading `NEXT_RACES` (f1) and `NASCAR_CUP_SCHEDULE` (nascar). `schedule.js` reads both F1's `NEXT_RACES` and NASCAR's `NASCAR_CUP_SCHEDULE`, so it loads after both. `init.js` runs the imperative boot code last — by which point every global is declared.
+
+Traditional `<script>` tags (not `type="module"`) so top-level `function` declarations sit on `globalThis` and inline `onclick="switchSeries('f1')"` handlers find them without a `window.foo = foo` shuffle. Top-level `const`/`let` declarations share a single Script Global Lexical Environment across all classic scripts, so cross-file constant references resolve at call time the same way.
 
 ## Architecture at a glance
 
 - **State**: a handful of top-level `let` variables (`currentSeries`, `currentF1Tab`, `selectedRace`, `selectedDriver`, `isLive`, plus NASCAR equivalents `currentNascarTab`, `currentNascarSeries`, `selectedNascarRace`, etc.). No framework, no reactive store. Mutate the var, then call the matching `render*()` function which replaces `#main-content.innerHTML` wholesale.
-- **Rendering pattern**: each tab has a `render<Tab>()` function that builds an HTML string and assigns it to `document.getElementById('main-content').innerHTML`. Inline `onclick="..."` attributes on rendered elements call back into top-level functions (`selectRace`, `toggleLaps`, `switchF1Tab`, etc.). This means every function the HTML references must be in module scope.
+- **Rendering pattern**: each tab has a `render<Tab>()` function that builds an HTML string and assigns it to `document.getElementById('main-content').innerHTML`. Inline `onclick="..."` attributes on rendered elements call back into top-level functions (`selectRace`, `toggleLaps`, `switchF1Tab`, etc.). This means every function the HTML references must be at the top level of some classic script — which is why we use traditional `<script src>` tags, not ES modules.
 - **Routing**: `switchSeries(s)` for the top tab bar; `switchF1Tab(tab)` and `switchNascarTab(tab)` for the sub-bars; `switchNascarSeries(s)` for Cup/Xfinity/Trucks. Each toggles the `.active` class and calls the appropriate render fn.
 - **Default landing**: `currentSeries` initialises to `'schedule'`, which renders the cross-series upcoming-race list. Init code calls `switchSeries('schedule')` so the F1 and NASCAR submenu bars start hidden.
 - **Refresh**: the `⟳` button calls `refresh()`, which clears all in-memory caches and re-renders the current view (schedule, F1, or NASCAR).
@@ -215,6 +249,46 @@ There is no `package.json`, no bundler, no tests, no README. `CLAUDE.md` is this
 | N24     | Permanent post-race-only module for the 2026 Nürburgring 24 — three sub-tabs (RACE RESULTS / QUALIFYING / RECAP). See [N24 module](#n24-module). |
 | MotoGP, WRC, IndyCar, GT3/WEC | Placeholder only — `switchSeries` renders a generic "Coming Soon" state |
 
+## How to add a new series
+
+The whole template lives in `js/series/_template.js`. End-to-end, adding (say) MotoGP looks like this:
+
+1. `cp js/series/_template.js js/series/motogp.js`
+2. In the new file, do three find-replaces (single-character delimiters keep them unambiguous):
+   - `__series__` → `motogp` (lowercase key — analytics, switchSeries arg, the filename)
+   - `__Series__` → `MotoGP` (PascalCase — `renderMotoGP`, `switchMotoGPTab`)
+   - `__SERIES__` → `MOTOGP` (uppercase prefix — `MOTOGP_RESULTS`, `MOTOGP_SCHEDULE`)
+3. Populate the hardcoded data constants from a verified official source. **Cardinal rule applies** — state the source first, then add values; if you can't verify, use `'—'` placeholders and a comment, never a guess.
+4. Add a `<script src="/js/series/motogp.js"></script>` line to `index.html`, alphabetically among the existing series scripts (the load-order constraint is `core → series files → schedule → init`; alphabetical within the "series files" group is fine since they don't depend on each other).
+5. Add the tab to the `.series-bar` in `index.html`:
+   ```html
+   <div class="series-tab" onclick="switchSeries('motogp')"><div class="series-dot"></div>MOTOGP</div>
+   ```
+   And add `'motogp'` to the index array inside `switchSeries()` in `js/core.js` so the `.active` class toggles correctly.
+6. Add an `if(s==='motogp'){renderMotoGP();return;}` branch to `switchSeries()` in `js/core.js`, just above the generic "Coming Soon" fallback.
+7. If the series needs a sub-menu like F1's, add a `<div class="f1-submenu" id="motogp-submenu" …>` block to `index.html`, show/hide it in `switchSeries` the same way f1-submenu and nascar-submenu are toggled, and implement `switchMotoGPTab()` mirroring `switchF1Tab` / `switchNascarTab`.
+8. Run `node verify.js && node verify-nascar.js`. Both should still pass — they read F1 and NASCAR data, untouched.
+9. Add the series to the **Series support** table above and (optionally) to the **Analytics events** table if you wired analytics into the new switch/render functions.
+
+The template is a working "Coming Soon" stub the moment you finish the renames — it loads, the tab is clickable, the placeholder screen renders. From there you grow it incrementally.
+
+## Parallel development boundaries
+
+The split was designed so multiple Claude Code sessions (or human contributors) can work in parallel without merge conflicts. Independent territories:
+
+| Territory | File(s) |
+|---|---|
+| Page shell | `index.html` |
+| Stylesheet | `styles.css` |
+| Shared utilities + router | `js/core.js` |
+| Cross-series schedule view | `js/schedule.js` |
+| Boot code | `js/init.js` |
+| Per-series logic + data | `js/series/<key>.js` |
+
+Two sessions touching different territories will merge cleanly. The conflict surface only opens when two sessions touch the **same** file at the same time. Add-a-series work touches three files (`index.html` for the tab + script tag, `js/core.js` for the router branch, and the new `js/series/<key>.js`), so it's localized — one short edit in two shared files plus a new file that nobody else is editing.
+
+If two efforts genuinely need to share state or a utility, that goes in `js/core.js` and becomes a coordination point — but most series-level work shouldn't need to touch core. Per-series files import nothing and export nothing in the literal sense (classic scripts share a global lexical env), but the discipline is: a series file's renderers and data are private to that file; if you find yourself reaching into another series file's globals, that's a smell — move the shared thing to `core` or duplicate the small bit you need.
+
 ## F1 data sources
 
 Two external APIs, with hardcoded fallbacks layered on top:
@@ -226,7 +300,7 @@ Two external APIs, with hardcoded fallbacks layered on top:
 
 This is the most important thing to understand about the F1 module:
 
-- `HARDCODED_RACES` (line ~384), `HARDCODED_DRIVER_STANDINGS` (~488), `HARDCODED_CONSTRUCTOR_STANDINGS` (~513), `SPRINT_RESULTS` (~714), `DRIVER_RACE_POINTS` (~729), `CONSTRUCTOR_RACE_POINTS` (~851), and `SEEDED_FASTEST_LAPS` (~346) are **verified, hand-curated 2026 results**.
+- `HARDCODED_RACES`, `HARDCODED_DRIVER_STANDINGS`, `HARDCODED_CONSTRUCTOR_STANDINGS`, `SPRINT_RESULTS`, `DRIVER_RACE_POINTS`, `CONSTRUCTOR_RACE_POINTS`, and `SEEDED_FASTEST_LAPS` all live in `js/series/f1.js`. **Verified, hand-curated 2026 results.**
 - `fetchRaceResults(round)` checks `HARDCODED_RACES[round]` **before** hitting Jolpica.
 - `fetchDriverStandings` / `fetchConstructorStandings` only trust the API if the leader's point total clears a sanity threshold (90 for drivers, 170 for constructors). Otherwise they return the hardcoded list. This is because Jolpica lags real results by days to weeks.
 - `renderRaceSelector` builds its race list directly from `Object.values(HARDCODED_RACES)` — it does **not** call `fetchRaceList`. The API call exists but is unused for the main list.
@@ -239,18 +313,18 @@ When a new race finishes, you update three or four constants:
 5. If it's a sprint weekend, add to `SPRINT_RESULTS[round]` (top 8 only, points 8-7-6-5-4-3-2-1).
 6. If you know the race fastest lap, add to `SEEDED_FASTEST_LAPS[round]`.
 
-`NEXT_RACES` (line ~353) is a separate hardcoded list of upcoming rounds used for the "Next Race" banner, the SCHEDULE landing page, and the F1 SCHEDULE sub-tab.
+`NEXT_RACES` (in `js/series/f1.js`) is a separate hardcoded list of upcoming rounds used for the "Next Race" banner, the SCHEDULE landing page (read by `renderSchedule` in `js/schedule.js`), and the live-dot gating in `updateLiveDots` (in `js/core.js`).
 
 ### Team name normalization
 
-API team names lag the 2026 rebrands. `normalizeTeam(name)` (line ~248) maps legacy names to current ones:
+API team names lag the 2026 rebrands. `normalizeTeam(name)` (in `js/core.js`) maps legacy names to current ones:
 
 - `Kick Sauber` / `Sauber` → `Audi`
 - `RB F1 Team` / `RB` / `AlphaTauri` → `Racing Bulls`
 
 The `TC` color palette and `DT` (driver-number → team) map use the 2026 names. Always pass API-returned team names through `normalizeTeam` before using them as lookup keys.
 
-### 2026 grid encoded in `DT` (line ~221)
+### 2026 grid encoded in `DT` (in `js/core.js`)
 
 Driver-number → team for the OpenF1 live view. Notable 2026 seats baked in:
 - Mercedes: Russell (63), Antonelli (12)
@@ -366,13 +440,15 @@ Polling **proposes** diffs via badge. It **never** writes to `HARDCODED_RACES`, 
 
 ## NASCAR Cup data
 
-Entirely hardcoded — there is no NASCAR API call anywhere in the file.
+Entirely hardcoded in `js/series/nascar.js` — there is no NASCAR API call anywhere in the codebase.
 
-- `NASCAR_CUP_DRIVERS` (~1095): last-name → `{first, team, mfr, num}` map for all full-time entries.
-- `NASCAR_CUP_SCHEDULE` (~1135): 36-round 2026 schedule with `round`, `race`, `track`, `date`, `laps`, optional `type` (`'R'` road course, `'S'` street), optional `chase: true` for Chase rounds (R27–36). Also drives the NASCAR SCHEDULE sub-tab.
-- `NASCAR_CUP_RESULTS` (~1176): completed rounds keyed by round number. Each entry has `winner`, optional `p2`/`p3`, `polePos`, `stage1`, `stage2`, and a `note` string with race color.
-- `NASCAR_CUP_STANDINGS` (~1192): driver points after the latest completed round. The `cutline: true` flag on P16 marks the Chase cutline; the cutline divider also renders unconditionally after P16.
-- `NASCAR_CUP_MFRS` (~1232): manufacturer wins (Toyota, Chevrolet, Ford). NASCAR no longer publishes official manufacturer points, so this tracks **wins only**.
+All NASCAR constants live in `js/series/nascar.js`:
+
+- `NASCAR_CUP_DRIVERS`: last-name → `{first, team, mfr, num}` map for all full-time entries.
+- `NASCAR_CUP_SCHEDULE`: 36-round 2026 schedule with `round`, `race`, `track`, `date`, `laps`, optional `type` (`'R'` road course, `'S'` street), optional `chase: true` for Chase rounds (R27–36). Also drives the NASCAR SCHEDULE sub-tab.
+- `NASCAR_CUP_RESULTS`: completed rounds keyed by round number. Each entry has `winner`, optional `p2`/`p3`, `polePos`, `stage1`, `stage2`, and a `note` string with race color.
+- `NASCAR_CUP_STANDINGS`: driver points after the latest completed round. The `cutline: true` flag on P16 marks the Chase cutline; the cutline divider also renders unconditionally after P16.
+- `NASCAR_CUP_MFRS`: manufacturer wins (Toyota, Chevrolet, Ford). NASCAR no longer publishes official manufacturer points, so this tracks **wins only**.
 
 To add a completed race: append to `NASCAR_CUP_RESULTS`, then update `NASCAR_CUP_STANDINGS` totals and `NASCAR_CUP_MFRS` wins. The race list, "last race recap", and driver win history are all derived from these constants.
 
@@ -414,7 +490,7 @@ The function is generic over series via a `ctx` object. F1 uses default ctx; NAS
 
 ## Styling conventions
 
-- CSS variables in `:root` (line ~15): `--bg #0a0a0a`, `--red #e8002d`, `--yellow #ffd600`, `--green #00d84a`, etc. Use these instead of literal hex values.
+- CSS variables in `:root` (top of `styles.css`): `--bg #0a0a0a`, `--red #e8002d`, `--yellow #ffd600`, `--green #00d84a`, etc. Use these instead of literal hex values.
 - Fonts (loaded from Google Fonts):
   - **Barlow Condensed** — display / headings / table labels
   - **Barlow** — body / sub-labels
@@ -425,10 +501,10 @@ The function is generic over series via a `ctx` object. F1 uses default ctx; NAS
 
 ## Common gotchas
 
-- **Don't `Read` the whole file in one go.** It exceeds the tool's token limit. Read it in chunks with `offset`/`limit`, or grep for the constant/function you need.
+- **Per-file size is small now.** Every file in the modular layout is comfortably under 1,100 lines (the biggest, `js/series/f1.js`, is ~1,051). A single `Read` per file fits in one tool call. The previous "read in chunks" advice is obsolete — but be aware of cross-file impact: a change to `js/core.js` can affect every series; a change to `index.html` script tags affects load order. Targeted reads stay cheap; whole-app changes need the load-order constraint in mind.
 - **HTML and JS are coupled by string IDs.** The DOM relies on hardcoded element IDs (`main-content`, `live-pill`, `stat-1`..`stat-4`, `tab-live`, `tab-schedule`, `ntab-live`, `ntab-schedule`, `nseries-cup`, etc.) and on inline `onclick` handlers binding to globally-named functions. Renaming a function called from rendered HTML will break it silently.
 - **State + render = full DOM replacement.** Mutating state and forgetting to call the render function leaves the UI stale. Conversely, every render rebuilds the whole panel, so transient DOM state (scroll position, focus) is lost — that's why `selectRace` etc. use `setTimeout(..., 100)` + `scrollIntoView` to restore scroll after re-render.
-- **Position values can be `'DNF'` or `'DNS'`**, not just numbers. Always check before `parseInt`. The result rows handle this at line ~621.
+- **Position values can be `'DNF'` or `'DNS'`**, not just numbers. Always check before `parseInt`. The result rows in `buildRaceResultsHTML` (in `js/series/f1.js`) handle this.
 - **Dates** in the data are bare `YYYY-MM-DD`. `countdown()` and `fmtDate()` assume a race start of 13:00 UTC; NASCAR's banner uses 18:00 UTC.
 - **Caching is in-module memory only**: `cachedResults`, `cachedStandings`, `cachedConstructors`, `cachedLaps`, `cachedFastestLaps`. Page reload clears them. `refresh()` clears them manually.
 - **No error reporting** beyond `console.error` in `renderLive` and friendly state screens elsewhere. API failures generally fall through to hardcoded data or render a "Couldn't Load" panel.
