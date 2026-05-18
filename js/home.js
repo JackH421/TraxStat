@@ -29,11 +29,13 @@
 const HOMEPAGE_FEATURED = null;
 
 // HOMEPAGE_ARTICLES — 8 real verified articles seeded 2026-05-17. Session 5
-// aggregator will replace/extend this list at 8am ET daily. Cardinal rule:
-// every entry must have a real, verifiable source URL + publication. Never
-// invent headlines or substitute fake URLs.
+// aggregator (.github/workflows/daily-news-aggregator.yml) replaces this list
+// daily at 8am ET via PR. Cardinal rule: every entry must have a real,
+// verifiable source URL + publication. Never invent headlines or substitute
+// fake URLs.
 // Shape:
-//   { id, series, headline, source, url, publishedAt (ISO Z), excerpt }
+//   { id, series, headline, source, url, publishedAt (ISO Z), excerpt,
+//     imageUrl (optional, '' if no og:image), imageCredit (optional) }
 // 'series' enum: f1 | nascar | n24 | motogp | wrc | indycar | wec
 const HOMEPAGE_ARTICLES = [
   {
@@ -43,7 +45,9 @@ const HOMEPAGE_ARTICLES = [
     source: 'Sky Sports F1',
     url: 'https://www.skysports.com/f1/news/12433/13542703/canadian-gp-2026-sprint-weekend-dates-schedule-weather-uk-start-time-and-how-to-watch-or-stream-f1-race-in-montreal-live-on-sky-sports',
     publishedAt: '2026-05-15T08:00:00Z',
-    excerpt: '17-year-old Mercedes driver Kimi Antonelli has won three consecutive Grands Prix, building a 20-point championship lead over teammate George Russell ahead of the Canadian GP.'
+    excerpt: '17-year-old Mercedes driver Kimi Antonelli has won three consecutive Grands Prix, building a 20-point championship lead over teammate George Russell ahead of the Canadian GP.',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a2',
@@ -52,7 +56,9 @@ const HOMEPAGE_ARTICLES = [
     source: 'GPFans',
     url: 'https://www.gpfans.com/en/f1-news/1083670/f1-mercedes-upgrades-2026-canadian-grand-prix-ferrari-race-starts/',
     publishedAt: '2026-05-14T08:15:00Z',
-    excerpt: 'Mercedes has revealed a significant upgrade package for the Canadian Grand Prix targeting turbo lag and wheelspin issues that have allowed Ferrari to gain off the line all season.'
+    excerpt: 'Mercedes has revealed a significant upgrade package for the Canadian Grand Prix targeting turbo lag and wheelspin issues that have allowed Ferrari to gain off the line all season.',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a3',
@@ -61,7 +67,9 @@ const HOMEPAGE_ARTICLES = [
     source: 'ESPN F1',
     url: 'https://www.espn.com/f1/story/_/id/48638259/canadian-grand-prix-2026-race-f1-sprint-start-s-how-watch-schedule-usa-tv-channel-live-stream-predictions-results',
     publishedAt: '2026-05-16T12:00:00Z',
-    excerpt: 'Sunday\'s Canadian Grand Prix has been pushed back to 4pm local (21:00 BST) to avoid overlapping with the Indianapolis 500, which runs earlier the same day.'
+    excerpt: 'Sunday\'s Canadian Grand Prix has been pushed back to 4pm local (21:00 BST) to avoid overlapping with the Indianapolis 500, which runs earlier the same day.',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a4',
@@ -70,7 +78,9 @@ const HOMEPAGE_ARTICLES = [
     source: 'Sportsnaut',
     url: 'https://sportsnaut.com/f1/formula-1-canadian-grand-prix-storylines-antonelli-ferrari',
     publishedAt: '2026-05-11T10:00:00Z',
-    excerpt: 'Max Verstappen sits seventh in the championship with 26 points and has openly questioned whether he wants to keep racing under the 2026 regulations, calling the new cars "a joke."'
+    excerpt: 'Max Verstappen sits seventh in the championship with 26 points and has openly questioned whether he wants to keep racing under the 2026 regulations, calling the new cars "a joke."',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a5',
@@ -79,7 +89,9 @@ const HOMEPAGE_ARTICLES = [
     source: 'NASCAR.com',
     url: 'https://www.nascar.com/news-media/2026/05/13/katherine-legge-to-attempt-historic-double-at-indianapolis-500-coca-cola-600/',
     publishedAt: '2026-05-13T14:00:00Z',
-    excerpt: 'Katherine Legge will become the first woman ever to attempt The Double — the Indianapolis 500 and Coca-Cola 600 on the same day — driving the #11 for HMD Motorsports and the #78 for Live Fast Motorsports.'
+    excerpt: 'Katherine Legge will become the first woman ever to attempt The Double — the Indianapolis 500 and Coca-Cola 600 on the same day — driving the #11 for HMD Motorsports and the #78 for Live Fast Motorsports.',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a6',
@@ -88,7 +100,9 @@ const HOMEPAGE_ARTICLES = [
     source: 'NASCAR.com',
     url: 'https://www.nascar.com/news-media/2026/05/01/coca-cola-company-partners-with-23xi-racing-bubba-wallace-rejoins-coca-cola-racing-family/',
     publishedAt: '2026-05-01T13:00:00Z',
-    excerpt: 'The Coca-Cola Company has joined 23XI Racing as the exclusive beverage partner for Bubba Wallace and the #23 team, marking Wallace\'s return to the Coca-Cola Racing Family.'
+    excerpt: 'The Coca-Cola Company has joined 23XI Racing as the exclusive beverage partner for Bubba Wallace and the #23 team, marking Wallace\'s return to the Coca-Cola Racing Family.',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a7',
@@ -97,7 +111,9 @@ const HOMEPAGE_ARTICLES = [
     source: 'Heavy Sports',
     url: 'https://heavy.com/sports/nascar/kurt-busch-teases-nascar-return-coca-cola-600-hint/',
     publishedAt: '2026-05-13T18:00:00Z',
-    excerpt: 'NASCAR champion Kurt Busch hinted at a potential race announcement during Coca-Cola 600 week, though no series, event, or entry has been confirmed.'
+    excerpt: 'NASCAR champion Kurt Busch hinted at a potential race announcement during Coca-Cola 600 week, though no series, event, or entry has been confirmed.',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a8',
@@ -106,9 +122,18 @@ const HOMEPAGE_ARTICLES = [
     source: 'Racing News 365 / TraxStat verified',
     url: 'https://traxstat.com',
     publishedAt: '2026-05-12T15:00:00Z',
-    excerpt: 'Max Verstappen\'s Verstappen Racing #3 retired from the Nürburgring 24 Hours in P38 after a driveshaft failure ended a strong run that had the car leading the GT3 class 3.5 hours from the finish.'
+    excerpt: 'Max Verstappen\'s Verstappen Racing #3 retired from the Nürburgring 24 Hours in P38 after a driveshaft failure ended a strong run that had the car leading the GT3 class 3.5 hours from the finish.',
+    imageUrl: '',
+    imageCredit: ''
   }
 ];
+
+// HOMEPAGE_ALTERNATES — daily aggregator (Session 5) proposes 4 alternates
+// alongside the 8 primary articles in HOMEPAGE_ARTICLES. Reviewer can swap
+// any primary for an alternate by editing the PR before merge. Same shape
+// as HOMEPAGE_ARTICLES entries. Not rendered on the page itself — exists
+// purely as a write target for the aggregator.
+const HOMEPAGE_ALTERNATES = [];
 
 // N24 race-end metadata. Not present as a constant in n24.js, but the
 // 16–17 May 2026 date is stated in that file's header comment (verified).
@@ -325,9 +350,14 @@ function renderHomeArticles(){
     const accent=getSeriesAccentColor(a.series);
     const label=getSeriesLabel(a.series);
     const when=formatRelativeTime(a.publishedAt);
+    // Image block is opt-in: only renders when imageUrl is a non-empty string.
+    // onerror hides the <img> so a dead asset URL collapses the slot cleanly
+    // instead of showing a broken-image icon.
+    const imgHTML=a.imageUrl?`<img class="home-article-img" src="${a.imageUrl}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling&&this.nextElementSibling.classList.contains('home-article-credit')&&(this.nextElementSibling.style.display='none');">${a.imageCredit?`<div class="home-article-credit">${a.imageCredit}</div>`:''}`:'';
     return`<div class="home-article" onclick="openHomeArticle('${a.id}')">
       <div class="home-article-stripe" style="background:${accent};"></div>
       <div>
+        ${imgHTML}
         <div class="home-article-meta"><span style="color:${accent};">${label}</span><span>  ·  ${a.source}</span><span>  ·  ${when}</span></div>
         <div class="home-article-headline">${a.headline}</div>
         <div class="home-article-excerpt">${a.excerpt}</div>
