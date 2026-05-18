@@ -9,7 +9,7 @@
 //                         most-recent first. HOMEPAGE_FEATURED pins one card
 //                         to the leftmost slot.
 //   2. CHAMPIONSHIPS    — F1 and NASCAR title leaders + gap to P2.
-//   3. NEWS FEED        — 10 article cards from HOMEPAGE_ARTICLES.
+//   3. NEWS FEED        — 8 article cards from HOMEPAGE_ARTICLES.
 //   4. VIDEO HIGHLIGHTS — TODO: Session 5 hook, intentionally not rendered.
 //
 // Upcoming races live on the RACE SCHEDULE tab only — removed from HOME on
@@ -17,10 +17,9 @@
 //
 // Cardinal rule: featured + championship data read from existing verified
 // constants (HARDCODED_RACES, HARDCODED_DRIVER_STANDINGS, NASCAR_CUP_RESULTS,
-// NASCAR_CUP_STANDINGS, N24_2026_RESULTS). Article entries below are a mix
-// of real verified articles (a1–a8) and clearly-marked placeholder stubs
-// (a9–a10) awaiting real content — Session 5's aggregator overwrites stubs
-// first. Never replace placeholder URLs with invented real ones.
+// NASCAR_CUP_STANDINGS, N24_2026_RESULTS). All 8 article entries below are
+// real verified articles — Session 5's daily aggregator will replace/extend
+// this list. Never substitute invented real-looking articles.
 
 // ── HOME CONSTANTS ───────────────────────────────────────────────────────────
 // HOMEPAGE_FEATURED: null = pure auto carousel. If set to a single
@@ -29,12 +28,10 @@
 // auto-derived cards still render after it. Future automation may write here.
 const HOMEPAGE_FEATURED = null;
 
-// HOMEPAGE_ARTICLES — a1–a8: real verified articles seeded 2026-05-17.
-// a9–a10: clearly-marked placeholder stubs awaiting real verified content
-// (Session 5 aggregator should overwrite these first). Cardinal rule:
-// every real entry must have a real, verifiable source URL + publication.
-// Never invent headlines or substitute fake URLs for the stubs — when
-// replacing a stub, source the URL the same way as the seeded entries.
+// HOMEPAGE_ARTICLES — 8 real verified articles seeded 2026-05-17. Session 5
+// aggregator will replace/extend this list at 8am ET daily. Cardinal rule:
+// every entry must have a real, verifiable source URL + publication. Never
+// invent headlines or substitute fake URLs.
 // Shape:
 //   { id, series, headline, source, url, publishedAt (ISO Z), excerpt }
 // 'series' enum: f1 | nascar | n24 | motogp | wrc | indycar | wec
@@ -110,24 +107,6 @@ const HOMEPAGE_ARTICLES = [
     url: 'https://traxstat.com',
     publishedAt: '2026-05-12T15:00:00Z',
     excerpt: 'Max Verstappen\'s Verstappen Racing #3 retired from the Nürburgring 24 Hours in P38 after a driveshaft failure ended a strong run that had the car leading the GT3 class 3.5 hours from the finish.'
-  },
-  {
-    id: 'a9',
-    series: 'wec',
-    headline: '[STUB — REPLACE] Awaiting verified WEC article',
-    source: '(Awaiting verified content)',
-    url: 'https://example.com',
-    publishedAt: '2026-05-10T12:00:00Z',
-    excerpt: '[STUB — REPLACE] Placeholder until a real verified article is sourced. Session 5 aggregator should overwrite this first.'
-  },
-  {
-    id: 'a10',
-    series: 'indycar',
-    headline: '[STUB — REPLACE] Awaiting verified IndyCar article',
-    source: '(Awaiting verified content)',
-    url: 'https://example.com',
-    publishedAt: '2026-05-09T12:00:00Z',
-    excerpt: '[STUB — REPLACE] Placeholder until a real verified article is sourced. Session 5 aggregator should overwrite this first.'
   }
 ];
 
