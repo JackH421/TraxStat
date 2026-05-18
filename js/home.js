@@ -8,8 +8,10 @@
 //                         or manually pinned via HOMEPAGE_FEATURED.
 //   2. CHAMPIONSHIPS    — F1 and NASCAR title leaders + gap to P2.
 //   3. NEWS FEED        — 8 article cards from HOMEPAGE_ARTICLES.
-//   4. COMING UP        — next 3 races across all series (renderScheduleRow).
-//   5. VIDEO HIGHLIGHTS — TODO: Session 5 hook, intentionally not rendered.
+//   4. VIDEO HIGHLIGHTS — TODO: Session 5 hook, intentionally not rendered.
+//
+// Upcoming races live on the RACE SCHEDULE tab only — removed from HOME on
+// 2026-05-17 to avoid duplicating that view.
 //
 // Cardinal rule: featured + championship data read from existing verified
 // constants (HARDCODED_RACES, HARDCODED_DRIVER_STANDINGS, NASCAR_CUP_RESULTS,
@@ -24,36 +26,86 @@
 // winnerDisplay, winnerSub, podium, ctaTab}). Future automation writes here.
 const HOMEPAGE_FEATURED = null;
 
-// 8-card news feed. PLACEHOLDER values intentional — Session 5 aggregator
-// replaces these at 8am ET daily. Cardinal rule: never substitute invented
-// real-looking headlines/URLs. Shape:
+// HOMEPAGE_ARTICLES: 8 real verified articles seeded 2026-05-17. Session 5
+// aggregator will replace/extend this list at 8am ET daily. Cardinal rule:
+// every entry must have a real, verifiable source URL + publication. Never
+// invent headlines or substitute fake URLs.
+// Shape:
 //   { id, series, headline, source, url, publishedAt (ISO Z), excerpt }
 // 'series' enum: f1 | nascar | n24 | motogp | wrc | indycar | wec
 const HOMEPAGE_ARTICLES = [
-  { id:'a1', series:'f1',      headline:'[PLACEHOLDER] Sample F1 headline #1',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-17T10:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
-  { id:'a2', series:'nascar',  headline:'[PLACEHOLDER] Sample NASCAR headline #2',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-17T07:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
-  { id:'a3', series:'n24',     headline:'[PLACEHOLDER] Sample N24 headline #3',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-16T15:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
-  { id:'a4', series:'f1',      headline:'[PLACEHOLDER] Sample F1 headline #4',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-15T12:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
-  { id:'a5', series:'nascar',  headline:'[PLACEHOLDER] Sample NASCAR headline #5',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-14T12:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
-  { id:'a6', series:'motogp',  headline:'[PLACEHOLDER] Sample MotoGP headline #6',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-13T12:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
-  { id:'a7', series:'wec',     headline:'[PLACEHOLDER] Sample WEC headline #7',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-12T12:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
-  { id:'a8', series:'indycar', headline:'[PLACEHOLDER] Sample IndyCar headline #8',
-    source:'Source TBD', url:'https://example.com', publishedAt:'2026-05-11T12:00:00Z',
-    excerpt:'[PLACEHOLDER] Replace with real article excerpt before going live.' },
+  {
+    id: 'a1',
+    series: 'f1',
+    headline: 'Antonelli wins third straight Grand Prix in Miami, extends championship lead to 20 points',
+    source: 'Sky Sports F1',
+    url: 'https://www.skysports.com/f1/news/12433/13542703/canadian-gp-2026-sprint-weekend-dates-schedule-weather-uk-start-time-and-how-to-watch-or-stream-f1-race-in-montreal-live-on-sky-sports',
+    publishedAt: '2026-05-15T08:00:00Z',
+    excerpt: '17-year-old Mercedes driver Kimi Antonelli has won three consecutive Grands Prix, building a 20-point championship lead over teammate George Russell ahead of the Canadian GP.'
+  },
+  {
+    id: 'a2',
+    series: 'f1',
+    headline: 'Mercedes brings major upgrades to Canadian GP, aims to neutralize Ferrari race-start advantage',
+    source: 'GPFans',
+    url: 'https://www.gpfans.com/en/f1-news/1083670/f1-mercedes-upgrades-2026-canadian-grand-prix-ferrari-race-starts/',
+    publishedAt: '2026-05-14T08:15:00Z',
+    excerpt: 'Mercedes has revealed a significant upgrade package for the Canadian Grand Prix targeting turbo lag and wheelspin issues that have allowed Ferrari to gain off the line all season.'
+  },
+  {
+    id: 'a3',
+    series: 'f1',
+    headline: 'Canadian GP start time pushed to 4pm local to avoid Indianapolis 500 clash',
+    source: 'ESPN F1',
+    url: 'https://www.espn.com/f1/story/_/id/48638259/canadian-grand-prix-2026-race-f1-sprint-start-s-how-watch-schedule-usa-tv-channel-live-stream-predictions-results',
+    publishedAt: '2026-05-16T12:00:00Z',
+    excerpt: 'Sunday\'s Canadian Grand Prix has been pushed back to 4pm local (21:00 BST) to avoid overlapping with the Indianapolis 500, which runs earlier the same day.'
+  },
+  {
+    id: 'a4',
+    series: 'f1',
+    headline: 'Verstappen openly questions racing future under new regulations after public 2026 struggles',
+    source: 'Sportsnaut',
+    url: 'https://sportsnaut.com/f1/formula-1-canadian-grand-prix-storylines-antonelli-ferrari',
+    publishedAt: '2026-05-11T10:00:00Z',
+    excerpt: 'Max Verstappen sits seventh in the championship with 26 points and has openly questioned whether he wants to keep racing under the 2026 regulations, calling the new cars "a joke."'
+  },
+  {
+    id: 'a5',
+    series: 'nascar',
+    headline: 'Katherine Legge to attempt historic Indy 500 / Coca-Cola 600 Double on May 24',
+    source: 'NASCAR.com',
+    url: 'https://www.nascar.com/news-media/2026/05/13/katherine-legge-to-attempt-historic-double-at-indianapolis-500-coca-cola-600/',
+    publishedAt: '2026-05-13T14:00:00Z',
+    excerpt: 'Katherine Legge will become the first woman ever to attempt The Double — the Indianapolis 500 and Coca-Cola 600 on the same day — driving the #11 for HMD Motorsports and the #78 for Live Fast Motorsports.'
+  },
+  {
+    id: 'a6',
+    series: 'nascar',
+    headline: 'Coca-Cola Company joins 23XI Racing as Bubba Wallace rejoins Coca-Cola Racing Family',
+    source: 'NASCAR.com',
+    url: 'https://www.nascar.com/news-media/2026/05/01/coca-cola-company-partners-with-23xi-racing-bubba-wallace-rejoins-coca-cola-racing-family/',
+    publishedAt: '2026-05-01T13:00:00Z',
+    excerpt: 'The Coca-Cola Company has joined 23XI Racing as the exclusive beverage partner for Bubba Wallace and the #23 team, marking Wallace\'s return to the Coca-Cola Racing Family.'
+  },
+  {
+    id: 'a7',
+    series: 'nascar',
+    headline: 'Kurt Busch teases potential race announcement during Coca-Cola 600 week',
+    source: 'Heavy Sports',
+    url: 'https://heavy.com/sports/nascar/kurt-busch-teases-nascar-return-coca-cola-600-hint/',
+    publishedAt: '2026-05-13T18:00:00Z',
+    excerpt: 'NASCAR champion Kurt Busch hinted at a potential race announcement during Coca-Cola 600 week, though no series, event, or entry has been confirmed.'
+  },
+  {
+    id: 'a8',
+    series: 'n24',
+    headline: 'Verstappen Racing #3 retires from Nürburgring 24 with driveshaft failure while leading',
+    source: 'Racing News 365 / TraxStat verified',
+    url: 'https://traxstat.com',
+    publishedAt: '2026-05-12T15:00:00Z',
+    excerpt: 'Max Verstappen\'s Verstappen Racing #3 retired from the Nürburgring 24 Hours in P38 after a driveshaft failure ended a strong run that had the car leading the GT3 class 3.5 hours from the finish.'
+  }
 ];
 
 // N24 race-end metadata. Not present as a constant in n24.js, but the
@@ -183,24 +235,6 @@ function getFeatured(){
   return HOMEPAGE_FEATURED||getLatestWinnerAcrossAllSeries();
 }
 
-function mergedUpcoming(limit){
-  limit=limit||3;
-  const now=new Date();
-  const f1Up=NEXT_RACES.filter(r=>new Date(r.date+'T13:00:00Z')>now).map(r=>({
-    series:'f1',tag:'F1',tagColor:'var(--red)',
-    name:r.name,circuit:r.circuit,country:r.country,date:r.date,
-    round:r.round,sprint:r.sprint,chase:false,
-    dateObj:new Date(r.date+'T13:00:00Z'),
-  }));
-  const nascarUp=NASCAR_CUP_SCHEDULE.filter(r=>new Date(r.date+'T18:00:00Z')>now).map(r=>({
-    series:'nascar',tag:'NSCR',tagColor:'var(--yellow)',
-    name:r.race,circuit:r.track,country:r.country,date:r.date,
-    round:r.round,sprint:false,chase:!!r.chase,type:r.type,
-    dateObj:new Date(r.date+'T18:00:00Z'),
-  }));
-  return[...f1Up,...nascarUp].sort((a,b)=>a.dateObj-b.dateObj).slice(0,limit);
-}
-
 // ── HOME ACTIONS ─────────────────────────────────────────────────────────────
 function openHomeFeatured(){
   const feat=getFeatured();
@@ -292,13 +326,6 @@ function renderHomeArticles(){
   return`<div class="section-title"><span>Latest News · ${sorted.length} Stories</span><span>Tap to read</span></div>${rows}`;
 }
 
-function renderHomeUpcoming(){
-  const upcoming=mergedUpcoming(3);
-  if(!upcoming.length)return'';
-  const rows=upcoming.map(r=>renderScheduleRow(r)).join('');
-  return`<div class="section-title"><span>Coming Up · Next ${upcoming.length}</span><span>Tap to open series</span></div>${rows}`;
-}
-
 // TODO (Session 5): VIDEO HIGHLIGHTS section. Two slots — latest F1 video
 // (read from HARDCODED_QUALI_VIDEOS or future RECAP_VIDEOS) and latest
 // NASCAR video. Intentionally not rendered until source constants exist;
@@ -317,7 +344,6 @@ function renderHome(){
     renderHomeFeatured()
     +renderHomeChampionships()
     +renderHomeArticles()
-    +renderHomeUpcoming()
     +renderHomeFooter();
   setStats(f.seriesLabel,f.winnerDisplay.length>10?f.winnerDisplay.slice(0,10):f.winnerDisplay,'HOME','—');
 }
