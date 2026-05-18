@@ -40,90 +40,90 @@ const HOMEPAGE_FEATURED = null;
 const HOMEPAGE_ARTICLES = [
   {
     id: 'a1',
-    series: 'f1',
-    headline: 'Antonelli wins third straight Grand Prix in Miami, extends championship lead to 20 points',
-    source: 'Sky Sports F1',
-    url: 'https://www.skysports.com/f1/news/12433/13542703/canadian-gp-2026-sprint-weekend-dates-schedule-weather-uk-start-time-and-how-to-watch-or-stream-f1-race-in-montreal-live-on-sky-sports',
-    publishedAt: '2026-05-15T08:00:00Z',
-    excerpt: '17-year-old Mercedes driver Kimi Antonelli has won three consecutive Grands Prix, building a 20-point championship lead over teammate George Russell ahead of the Canadian GP.',
-    imageUrl: '',
+    series: 'nascar',
+    headline: 'Denny Hamlin wins $1 million prize in crash-filled NASCAR All-Star Race at Dover',
+    source: 'Motorsport.com NASCAR',
+    url: 'https://www.motorsport.com/nascar-cup/news/denny-hamlin-wins-nascar-cup-all-star-race-dover/10821763/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-05-17T21:20:24.000Z',
+    excerpt: 'Denny Hamlin now has two wins in NASCAR\'s All-Star Race, taking victory in a chaotic race at Dover\'s \'Monster Mile.\' He will be awarded the $1 million prize. He started from pole position, and led 103 laps.His Joe Gibbs Racing teammate Chase Briscoe finished second after leading…',
+    imageUrl: 'https://cdn-9.motorsport.com/images/amp/YWKwZZkY/s6/gettyimages-2276770493.jpg',
     imageCredit: ''
   },
   {
     id: 'a2',
     series: 'f1',
-    headline: 'Mercedes brings major upgrades to Canadian GP, aims to neutralize Ferrari race-start advantage',
-    source: 'GPFans',
-    url: 'https://www.gpfans.com/en/f1-news/1083670/f1-mercedes-upgrades-2026-canadian-grand-prix-ferrari-race-starts/',
-    publishedAt: '2026-05-14T08:15:00Z',
-    excerpt: 'Mercedes has revealed a significant upgrade package for the Canadian Grand Prix targeting turbo lag and wheelspin issues that have allowed Ferrari to gain off the line all season.',
-    imageUrl: '',
-    imageCredit: ''
+    headline: 'Safety Car causes crash in ridiculous and dangerous incident',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/safety-car-causes-crash-in-ridiculously-and-dangerous-incident',
+    publishedAt: '2026-05-18T07:40:00.000Z',
+    excerpt: 'The Safety Car caused a crash in a Russian F4 race at Moscow Raceway, pulling back onto the circuit — and stopping on the racing line — in front of the field of single-seaters. Thankfully, the incident was not serious; it could have been much, much worse.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Russian-F4.jpeg?v=1779089842&width=1200&height=630&quality=75&crop=1606%2C844%2C0%2C29',
+    imageCredit: 'Russian F4'
   },
   {
     id: 'a3',
     series: 'f1',
-    headline: 'Canadian GP start time pushed to 4pm local to avoid Indianapolis 500 clash',
-    source: 'ESPN F1',
-    url: 'https://www.espn.com/f1/story/_/id/48638259/canadian-grand-prix-2026-race-f1-sprint-start-s-how-watch-schedule-usa-tv-channel-live-stream-predictions-results',
-    publishedAt: '2026-05-16T12:00:00Z',
-    excerpt: 'Sunday\'s Canadian Grand Prix has been pushed back to 4pm local (21:00 BST) to avoid overlapping with the Indianapolis 500, which runs earlier the same day.',
-    imageUrl: '',
+    headline: 'Mercedes bring first major upgrade of F1 2026 to Canadian Grand Prix in bid to fend off rivals',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/f1/news/1095645/1/mercedes-bring-first-major-upgrade-f1-2026-canadian-grand-prix-bid-fend-rivals',
+    publishedAt: '2026-05-18T13:25:28.000Z',
+    excerpt: 'Mercedes confirms it is bringing an anticipated upgrade to the Canadian Grand Prix.',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/m595274_f1_grand_prix_of_miami.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
     id: 'a4',
     series: 'f1',
-    headline: 'Verstappen openly questions racing future under new regulations after public 2026 struggles',
-    source: 'Sportsnaut',
-    url: 'https://sportsnaut.com/f1/formula-1-canadian-grand-prix-storylines-antonelli-ferrari',
-    publishedAt: '2026-05-11T10:00:00Z',
-    excerpt: 'Max Verstappen sits seventh in the championship with 26 points and has openly questioned whether he wants to keep racing under the 2026 regulations, calling the new cars "a joke."',
-    imageUrl: '',
+    headline: 'What is Horner\'s most likely route back into F1?',
+    source: 'Sky Sports F1',
+    url: 'https://www.skysports.com/f1/news/12433/13545489/christian-horner-what-is-former-red-bull-chiefs-most-likely-route-back-to-f1-with-imminent-return-now-possible',
+    publishedAt: '2026-05-18T14:00:00.000Z',
+    excerpt: 'Approaching a year on from his shock Red Bull sacking, Christian Horner is free to return to Formula 1, but what is the Brit\'s most likely route back to the pit wall?',
+    imageUrl: 'https://e0.365dm.com/26/05/1600x900/skysports-christian-horner_7252291.jpg?20260518142149',
     imageCredit: ''
   },
   {
     id: 'a5',
     series: 'nascar',
-    headline: 'Katherine Legge to attempt historic Indy 500 / Coca-Cola 600 Double on May 24',
-    source: 'NASCAR.com',
-    url: 'https://www.nascar.com/news-media/2026/05/13/katherine-legge-to-attempt-historic-double-at-indianapolis-500-coca-cola-600/',
-    publishedAt: '2026-05-13T14:00:00Z',
-    excerpt: 'Katherine Legge will become the first woman ever to attempt The Double — the Indianapolis 500 and Coca-Cola 600 on the same day — driving the #11 for HMD Motorsports and the #78 for Live Fast Motorsports.',
-    imageUrl: '',
+    headline: 'Winners and losers from a strange NASCAR All-Star Race at Dover',
+    source: 'Motorsport.com NASCAR',
+    url: 'https://www.motorsport.com/nascar-cup/news/winners-and-losers-from-a-strange-nascar-all-star-race-at-dover/10822017/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-05-18T17:02:29.000Z',
+    excerpt: 'The 2026 edition of the NASCAR All-Star Race featured big wrecks, fireballs, field inverts, and a calculator nearby. The 350-lapper was the first time the event has gone to Dover, with the Monster Mile not hosting a points race for the first time since 1968. And while the format…',
+    imageUrl: 'https://cdn-2.motorsport.com/images/amp/6O79JnN6/s6/ryan-preece-rfk-racing-daniel-.jpg',
     imageCredit: ''
   },
   {
     id: 'a6',
     series: 'nascar',
-    headline: 'Coca-Cola Company joins 23XI Racing as Bubba Wallace rejoins Coca-Cola Racing Family',
-    source: 'NASCAR.com',
-    url: 'https://www.nascar.com/news-media/2026/05/01/coca-cola-company-partners-with-23xi-racing-bubba-wallace-rejoins-coca-cola-racing-family/',
-    publishedAt: '2026-05-01T13:00:00Z',
-    excerpt: 'The Coca-Cola Company has joined 23XI Racing as the exclusive beverage partner for Bubba Wallace and the #23 team, marking Wallace\'s return to the Coca-Cola Racing Family.',
-    imageUrl: '',
+    headline: 'Charlotte NASCAR Viewer\'s Guide: Everything you need to know for the Coca-Cola 600',
+    source: 'Motorsport.com NASCAR',
+    url: 'https://www.motorsport.com/nascar-cup/news/charlotte-nascar-viewers-guide-everything-you-need-to-know-for-the-coca-cola-600/10821819/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-05-18T13:42:33.000Z',
+    excerpt: 'After Denny Hamlin\'s big win in the Dover All-Star Race, NASCAR heads home to Charlotte, North Carolina, for one of its most prestigious races on the calendar -- the 67th running of the Coca-Cola 600.In this guide, you can find all the information you need to be ready for 600…',
+    imageUrl: 'https://cdn-6.motorsport.com/images/amp/6lmdqnD0/s6/ross-chastain-wins-no-1-trackh.jpg',
     imageCredit: ''
   },
   {
     id: 'a7',
-    series: 'nascar',
-    headline: 'Kurt Busch teases potential race announcement during Coca-Cola 600 week',
-    source: 'Heavy Sports',
-    url: 'https://heavy.com/sports/nascar/kurt-busch-teases-nascar-return-coca-cola-600-hint/',
-    publishedAt: '2026-05-13T18:00:00Z',
-    excerpt: 'NASCAR champion Kurt Busch hinted at a potential race announcement during Coca-Cola 600 week, though no series, event, or entry has been confirmed.',
-    imageUrl: '',
+    series: 'motogp',
+    headline: 'Johann Zarco returns home as LCR gives fresh update after MotoGP crash',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/motogp/news/1095646/1/johann-zarco-returns-home-lcr-gives-fresh-update-after-motogp-crash',
+    publishedAt: '2026-05-18T13:42:14.000Z',
+    excerpt: 'Johann Zarco has left hospital following his crash on Sunday at the Catalan Grand Prix',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/gng_1316254_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
     id: 'a8',
-    series: 'n24',
-    headline: 'Verstappen Racing #3 retires from Nürburgring 24 with driveshaft failure while leading',
-    source: 'Racing News 365 / TraxStat verified',
-    url: 'https://traxstat.com',
-    publishedAt: '2026-05-12T15:00:00Z',
-    excerpt: 'Max Verstappen\'s Verstappen Racing #3 retired from the Nürburgring 24 Hours in P38 after a driveshaft failure ended a strong run that had the car leading the GT3 class 3.5 hours from the finish.',
-    imageUrl: '',
+    series: 'motogp',
+    headline: 'Pedro Acosta tops rain-hit Catalunya MotoGP test, Jorge Martin crashes hard',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/motogp/news/1095660/1/pedro-acosta-tops-rain-hit-catalunya-motogp-test-jorge-martin-crashes-hard',
+    publishedAt: '2026-05-18T15:17:34.000Z',
+    excerpt: 'Pedro Acosta topped a Catalunya MotoGP test ended early by poor weather',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/gng_1314688_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   }
 ];
@@ -133,7 +133,52 @@ const HOMEPAGE_ARTICLES = [
 // any primary for an alternate by editing the PR before merge. Same shape
 // as HOMEPAGE_ARTICLES entries. Not rendered on the page itself — exists
 // purely as a write target for the aggregator.
-const HOMEPAGE_ALTERNATES = [];
+const HOMEPAGE_ALTERNATES = [
+  {
+    id: 'a101',
+    series: 'other',
+    headline: '2026 Isle of Man TT: All of Michael Dunlop’s wins',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/rr/news/1070214/1/2025-isle-man-tt-full-list-michael-dunlops-wins',
+    publishedAt: '2026-05-18T14:50:00.000Z',
+    excerpt: 'The full rundown of Michael Dunlop’s Isle of Man TT wins',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/dunlop-lw-iomtt-2019-winner-jpeg-1.jpeg?width=1600&aspect_ratio=16:9',
+    imageCredit: ''
+  },
+  {
+    id: 'a102',
+    series: 'motogp',
+    headline: 'Podcast: Was MotoGP right to restart the Catalunya race after two huge crashes?',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/motogp/news/1095649/1/podcast-was-motogp-right-restart-catalunya-race-after-two-huge-crashes',
+    publishedAt: '2026-05-18T13:59:30.000Z',
+    excerpt: 'The team discuss the 2026 Catalan Grand Prix on the latest Crash MotoGP Podcast',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/gng_1317022_hires.jpg?width=1600&aspect_ratio=16:9',
+    imageCredit: ''
+  },
+  {
+    id: 'a103',
+    series: 'motogp',
+    headline: 'Jorge Martin taken to hospital after crash in Catalunya MotoGP test',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/motogp/news/1095626/1/jorge-martin-taken-hospital-after-crash-catalunya-motogp-test',
+    publishedAt: '2026-05-18T12:47:00.000Z',
+    excerpt: 'Jorge Martin was taken to hospital for checks after a crash in testing at Barcelona on Monday',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/gng_1316260_hires.jpg?width=1600&aspect_ratio=16:9',
+    imageCredit: ''
+  },
+  {
+    id: 'a104',
+    series: 'motogp',
+    headline: 'Fabio Quartararo “had goosebumps” passing Alex Marquez MotoGP crash scene',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/motogp/news/1095641/1/fabio-quartararo-had-goosebumps-passing-alex-marquez-motogp-crash-scene',
+    publishedAt: '2026-05-18T12:55:25.000Z',
+    excerpt: 'Fabio Quartararo says it was tough to restart the Catalan Grand Prix',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/gng_1316216_hires.jpg?width=1600&aspect_ratio=16:9',
+    imageCredit: ''
+  }
+];
 
 // N24 race-end metadata. Not present as a constant in n24.js, but the
 // 16–17 May 2026 date is stated in that file's header comment (verified).
