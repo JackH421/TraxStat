@@ -82,11 +82,13 @@ Architectural decisions made and the reasoning behind them. Do not propose rever
 - **Hardcoded-first pattern over pure API.** Jolpica/Ergast and OpenF1 lag real-world results by days to weeks; race-day accuracy is non-negotiable. Hardcoded constants are canonical; API calls are supplementary (race lists, lap times, live timing). Sanity thresholds gate API standings (`leader.points >= 90` for drivers, `>= 170` for constructors).
 - **"Off-air" live view over error states.** When no session is on track (the common case), the LIVE tab shows the next-race banner plus the most recent race recap — not an error screen. Friendlier and more useful.
 - **Real data only, ever.** No mock data, no `Math.random()` filler, no Lorem ipsum stand-ins. See cardinal rule. Worth restating because it's load-bearing.
-- **SCHEDULE as default landing tab.** Avoids dropping users into F1 specifically; the upcoming-races view is series-neutral and answers the most common question ("what's next?") immediately.
+- **~~SCHEDULE as default landing tab~~ → superseded by HOME (2026-05-17).** Originally chose SCHEDULE as the default so users wouldn't drop into F1 specifically. As of 2026-05-17 the news-feed HOME view is the default landing — `js/init.js` calls `switchSeries('home')` on boot. The upcoming-races view is still accessible as the **RACE SCHEDULE** tab in the series bar; routing key remains `'schedule'`.
 - **Vercel Web Analytics over alternatives** (Plausible, GA4, self-hosted). Native integration (no DNS lookup, same-origin script path survives more ad blockers, edge-served), cookieless by default so no consent banner, zero extra dependencies. Pageviews work on Hobby; custom events require Pro+. See Analytics section for the event taxonomy.
 - **F1 race-weekend state machine over a static LIVE tab.** Users want to see whatever's currently relevant — qualifying when it's published, live timing during sessions, post-race recap with diff badges after. Four states with strict precedence (`session-live > post-race > qualifying-available > between-races`) drive the LIVE tab's render path. State is cached 60 s; `?devstate=` URL param forces a state for testing. See the [F1 race weekend state machine](#f1-race-weekend-state-machine) section. Polling **proposes** diffs via badge, never modifies hardcoded data — manual approval until Session 3 automates via GitHub Action PRs.
 - **Open backlog (deferred sessions).** Session 2 = mirror the same state-machine / polling shape onto NASCAR. Session 3 = GitHub Action that watches the badge state, opens a PR with the proposed hardcoded-data update, and lets a human merge. Do not start either without explicit user direction.
 - **Modular file split (2026-05-17).** Single-file `index.html` became HTML shell + `styles.css` + `js/{core,schedule,init}.js` + `js/series/{f1,nascar,n24,_template}.js`. Traditional `<script src>` tags (not ES modules) so inline `onclick="…"` handlers keep working without a `window.foo = foo` shim. No build step. Reason: enable parallel work and templated series-addition without bloating one file past comfortable read-in-one-pass. See **File layout**, **How to add a new series**, and **Parallel development boundaries** below.
+- **Home is a news feed (2026-05-17).** `js/home.js` owns the landing view. `HOMEPAGE_ARTICLES` (10 entries) and `HOMEPAGE_FEATURED` are the write target for the deferred Session 5 daily aggregator. Article entries can be a mix of real verified articles and clearly-marked `[STUB — REPLACE]` placeholders (current state: a1–a8 real, a9–a10 stubs) — never substitute invented real-looking articles for stubs. When replacing a stub, source the URL the same way as the seeded entries (publication + verifiable link). The news feed renders newest-first by `publishedAt`.
+- **Featured slot is a multi-series carousel (2026-05-18).** Horizontal scroll-snap, one card per series with completed results, sorted most-recent first via `getRecentWinnersAcrossAllSeries()` (currently F1 + NASCAR + N24). Cards are 280px wide so ~1.3 fit at 375px viewport — the peek of the next card is the swipe affordance. `HOMEPAGE_FEATURED` (in `js/home.js`) pins the leftmost card and de-dupes against the auto-derived series. `openHomeFeaturedCard(series)` routes each card to that series's RACE RESULTS sub-tab (or N24's default `results` tab).
 
 ## Current season state (as of 2026-05-15)
 
@@ -136,6 +138,10 @@ We use **Vercel Web Analytics** for pageview + custom event tracking. Cookieless
 | `result:expand:n24` | `{ car }` | Expand an N24 top-20 results row |
 | `recap:open:n24` | `{ index }` | Tap an N24 recap thumbnail |
 | `refresh` | — | Refresh button click |
+| `home:featured` | `{ series }` | Tap a featured-carousel card on HOME (per-series) |
+| `home:championship` | `{ series }` | Tap a championship-leader card on HOME |
+| `home:article` | `{ series, source }` | Tap a news-feed article card on HOME (opens external URL) |
+| `home:render` | `{ cardCount, topSeries }` | Fires once per `renderHome()` — origin/funnel marker |
 
 ### Privacy / PII rules
 
@@ -191,13 +197,18 @@ After the event: `grep -rn "<NAME> TEMPORARY" .` finds every site; delete each m
 
 ```
 ~/TraxStat/
-├── index.html              ~75 lines — shell only (head, body scaffold, 6 <script src> tags + Vercel analytics stub)
-├── styles.css              ~151 lines — every CSS rule the app uses
+├── index.html              ~77 lines — shell only (head, body scaffold, 7 <script src> tags + Vercel analytics stub)
+├── styles.css              ~180 lines — every CSS rule the app uses
 ├── js/
-│   ├── core.js             ~239 lines — utilities, app-wide state, JOLPICA API helpers,
+│   ├── core.js             ~240 lines — utilities, app-wide state, JOLPICA API helpers,
 │   │                                    switchSeries, refresh, updateLiveDots, renderLiveOffAir
 │   ├── schedule.js         ~78 lines — renderSchedule, renderScheduleRow (secondary view)
-│   ├── home.js             ~34 lines — renderHome — scaffold; default landing view
+│   ├── home.js             ~389 lines — HOMEPAGE_FEATURED, HOMEPAGE_ARTICLES (10 entries),
+│   │                                    N24_META; getRecentWinnersAcrossAllSeries,
+│   │                                    formatRelativeTime, getSeriesAccentColor/Label;
+│   │                                    open* action handlers; renderHomeFeaturedCarousel,
+│   │                                    renderHomeChampionships, renderHomeArticles,
+│   │                                    renderHomeFooter, renderHome
 │   ├── init.js             ~24 lines — boot statements: switchSeries('home'),
 │   │                                   the two setInterval timers, updateF1Badges, and
 │   │                                   the F1 post-race-polling resumption IIFE
@@ -221,13 +232,13 @@ No `package.json`, no bundler, no tests, no README. `CLAUDE.md` is the working c
 
 ### Script load order
 
-Six `<script src>` tags in `index.html`, in this order:
+Seven `<script src>` tags in `index.html`, in this order:
 
 ```
-core.js → series/f1.js → series/nascar.js → series/n24.js → schedule.js → init.js
+core.js → series/f1.js → series/nascar.js → series/n24.js → schedule.js → home.js → init.js
 ```
 
-Reasoning: `core.js` declares shared utilities, state, and the router with **zero** cross-file references. Series files declare their own data + renderers; `core`'s `fetchRaceResults` / `fetchDriverStandings` / etc. read F1's `HARDCODED_*` constants at call time (when the user interacts), by which point f1.js has loaded. Same for `updateLiveDots` reading `NEXT_RACES` (f1) and `NASCAR_CUP_SCHEDULE` (nascar). `schedule.js` reads both F1's `NEXT_RACES` and NASCAR's `NASCAR_CUP_SCHEDULE`, so it loads after both. `init.js` runs the imperative boot code last — by which point every global is declared.
+Reasoning: `core.js` declares shared utilities, state, and the router with **zero** cross-file references. Series files declare their own data + renderers; `core`'s `fetchRaceResults` / `fetchDriverStandings` / etc. read F1's `HARDCODED_*` constants at call time (when the user interacts), by which point f1.js has loaded. Same for `updateLiveDots` reading `NEXT_RACES` (f1) and `NASCAR_CUP_SCHEDULE` (nascar). `schedule.js` reads both F1's `NEXT_RACES` and NASCAR's `NASCAR_CUP_SCHEDULE`, so it loads after both. `home.js` reads `HARDCODED_RACES` (f1), `NASCAR_CUP_RESULTS` + `NASCAR_CUP_SCHEDULE` + `NASCAR_CUP_DRIVERS` (nascar), `N24_2026_RESULTS` (n24), and the two championship-standings constants — so it loads after the series files. `init.js` runs the imperative boot code last — by which point every global is declared.
 
 Traditional `<script>` tags (not `type="module"`) so top-level `function` declarations sit on `globalThis` and inline `onclick="switchSeries('f1')"` handlers find them without a `window.foo = foo` shuffle. Top-level `const`/`let` declarations share a single Script Global Lexical Environment across all classic scripts, so cross-file constant references resolve at call time the same way.
 
@@ -236,7 +247,7 @@ Traditional `<script>` tags (not `type="module"`) so top-level `function` declar
 - **State**: a handful of top-level `let` variables (`currentSeries`, `currentF1Tab`, `selectedRace`, `selectedDriver`, `isLive`, plus NASCAR equivalents `currentNascarTab`, `currentNascarSeries`, `selectedNascarRace`, etc.). No framework, no reactive store. Mutate the var, then call the matching `render*()` function which replaces `#main-content.innerHTML` wholesale.
 - **Rendering pattern**: each tab has a `render<Tab>()` function that builds an HTML string and assigns it to `document.getElementById('main-content').innerHTML`. Inline `onclick="..."` attributes on rendered elements call back into top-level functions (`selectRace`, `toggleLaps`, `switchF1Tab`, etc.). This means every function the HTML references must be at the top level of some classic script — which is why we use traditional `<script src>` tags, not ES modules.
 - **Routing**: `switchSeries(s)` for the top tab bar; `switchF1Tab(tab)` and `switchNascarTab(tab)` for the sub-bars; `switchNascarSeries(s)` for Cup/Xfinity/Trucks. Each toggles the `.active` class and calls the appropriate render fn.
-- **Default landing**: `currentSeries` initialises to `'schedule'`, which renders the cross-series upcoming-race list. Init code calls `switchSeries('schedule')` so the F1 and NASCAR submenu bars start hidden.
+- **Default landing**: `currentSeries` is initialised to `'schedule'` in `core.js` but immediately overridden — `js/init.js` calls `switchSeries('home')` on boot, which renders the news-feed HOME view. The F1 and NASCAR submenu bars start hidden.
 - **Refresh**: the `⟳` button calls `refresh()`, which clears all in-memory caches and re-renders the current view (schedule, F1, or NASCAR).
 - **Live polling**: `setInterval` re-runs `renderLive()` every 30 s, but only when `currentSeries==='f1' && currentF1Tab==='live' && isLive`.
 
@@ -244,8 +255,8 @@ Traditional `<script>` tags (not `type="module"`) so top-level `function` declar
 
 | Series  | Status                                                                 |
 |---------|------------------------------------------------------------------------|
-| Home    | Default landing view — scaffold only as of 2026-05-17; design pending. See `js/home.js`. |
-| Schedule | Secondary view — hero card for next race across all series + next 3 closest races. Still routable via the SCHEDULE tab. |
+| Home    | Default landing view — news feed (2026-05-17). Featured carousel of recent winners across all series with completed results, championship snapshot for F1 + NASCAR, 10-card article feed. Video Highlights is a TODO hook for Session 5. See `js/home.js`. |
+| Race Schedule | Secondary view — hero card for next race across all series + next 3 closest races. Routable via the **RACE SCHEDULE** tab (label renamed 2026-05-17; routing key remains `'schedule'`). |
 | F1      | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive per [race-weekend state machine](#f1-race-weekend-state-machine). |
 | NASCAR  | Cup fully built (results, drivers, manufacturers, schedule). Xfinity/Trucks are placeholder "coming soon" screens (`renderNascar*` functions early-return when `currentNascarSeries !== 'cup'`) |
 | N24     | Permanent post-race-only module for the 2026 Nürburgring 24 — three sub-tabs (RACE RESULTS / QUALIFYING / RECAP). See [N24 module](#n24-module). |
@@ -284,6 +295,7 @@ The split was designed so multiple Claude Code sessions (or human contributors) 
 | Stylesheet | `styles.css` |
 | Shared utilities + router | `js/core.js` |
 | Cross-series schedule view | `js/schedule.js` |
+| HOME news-feed view | `js/home.js` |
 | Boot code | `js/init.js` |
 | Per-series logic + data | `js/series/<key>.js` |
 
