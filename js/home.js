@@ -4,10 +4,12 @@
 // series bar via switchSeries('schedule').
 //
 // Sections (top → bottom):
-//   1. FEATURED STORY   — auto-derived from latest race across F1/NASCAR/N24,
-//                         or manually pinned via HOMEPAGE_FEATURED.
+//   1. RECENT WINNERS   — horizontal scroll carousel; one card per series
+//                         with completed results (F1 + NASCAR + N24), sorted
+//                         most-recent first. HOMEPAGE_FEATURED pins one card
+//                         to the leftmost slot.
 //   2. CHAMPIONSHIPS    — F1 and NASCAR title leaders + gap to P2.
-//   3. NEWS FEED        — 8 article cards from HOMEPAGE_ARTICLES.
+//   3. NEWS FEED        — 10 article cards from HOMEPAGE_ARTICLES.
 //   4. VIDEO HIGHLIGHTS — TODO: Session 5 hook, intentionally not rendered.
 //
 // Upcoming races live on the RACE SCHEDULE tab only — removed from HOME on
@@ -15,21 +17,24 @@
 //
 // Cardinal rule: featured + championship data read from existing verified
 // constants (HARDCODED_RACES, HARDCODED_DRIVER_STANDINGS, NASCAR_CUP_RESULTS,
-// NASCAR_CUP_STANDINGS, N24_2026_RESULTS). Article entries below are
-// PLACEHOLDERS — Session 5's daily aggregator replaces them with real
-// sourced articles. Never replace placeholder URLs with invented real ones.
+// NASCAR_CUP_STANDINGS, N24_2026_RESULTS). Article entries below are a mix
+// of real verified articles (a1–a8) and clearly-marked placeholder stubs
+// (a9–a10) awaiting real content — Session 5's aggregator overwrites stubs
+// first. Never replace placeholder URLs with invented real ones.
 
 // ── HOME CONSTANTS ───────────────────────────────────────────────────────────
-// HOMEPAGE_FEATURED: null = auto-select via getLatestWinnerAcrossAllSeries().
-// To pin a story, replace null with an object matching that helper's return
-// shape ({series, seriesLabel, raceName, circuit, country, date, round,
-// winnerDisplay, winnerSub, podium, ctaTab}). Future automation writes here.
+// HOMEPAGE_FEATURED: null = pure auto carousel. If set to a single
+// winner-card payload (same shape getRecentWinnersAcrossAllSeries returns
+// per entry), the object is prepended as the leftmost pinned card; the
+// auto-derived cards still render after it. Future automation may write here.
 const HOMEPAGE_FEATURED = null;
 
-// HOMEPAGE_ARTICLES: 8 real verified articles seeded 2026-05-17. Session 5
-// aggregator will replace/extend this list at 8am ET daily. Cardinal rule:
-// every entry must have a real, verifiable source URL + publication. Never
-// invent headlines or substitute fake URLs.
+// HOMEPAGE_ARTICLES — a1–a8: real verified articles seeded 2026-05-17.
+// a9–a10: clearly-marked placeholder stubs awaiting real verified content
+// (Session 5 aggregator should overwrite these first). Cardinal rule:
+// every real entry must have a real, verifiable source URL + publication.
+// Never invent headlines or substitute fake URLs for the stubs — when
+// replacing a stub, source the URL the same way as the seeded entries.
 // Shape:
 //   { id, series, headline, source, url, publishedAt (ISO Z), excerpt }
 // 'series' enum: f1 | nascar | n24 | motogp | wrc | indycar | wec
@@ -105,6 +110,24 @@ const HOMEPAGE_ARTICLES = [
     url: 'https://traxstat.com',
     publishedAt: '2026-05-12T15:00:00Z',
     excerpt: 'Max Verstappen\'s Verstappen Racing #3 retired from the Nürburgring 24 Hours in P38 after a driveshaft failure ended a strong run that had the car leading the GT3 class 3.5 hours from the finish.'
+  },
+  {
+    id: 'a9',
+    series: 'wec',
+    headline: '[STUB — REPLACE] Awaiting verified WEC article',
+    source: '(Awaiting verified content)',
+    url: 'https://example.com',
+    publishedAt: '2026-05-10T12:00:00Z',
+    excerpt: '[STUB — REPLACE] Placeholder until a real verified article is sourced. Session 5 aggregator should overwrite this first.'
+  },
+  {
+    id: 'a10',
+    series: 'indycar',
+    headline: '[STUB — REPLACE] Awaiting verified IndyCar article',
+    source: '(Awaiting verified content)',
+    url: 'https://example.com',
+    publishedAt: '2026-05-09T12:00:00Z',
+    excerpt: '[STUB — REPLACE] Placeholder until a real verified article is sourced. Session 5 aggregator should overwrite this first.'
   }
 ];
 
@@ -147,35 +170,20 @@ function formatRelativeTime(iso){
   return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
-// Returns the most recent race winner across F1, NASCAR, N24 as a featured
-// card payload. Compares HARDCODED_RACES (F1), NASCAR_CUP_RESULTS (NASCAR),
-// and N24_META.date (N24). Series with no completed races are skipped.
-function getLatestWinnerAcrossAllSeries(){
-  const candidates=[];
+// Returns an array of winner-card payloads, one per series with completed
+// results, sorted most-recent first. Sources: HARDCODED_RACES (F1),
+// NASCAR_CUP_RESULTS (NASCAR), N24_META.date + N24_2026_RESULTS (N24).
+// Each entry has shape:
+//   { series, seriesLabel, raceName, circuit, country, date, round,
+//     winnerDisplay, winnerSub, winnerColor, podium, ctaTab }
+function getRecentWinnersAcrossAllSeries(){
+  const out=[];
   // F1
   const f1All=Object.values(HARDCODED_RACES).sort((a,b)=>+b.round-+a.round);
   if(f1All.length){
     const r=f1All[0];
-    candidates.push({series:'f1',date:r.date,race:r});
-  }
-  // NASCAR
-  const nascarRounds=Object.keys(NASCAR_CUP_RESULTS).map(Number).sort((a,b)=>b-a);
-  if(nascarRounds.length){
-    const round=nascarRounds[0];
-    const result=NASCAR_CUP_RESULTS[round];
-    const sched=NASCAR_CUP_SCHEDULE.find(r=>r.round===round);
-    if(sched)candidates.push({series:'nascar',date:sched.date,round,result,sched});
-  }
-  // N24
-  candidates.push({series:'n24',date:N24_META.date});
-
-  candidates.sort((a,b)=>b.date.localeCompare(a.date));
-  const top=candidates[0];
-
-  if(top.series==='f1'){
-    const r=top.race;
     const w=r.Results[0],p2=r.Results[1],p3=r.Results[2];
-    return{
+    out.push({
       series:'f1',seriesLabel:'F1',
       raceName:r.raceName,
       circuit:r.Circuit?.circuitName||'',
@@ -190,59 +198,76 @@ function getLatestWinnerAcrossAllSeries(){
         p3&&{pos:'P3',name:p3.Driver.familyName,team:p3.Constructor.name},
       ].filter(Boolean),
       ctaTab:'races',
-    };
+    });
   }
-  if(top.series==='nascar'){
-    const r=top.result,sched=top.sched;
-    const drv=NASCAR_CUP_DRIVERS[r.winner]||{};
-    const p2=r.p2?{pos:'P2',name:r.p2,team:(NASCAR_CUP_DRIVERS[r.p2]||{}).team||''}:null;
-    const p3=r.p3?{pos:'P3',name:r.p3,team:(NASCAR_CUP_DRIVERS[r.p3]||{}).team||''}:null;
-    return{
-      series:'nascar',seriesLabel:'NASCAR',
-      raceName:sched.race,
-      circuit:sched.track,
-      country:sched.country||'🇺🇸',
-      date:sched.date,
-      round:top.round,
-      winnerDisplay:r.winner,
-      winnerSub:`${drv.team||'—'} · ${drv.mfr||'—'}`,
-      winnerColor:nascarMfrColor(drv.mfr),
-      podium:[p2,p3].filter(Boolean),
-      ctaTab:'races',
-    };
+  // NASCAR
+  const nascarRounds=Object.keys(NASCAR_CUP_RESULTS).map(Number).sort((a,b)=>b-a);
+  if(nascarRounds.length){
+    const round=nascarRounds[0];
+    const r=NASCAR_CUP_RESULTS[round];
+    const sched=NASCAR_CUP_SCHEDULE.find(x=>x.round===round);
+    if(sched){
+      const drv=NASCAR_CUP_DRIVERS[r.winner]||{};
+      const p2=r.p2?{pos:'P2',name:r.p2,team:(NASCAR_CUP_DRIVERS[r.p2]||{}).team||''}:null;
+      const p3=r.p3?{pos:'P3',name:r.p3,team:(NASCAR_CUP_DRIVERS[r.p3]||{}).team||''}:null;
+      out.push({
+        series:'nascar',seriesLabel:'NASCAR',
+        raceName:sched.race,
+        circuit:sched.track,
+        country:sched.country||'🇺🇸',
+        date:sched.date,
+        round,
+        winnerDisplay:r.winner,
+        winnerSub:`${drv.team||'—'} · ${drv.mfr||'—'}`,
+        winnerColor:nascarMfrColor(drv.mfr),
+        podium:[p2,p3].filter(Boolean),
+        ctaTab:'races',
+      });
+    }
   }
   // N24
-  const t1=N24_2026_RESULTS[0],t2=N24_2026_RESULTS[1],t3=N24_2026_RESULTS[2];
-  return{
-    series:'n24',seriesLabel:'N24',
-    raceName:N24_META.raceName,
-    circuit:N24_META.circuit,
-    country:N24_META.country,
-    date:N24_META.date,
-    round:null,
-    winnerDisplay:`#${t1.car} ${t1.team}`,
-    winnerSub:t1.drivers.join(' · '),
-    winnerColor:'#c0c0c0',
-    podium:[
-      {pos:'P2',name:`#${t2.car} ${t2.team}`,team:t2.drivers.join(' · ')},
-      {pos:'P3',name:`#${t3.car} ${t3.team}`,team:t3.drivers.join(' · ')},
-    ],
-    ctaTab:null,
-  };
+  if(typeof N24_2026_RESULTS!=='undefined'&&N24_2026_RESULTS.length){
+    const t1=N24_2026_RESULTS[0],t2=N24_2026_RESULTS[1],t3=N24_2026_RESULTS[2];
+    out.push({
+      series:'n24',seriesLabel:'N24',
+      raceName:N24_META.raceName,
+      circuit:N24_META.circuit,
+      country:N24_META.country,
+      date:N24_META.date,
+      round:null,
+      winnerDisplay:`#${t1.car} ${t1.team}`,
+      winnerSub:t1.drivers.join(' · '),
+      winnerColor:'#c0c0c0',
+      podium:[
+        {pos:'P2',name:`#${t2.car} ${t2.team}`,team:t2.drivers.join(' · ')},
+        {pos:'P3',name:`#${t3.car} ${t3.team}`,team:t3.drivers.join(' · ')},
+      ],
+      ctaTab:null,
+    });
+  }
+  return out.sort((a,b)=>b.date.localeCompare(a.date));
 }
 
-function getFeatured(){
-  return HOMEPAGE_FEATURED||getLatestWinnerAcrossAllSeries();
+// Returns the carousel feed: pinned card first if HOMEPAGE_FEATURED is set,
+// then the auto-derived cards. Cards are de-duplicated by series so a pinned
+// override replaces the auto card for that same series rather than doubling.
+function getFeaturedFeed(){
+  const auto=getRecentWinnersAcrossAllSeries();
+  if(!HOMEPAGE_FEATURED)return auto;
+  const filtered=auto.filter(c=>c.series!==HOMEPAGE_FEATURED.series);
+  return[HOMEPAGE_FEATURED,...filtered];
 }
 
 // ── HOME ACTIONS ─────────────────────────────────────────────────────────────
-function openHomeFeatured(){
-  const feat=getFeatured();
-  track('home:featured',{series:feat.series});
-  switchSeries(feat.series);
-  if(feat.ctaTab){
-    if(feat.series==='f1')switchF1Tab(feat.ctaTab);
-    else if(feat.series==='nascar')switchNascarTab(feat.ctaTab);
+function openHomeFeaturedCard(series){
+  const feed=getFeaturedFeed();
+  const card=feed.find(c=>c.series===series);
+  if(!card)return;
+  track('home:featured',{series});
+  switchSeries(series);
+  if(card.ctaTab){
+    if(series==='f1')switchF1Tab(card.ctaTab);
+    else if(series==='nascar')switchNascarTab(card.ctaTab);
   }
 }
 
@@ -261,27 +286,34 @@ function openHomeArticle(id){
 }
 
 // ── HOME RENDERERS ───────────────────────────────────────────────────────────
-function renderHomeFeatured(){
-  const f=getFeatured();
+function renderHomeFeaturedCard(f){
   const dateStr=fmtDate(f.date);
   const roundLabel=f.round?` · R${f.round}`:'';
   const accent=getSeriesAccentColor(f.series);
   const podiumHTML=f.podium.map(p=>`
-    <div style="display:flex;gap:8px;align-items:baseline;margin-top:4px;">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.1em;min-width:22px;">${p.pos==='P2'?'🥈':'🥉'}</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);">${p.name}</span>
-      <span style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);">${p.team}</span>
+    <div style="display:flex;gap:6px;align-items:baseline;margin-top:3px;">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.1em;min-width:20px;">${p.pos==='P2'?'🥈':'🥉'}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--text);">${p.name}</span>
+      <span style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);">${p.team}</span>
     </div>`).join('');
-  return`<div class="home-featured" onclick="openHomeFeatured()">
-    <div class="home-featured-tag" style="color:${accent};border-color:${accent};">⬤ FEATURED · ${f.seriesLabel}${roundLabel} · ${dateStr}</div>
+  return`<div class="home-featured-card" onclick="openHomeFeaturedCard('${f.series}')">
+    <div class="home-featured-tag" style="color:${accent};border-color:${accent};">⬤ ${f.seriesLabel}${roundLabel} · ${dateStr}</div>
     <div class="home-featured-title">${f.country} ${f.raceName.toUpperCase()}</div>
     <div class="home-featured-circuit">${f.circuit}</div>
     <div class="home-featured-winner-label">🏆 WINNER</div>
     <div class="home-featured-winner" style="color:${f.winnerColor};">${f.winnerDisplay}</div>
     <div class="home-featured-winner-sub">${f.winnerSub}</div>
     ${podiumHTML?`<div class="home-featured-podium">${podiumHTML}</div>`:''}
-    <div class="home-featured-cta">READ FULL RESULTS →</div>
+    <div class="home-featured-cta">OPEN RESULTS →</div>
   </div>`;
+}
+
+function renderHomeFeaturedCarousel(){
+  const feed=getFeaturedFeed();
+  if(!feed.length)return'';
+  const cards=feed.map(renderHomeFeaturedCard).join('');
+  return`<div class="section-title"><span>Recent Winners · ${feed.length}</span><span>Swipe →</span></div>
+    <div class="home-featured-carousel">${cards}</div>`;
 }
 
 function renderHomeChampionships(){
@@ -333,18 +365,25 @@ function renderHomeArticles(){
 // invented data. Deferred per cardinal rule.
 
 function renderHomeFooter(){
-  const f=getFeatured();
-  return`<div class="home-footer">Updated ${fmtDate(f.date)}  ·  Featured: ${f.seriesLabel}  ·  Feed v1</div>`;
+  const feed=getFeaturedFeed();
+  const newest=feed[0];
+  const dateStr=newest?fmtDate(newest.date):'—';
+  return`<div class="home-footer">Updated ${dateStr}  ·  Cards: ${feed.length}  ·  Feed v1</div>`;
 }
 
 function renderHome(){
-  const f=getFeatured();
-  track('home:render',{featuredSeries:f.series});
+  const feed=getFeaturedFeed();
+  const top=feed[0];
+  track('home:render',{cardCount:feed.length,topSeries:top?.series||'none'});
   document.getElementById('main-content').innerHTML=
-    renderHomeFeatured()
+    renderHomeFeaturedCarousel()
     +renderHomeChampionships()
     +renderHomeArticles()
     +renderHomeFooter();
-  setStats(f.seriesLabel,f.winnerDisplay.length>10?f.winnerDisplay.slice(0,10):f.winnerDisplay,'HOME','—');
+  if(top){
+    setStats(top.seriesLabel,top.winnerDisplay.length>10?top.winnerDisplay.slice(0,10):top.winnerDisplay,'HOME','—');
+  }else{
+    setStats('—','—','HOME','—');
+  }
 }
 // ── END HOME ─────────────────────────────────────────────────────────────────
