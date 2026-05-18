@@ -1,6 +1,6 @@
 name: Daily News Aggregator
 
-# Runs every day at 12:00 UTC (08:00 ET / 07:00 ET during DST). 
+# Runs every day at 12:00 UTC (08:00 ET / 07:00 ET during DST).  
 # Note: GitHub Actions cron uses UTC. The 12:00 UTC choice locks the local
 # time to 08:00 ET in EDT (summer) and 07:00 ET in EST (winter). This is
 # accepted — the daily target is "first thing in the morning ET", not exactly
