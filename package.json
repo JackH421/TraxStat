@@ -1,0 +1,17 @@
+{
+  "name": "traxstat",
+  "version": "0.0.0",
+  "private": true,
+  "description": "TraxStat — see CLAUDE.md. This file exists only to declare dependencies for scripts/ (GitHub Actions tooling). The site itself ships as static index.html + js/* with zero runtime dependencies; do not require this file from any browser code.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "verify": "node verify.js && node verify-nascar.js",
+    "news:dry": "DRY_RUN=true node scripts/news-aggregator.mjs"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.5.0",
+    "node-html-parser": "^6.1.13"
+  }
+}

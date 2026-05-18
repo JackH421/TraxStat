@@ -1,0 +1,62 @@
+name: Daily News Aggregator
+
+# Runs every day at 12:00 UTC (08:00 ET / 07:00 ET during DST).
+# Note: GitHub Actions cron uses UTC. The 12:00 UTC choice locks the local
+# time to 08:00 ET in EDT (summer) and 07:00 ET in EST (winter). This is
+# accepted — the daily target is "first thing in the morning ET", not exactly
+# 08:00 year-round.
+#
+# Fetches ~12 racing-news RSS feeds, scores by recency + source tier +
+# headline keywords, enforces series diversity, extracts og:image previews,
+# and opens (or updates) an auto/news-* pull request proposing the new
+# HOMEPAGE_ARTICLES + HOMEPAGE_ALTERNATES in js/home.js.
+#
+# The CARDINAL RULE is preserved by never committing directly to main —
+# every change goes through a PR for human review and merge. Headlines and
+# URLs are taken verbatim from the publisher's RSS feed; the script never
+# paraphrases.
+#
+# Manual trigger: GitHub UI → Actions → "Daily News Aggregator" →
+# Run workflow. Toggle test_mode to open a clearly-labeled [TEST] PR that
+# touches only scripts/.news-test-pr-marker.md.
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Opens a [TEST] PR with stubbed data — DO NOT MERGE'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: daily-news-aggregator
+  cancel-in-progress: false
+
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Configure git for bot commits
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Run news aggregator
+        env:
+          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
+          TEST_MODE: ${{ inputs.test_mode }}
+        run: node scripts/news-aggregator.mjs
