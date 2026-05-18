@@ -1,0 +1,54 @@
+name: F1 Post-Race Poll
+
+# Runs every 30 minutes year-round. Inside a post-race window
+# (race start + 4h < now < +24h, round not yet in HARDCODED_RACES) the
+# script fetches Jolpica and opens or updates an auto/f1-r{N}-* pull
+# request with the proposed canonical-data update. The CARDINAL RULE
+# is preserved by never committing directly to main — every change
+# goes through a PR for human review and merge.
+#
+# Outside a post-race window the script exits in ~1 second with
+# "No round in post-race window". TraxStat is a public repo so the
+# 48 daily firings are unlimited CI minutes.
+#
+# Manual trigger: GitHub UI → Actions → "F1 Post-Race Poll" →
+# Run workflow. Toggle test_mode to open a clearly-labeled
+# [TEST] PR that touches only scripts/.test-pr-marker.md.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Opens a [TEST] PR with stubbed data — DO NOT MERGE'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: f1-post-race-poll
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Configure git for bot commits
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Run post-race poll
+        env:
+          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
+          TEST_MODE: ${{ inputs.test_mode }}
+        run: node scripts/post-race-poll.mjs

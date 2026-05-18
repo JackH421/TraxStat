@@ -1007,7 +1007,7 @@ function updateF1Badges(){
     badge.className='f1-diff-badge';
     badge.style.cssText='margin-left:5px;cursor:default;font-size:11px;';
     badge.innerHTML=' <span style="color:var(--yellow);">•</span><span class="dismiss" style="margin-left:3px;color:var(--muted);font-size:9px;cursor:pointer;">×</span>';
-    badge.title='Jolpica reports changes since last sync. Tap the tab or × to dismiss.';
+    badge.title='Jolpica reports changes since last sync. A server-side poll also runs every 30 min — check GitHub for auto-PRs. Tap the tab or × to dismiss.';
     badge.querySelector('.dismiss').onclick=(e)=>{e.stopPropagation();dismissF1Badge(tab);track('f1:badge-dismiss',{tab});};
     el.appendChild(badge);
   }
