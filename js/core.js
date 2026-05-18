@@ -181,11 +181,12 @@ function renderLiveOffAir(reason, ctx){
 function switchSeries(s){
   track('tab:series',{series:s});
   currentSeries=s;
-  document.querySelectorAll('.series-tab').forEach((t,i)=>t.classList.toggle('active',['schedule','f1','nascar','motogp','wrc','indycar','gt3','n24'][i]===s));
+  document.querySelectorAll('.series-tab').forEach((t,i)=>t.classList.toggle('active',['home','schedule','f1','nascar','motogp','wrc','indycar','gt3','n24'][i]===s));
   // Toggle the right submenu and tier bar
   document.getElementById('f1-submenu').style.display=s==='f1'?'flex':'none';
   document.getElementById('nascar-submenu').style.display=s==='nascar'?'flex':'none';
   document.getElementById('nascar-series-bar').style.display=s==='nascar'?'flex':'none';
+  if(s==='home'){renderHome();return;}
   if(s==='schedule'){renderSchedule();return;}
   if(s==='f1'){renderF1();return;}
   if(s==='nascar'){renderNascar();return;}

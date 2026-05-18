@@ -1,7 +1,8 @@
 // ── INIT ──────────────────────────────────────────────────────────────────────
-// Default to the SCHEDULE landing page. switchSeries handles hiding the F1/NASCAR
-// submenu bars (which are display:flex by default in CSS).
-switchSeries('schedule');
+// Default to the HOME landing page. switchSeries handles hiding the F1/NASCAR
+// submenu bars (which are display:flex by default in CSS). SCHEDULE remains
+// accessible as a secondary tab.
+switchSeries('home');
 setInterval(()=>{if(currentSeries==='f1'&&currentF1Tab==='live'&&isLive)renderLive();},30000);
 updateLiveDots();
 setInterval(updateLiveDots,60000);

@@ -196,8 +196,9 @@ After the event: `grep -rn "<NAME> TEMPORARY" .` finds every site; delete each m
 ├── js/
 │   ├── core.js             ~239 lines — utilities, app-wide state, JOLPICA API helpers,
 │   │                                    switchSeries, refresh, updateLiveDots, renderLiveOffAir
-│   ├── schedule.js         ~78 lines — renderSchedule, renderScheduleRow
-│   ├── init.js             ~23 lines — boot statements: switchSeries('schedule'),
+│   ├── schedule.js         ~78 lines — renderSchedule, renderScheduleRow (secondary view)
+│   ├── home.js             ~34 lines — renderHome — scaffold; default landing view
+│   ├── init.js             ~24 lines — boot statements: switchSeries('home'),
 │   │                                   the two setInterval timers, updateF1Badges, and
 │   │                                   the F1 post-race-polling resumption IIFE
 │   └── series/
@@ -243,7 +244,8 @@ Traditional `<script>` tags (not `type="module"`) so top-level `function` declar
 
 | Series  | Status                                                                 |
 |---------|------------------------------------------------------------------------|
-| Schedule | Default landing — hero card for next race across all series + next 3 closest races |
+| Home    | Default landing view — scaffold only as of 2026-05-17; design pending. See `js/home.js`. |
+| Schedule | Secondary view — hero card for next race across all series + next 3 closest races. Still routable via the SCHEDULE tab. |
 | F1      | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive per [race-weekend state machine](#f1-race-weekend-state-machine). |
 | NASCAR  | Cup fully built (results, drivers, manufacturers, schedule). Xfinity/Trucks are placeholder "coming soon" screens (`renderNascar*` functions early-return when `currentNascarSeries !== 'cup'`) |
 | N24     | Permanent post-race-only module for the 2026 Nürburgring 24 — three sub-tabs (RACE RESULTS / QUALIFYING / RECAP). See [N24 module](#n24-module). |
