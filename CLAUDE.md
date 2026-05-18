@@ -501,6 +501,50 @@ The function is generic over series via a `ctx` object. F1 uses default ctx; NAS
 - Tire compound badges: `tireBadge(compound, age)` returns a colored circle (S red, M yellow, H white) plus optional lap count.
 - Lots of inline `style="..."` strings in template literals. There's no separate stylesheet — if you're editing a renderer, the styling lives in the same template.
 
+## F1 race weekend automation
+
+A typical F1 race weekend runs end-to-end with zero manual intervention except (a) tapping "Merge" on the auto-PR after each race and (b) adding qualifying highlight videos via the existing separate workflow.
+
+### What runs automatically
+
+- **State machine** (browser, `js/series/f1.js`) — `getF1RaceWeekendState()` cached 60 s. Detects `between-races` / `qualifying-available` / `session-live` / `post-race` and switches the LIVE tab's render path. Precedence: `session-live > post-race > qualifying-available > between-races`.
+- **Live timing** — when an OpenF1 session is reported active, the LIVE tab fetches `https://api.openf1.org/v1/sessions?...` every 30 s and renders the live grid.
+- **Live pill + green dot** — the header live-pill pulses during sessions; the series-bar green dot on F1 lights from `updateLiveDots()` in `js/core.js`, gated to ±2 days of a `NEXT_RACES` entry.
+- **Client-side post-race polling** — `startF1PostRacePolling(round)` in `js/series/f1.js`. 35-poll sequence across 24 h: every 5 min for the first hour, then hourly. Each poll hits Jolpica `/results/`, `/driverStandings/`, `/constructorStandings/`. JSON diffs surface as yellow-dot badges on the affected sub-tab; tooltip explains the server-side poll also runs. Defense-in-depth fallback only.
+- **Server-side post-race polling** — `.github/workflows/f1-post-race-poll.yml` + `scripts/post-race-poll.mjs`. Cron `*/30 * * * *` year-round. Inside a post-race window (race start + 4h < now < +24h, round not yet in `HARDCODED_RACES`), fetches Jolpica, applies completeness gates (results non-empty, driver leader ≥ 90 pts, constructor leader ≥ 170 pts), and opens (or updates) an `auto/f1-r{N}-*` pull request proposing the canonical-data update. Direct commits to `main` are forbidden — every change is a PR.
+
+### What I do manually
+
+- **Merge the auto-PR** after cross-checking the diff against F1.com / FIA classification.
+- **Add qualifying highlight videos** to `HARDCODED_QUALI_VIDEOS` — separate workflow, not Jolpica-driven.
+- **Update `SPRINT_RESULTS`** if a sprint weekend (Jolpica's `/results/` endpoint doesn't carry sprint data) and **`SEEDED_FASTEST_LAPS`** if Jolpica lagged on fastest-lap reporting — both via the existing manual post-race-fix prompt.
+
+### Testing the Action
+
+- **GitHub UI** → Actions → "F1 Post-Race Poll" → Run workflow → check `test_mode: true` → Run. A `[TEST] data: F1 test PR (auto-detected) — DO NOT MERGE` PR opens, touching only `scripts/.test-pr-marker.md` (no canonical data). Close it without merging.
+- **Local dry-run**: `DRY_RUN=true node scripts/post-race-poll.mjs` prints the would-be PR title/body and exits. `TEST_MODE=true DRY_RUN=true` exercises the test-fixture path with no GitHub side effects.
+- **`?devstate=<state>` URL param** still forces any LIVE-tab state for visual debugging — `between-races`, `qualifying-available`, `session-live`, `post-race`. Bypasses the cache.
+
+### Mobile push notifications (one-time setup)
+
+GitHub mobile app pushes a notification when an auto-PR opens. Confirm: app installed, signed in, the `JackH421/TraxStat` repo's watch level is at least "Pull requests" (defaults to "All Activity" for repo owners), and push notifications for PRs are enabled in app settings. No Telegram bot, no email service, no third-party. Zero secrets to configure.
+
+### If the Action ever fails silently
+
+- The **client-side yellow-dot badge** on RACE RESULTS / DRIVERS / CONSTRUCTORS is the visible fallback. Tap the tab or the `×` to dismiss.
+- The **manual post-race-fix prompt** becomes the recovery path: read the badge's console diff log (open DevTools, `F1 polling: ...` lines), hand-update `js/series/f1.js`, `node verify.js`, commit.
+
+## Race-day checklist
+
+| When | What to expect / do |
+|---|---|
+| Fri / Sat (practice + quali) | Site auto-renders FP and quali whenever someone opens the LIVE tab. No action needed. |
+| Sun pre-race | Live pill pulses, series-bar green dot lights, LIVE tab shows live timing. No action needed. |
+| Sun post-race (first 4 h) | Off-air recap renders with podium from cached results. Server-side polling is dormant (waiting for the +4 h mark). |
+| Sun post-race (4–24 h) | Cron firings begin. **Expect a phone push notification when the first auto-PR opens** — typically within 30–60 min of the race ending. Yellow-dot badges may also appear on RACE RESULTS / DRIVERS / CONSTRUCTORS for visitors with the tab open. |
+| Sun evening | From phone: review the auto-PR diff against F1.com / FIA. Tap **Merge**. |
+| Mon | If the merged PR was missing sprint data, fastest-lap details, or qualifying videos, top them up via the existing manual prompts. |
+
 ## Common gotchas
 
 - **Per-file size is small now.** Every file in the modular layout is comfortably under 1,100 lines (the biggest, `js/series/f1.js`, is ~1,051). A single `Read` per file fits in one tool call. The previous "read in chunks" advice is obsolete — but be aware of cross-file impact: a change to `js/core.js` can affect every series; a change to `index.html` script tags affects load order. Targeted reads stay cheap; whole-app changes need the load-order constraint in mind.
