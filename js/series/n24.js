@@ -257,7 +257,7 @@ function renderN24(){
 
   const pillBase="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;";
   const activeStyle="color:var(--red);border-bottom-color:var(--red);";
-  const idleStyle="color:var(--muted);";
+  const idleStyle="color:var(--red);";
   const pill=(tab,label)=>`<div onclick="switchN24Tab('${tab}')" style="${pillBase}${currentN24Tab===tab?activeStyle:idleStyle}">${label}</div>`;
   const subBar=`<div style="background:var(--surface2);border-bottom:1px solid var(--border);display:flex;">
     ${pill('results','Race Results')}
