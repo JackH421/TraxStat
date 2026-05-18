@@ -37,7 +37,10 @@
 //      Analytics events table in CLAUDE.md for the naming convention.
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let current__Series__Tab='main';   // sub-tab key, or 'main' if no sub-tabs
+// Universal 5-tab shape (Session 7). Tap on the main series tab lands the user
+// on the home menu (handled by switchSeries → goToSeriesHome). Tapping a row
+// in the menu sets this to the chosen sub-tab key.
+let current__Series__Tab='live';
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 // TODO: populate from a verified source. See cardinal rule in CLAUDE.md.
@@ -56,15 +59,30 @@ const __SERIES__SCHEDULE=[];
 function switch__Series__Tab(tab){
   track('tab:__series__',{tab});
   current__Series__Tab=tab;
+  document.querySelectorAll('#__series__-submenu .f1-sub-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('__series__tab-'+tab)?.classList.add('active');
   render__Series__();
 }
 
 function render__Series__(){
   const content=document.getElementById('main-content');
-  // TODO: replace with the real render. See renderNascar / renderN24 for
-  // a sub-tab dispatcher pattern, or renderSchedule for a single-view
-  // pattern.
-  content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">__Series__ Coming Soon</div><div class="state-sub">Hardcoded data goes in __SERIES___RESULTS / __SERIES___SCHEDULE; renderer goes here.</div></div>`;
+  // Universal 5-tab dispatch: live / standings / races / schedule / highlights.
+  // Every branch should prepend `renderSeriesBanner('__series__', currentTab)`
+  // and `renderBackToSeriesHome('__series__')` to its rendered HTML.
+  const top=renderSeriesBanner('__series__',current__Series__Tab)+renderBackToSeriesHome('__series__');
+  content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">__Series__ Coming Soon</div><div class="state-sub">Hardcoded data goes in __SERIES___RESULTS / __SERIES___SCHEDULE; renderer goes here. The home menu and 5-tab strip are wired up via core.js.</div></div>`;
   setStats('—','—','__SERIES__','—');
 }
+
+// To wire a new series into the home-menu + banner pattern:
+//   1. Add a metadata entry to TX_SERIES_META in js/core.js with name/label/
+//      seasonSub. (seasonSub returns a string like "2026 Season · Round X of Y".)
+//   2. Add an `if(s==='__series__'){goToSeriesHome(s);return;}` branch to
+//      switchSeries() in js/core.js (the goto branch already exists for
+//      f1/nascar/n24 — extend the condition or add an alongside branch).
+//   3. Add an `if(seriesKey==='__series__'){…submenu show…;switch__Series__Tab(subTab);}`
+//      branch inside goToSubTab() in core.js.
+//   4. Add a `<div class="f1-submenu" id="__series__-submenu" …>` strip to
+//      index.html with the 5 standard sub-tabs (Live / Standings / Race Results
+//      / Schedule / Highlights).
 // ── END __SERIES__ ────────────────────────────────────────────────────────────

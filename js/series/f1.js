@@ -182,7 +182,8 @@ const HARDCODED_CONSTRUCTOR_STANDINGS=[
 // ── RACE SELECTOR ─────────────────────────────────────────────────────────────
 async function renderRaceSelector(){
   const content=document.getElementById('main-content');
-  content.innerHTML=renderNextBanner()+`<div class="section-title"><span>2026 Season Results</span><span class="spin-inline">⟳</span></div>`;
+  const top=renderSeriesBanner('f1','races')+renderBackToSeriesHome('f1');
+  content.innerHTML=top+`<div class="section-title"><span>2026 Season Results</span><span class="spin-inline">⟳</span></div>`;
   // Use hardcoded races since they're fully verified — Jolpica may be incomplete
   const allRaces=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
   if(!allRaces.length){content.innerHTML+=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Results Yet</div><div class="state-sub">Race results will appear here after each round.</div></div>`;return;}
@@ -193,12 +194,15 @@ async function renderRaceSelector(){
     const nat=winner?.Driver?.nationality||'';
     const flag=driverFlag(nat);
     const isSelected=selectedRace&&String(selectedRace.round)===String(r.round);
+    const slug=f1TrackSlug(r.raceName);
+    const hlId=`highlights-f1-r${r.round}-${slug}`;
     return`<div class="race-item ${isSelected?'selected':''}" onclick="selectRace('${r.round}')">
       <div class="round-badge"><div class="round-num">${r.round}</div><div class="round-label">RND</div></div>
       <div>
         <div class="race-item-country">${r.Circuit?.Location?.country||''}</div>
         <div class="race-item-name">${r.raceName.replace(' Grand Prix','')}</div>
         <div class="race-item-date">${fmtDate(r.date)}</div>
+        <span class="tx-race-highlights-link" onclick="event.stopPropagation();navigateToHighlights('f1','${hlId}')">▶ Highlights</span>
       </div>
       <div>
         <span class="winner-flag">${flag}</span>
@@ -207,7 +211,7 @@ async function renderRaceSelector(){
       </div>
     </div>`;
   }).join('');
-  content.innerHTML=renderNextBanner()+`<div class="section-title"><span>2026 Season Results</span><span>${allRaces.length} races</span></div>`+rows;
+  content.innerHTML=top+`<div class="section-title"><span>2026 Season Results</span><span>${allRaces.length} races</span></div>`+rows;
   if(selectedRace){
     content.innerHTML+=await buildRaceResultsHTML(selectedRace.round);
     setTimeout(()=>{const el=document.querySelector('.results-header');if(el)el.scrollIntoView({behavior:'smooth'});},100);
@@ -287,7 +291,7 @@ async function buildRaceResultsHTML(round){
     const isOverallFl=drvFl?.rank==='1';
     const flCellClass=isOverallFl?'res-fastest is-fastest':'res-fastest';
     const flDisplay=flTime?(isOverallFl?`⚡${flTime}`:flTime):'—';
-    return`<div class="result-row ${numPos===1?'p1-row':''} ${isDnf||isDns?'dnf-row':''} ${isSelected?'selected-driver':''}" onclick="toggleLaps('${driverId}','${name}','${round}')">
+    return`<div class="result-row ${numPos===1?'p1-row':''} ${isDnf||isDns?'dnf-row':''} ${isSelected?'selected-driver':''} ${isOverallFl?'fl-row':''}" onclick="toggleLaps('${driverId}','${name}','${round}')">
       <div class="res-pos ${posClass}">${posLabel}</div>
       <div class="flag-cell">${flag}</div>
       <div>
@@ -305,7 +309,7 @@ async function buildRaceResultsHTML(round){
     <div class="lap-panel-header">
       <div>
         <div class="lap-panel-title">${selectedDriver} — Lap Times</div>
-        <div class="lap-panel-sub">Tap a lap to see details · ⚡ = fastest lap</div>
+        <div class="lap-panel-sub">⚡ = fastest lap</div>
       </div>
       <button class="lap-panel-close" onclick="closeLaps()">✕</button>
     </div>
@@ -476,7 +480,7 @@ async function renderDrivers(){
       const isSelected=selectedDriverChamp===name;
       const breakdown=isSelected?renderDriverBreakdown(name,team,pts):'';
       return`<div>
-        <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--red);':''}" onclick="track('driver:expand:f1',{name:'${name}'});selectedDriverChamp=selectedDriverChamp==='${name}'?null:'${name}';renderDrivers();">
+        <div class="champ-row" style="${isSelected?'background:#0a0005;border-left:2px solid var(--red);':''}" onclick="track('driver:expand:f1',{name:'${name}'});selectedDriverChamp=selectedDriverChamp==='${name}'?null:'${name}';renderF1();">
           <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
           <div class="flag-cell">${flag}</div>
           <div>
@@ -604,7 +608,7 @@ async function renderConstructors(){
       const isSelected=selectedConstructorChamp===name;
       const breakdown=isSelected?renderConstructorBreakdown(name,pts):'';
       return`<div>
-        <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${tc(name)};`:''}" onclick="track('constructor:expand:f1',{name:'${name}'});selectedConstructorChamp=selectedConstructorChamp==='${name}'?null:'${name}';renderConstructors();">
+        <div class="champ-row" style="${isSelected?`background:#0a0005;border-left:2px solid ${tc(name)};`:''}" onclick="track('constructor:expand:f1',{name:'${name}'});selectedConstructorChamp=selectedConstructorChamp==='${name}'?null:'${name}';renderF1();">
           <div class="champ-pos" style="color:${i===0?'var(--yellow)':i===1?'#c0c0c0':i===2?'#cd7f32':'var(--muted)'}">${i+1}</div>
           <div class="flag-cell">${flag}</div>
           <div>
@@ -638,7 +642,7 @@ async function renderLive(){
   // race recap). Polling runs in background for post-race.
   document.getElementById('live-pill').style.display='none';
   const content=document.getElementById('main-content');
-  content.innerHTML=renderLiveOffAir(state);
+  content.innerHTML=renderSeriesBanner('f1','live')+renderBackToSeriesHome('f1')+renderLiveOffAir(state);
   setStats('—','—','STANDBY',state==='post-race'?'POST-RACE':'BETWEEN');
 }
 
@@ -646,7 +650,8 @@ async function renderLive(){
 // is actively running. Called by renderLive() dispatcher when state==='session-live'.
 async function renderLiveSession(){
   const content=document.getElementById('main-content');
-  content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">Connecting...</div><div class="state-sub">Fetching live F1 timing data</div></div>`;
+  const top=renderSeriesBanner('f1','live')+renderBackToSeriesHome('f1');
+  content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">Connecting...</div><div class="state-sub">Fetching live F1 timing data</div></div>`;
   try{
     const sessRes=await fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026');
     const sessions=await sessRes.json();
@@ -655,7 +660,7 @@ async function renderLiveSession(){
     isLive=!!session;
     document.getElementById('live-pill').style.display=isLive?'flex':'none';
     if(!session){
-      content.innerHTML=renderLiveOffAir('no-session');
+      content.innerHTML=top+renderLiveOffAir('no-session');
       setStats('—','—','STANDBY','R4');return;
     }
     const sk=session.session_key,st=session.session_type||'Session';
@@ -680,7 +685,7 @@ async function renderLiveSession(){
       if(p.position===1)leader=dm[p.driver_number];
     });
     if(!sorted.length){
-      content.innerHTML=renderLiveOffAir('no-data');
+      content.innerHTML=top+renderLiveOffAir('no-data');
       setStats('—','—','STANDBY','R4');return;
     }
     const thRow=`<div class="timing-header-row"><div class="th left">POS</div><div class="th"></div><div class="th left">DRIVER</div><div class="th">GAP</div><div class="th">LAST LAP</div><div class="th">TIRE</div></div>`;
@@ -702,12 +707,12 @@ async function renderLiveSession(){
         <div class="tire-cell">${tireBadge(compound,tireAge)}</div>
       </div>`;
     }).join('');
-    content.innerHTML=thRow+rows;
+    content.innerHTML=top+thRow+rows;
     setStats(ft<Infinity?fmtLap(ft):'—',leader?.name_acronym||'—',isLive?'LIVE':st.substring(0,4).toUpperCase(),maxLap>0?`L${maxLap}`:session.meeting_name?.substring(0,6).toUpperCase()||'—');
   }catch(e){
     console.error(e);
     // On connection failure show the same friendly off-air view, not a scary error screen
-    content.innerHTML=renderLiveOffAir('error');
+    content.innerHTML=top+renderLiveOffAir('error');
     setStats('—','—','STANDBY','R4');
   }
 }
@@ -811,8 +816,9 @@ function toggleQualiDriver(driverId){
 
 async function renderQualifying(){
   const content=document.getElementById('main-content');
+  const top=renderSeriesBanner('f1','qualifying')+renderBackToSeriesHome('f1');
   if(!_qualiDataCache){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">⟳</div><div class="state-title">Loading qualifying…</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">⟳</div><div class="state-title">Loading qualifying…</div></div>`;
     setStats('—','—','QUAL','—');
   }
   // Walk rounds backward from upcoming to find the most recent with quali data.
@@ -833,7 +839,7 @@ async function renderQualifying(){
   }
 
   if(!qualiData){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Qualifying Data Yet</div><div class="state-sub">Check back closer to race weekend.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Qualifying Data Yet</div><div class="state-sub">Check back closer to race weekend.</div></div>`;
     setStats('—','—','QUAL','—');return;
   }
 
@@ -895,22 +901,23 @@ async function renderQualifying(){
     return row+panel;
   }).join('');
 
-  content.innerHTML=header+tableHeader+rows;
+  content.innerHTML=top+header+tableHeader+rows;
   setStats(`R${qualiRound}`,qualiData.raceName.split(' ').slice(0,2).join(' '),'QUAL',`${results.length}`);
 }
 
 // LIVE tab variant: between-races banner + compact top-10 qualifying.
 async function renderLiveWithQualifying(){
   const content=document.getElementById('main-content');
+  const top=renderSeriesBanner('f1','live')+renderBackToSeriesHome('f1');
   document.getElementById('live-pill').style.display='none';
   const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>Date.now());
-  if(!upcoming){content.innerHTML=renderLiveOffAir('between-races');return;}
+  if(!upcoming){content.innerHTML=top+renderLiveOffAir('between-races');return;}
   let quali=null;
   try{
     const data=await fetch(`${JOLPICA}/2026/${upcoming.round}/qualifying/`).then(r=>r.json());
     quali=data.MRData?.RaceTable?.Races?.[0]?.QualifyingResults;
   }catch(e){}
-  if(!quali||!quali.length){content.innerHTML=renderLiveOffAir('between-races');return;}
+  if(!quali||!quali.length){content.innerHTML=top+renderLiveOffAir('between-races');return;}
   const top10=quali.slice(0,10);
   const rows=top10.map(r=>{
     const pos=parseInt(r.position);
@@ -929,7 +936,7 @@ async function renderLiveWithQualifying(){
     </div>`;
   }).join('');
   const cta=`<div onclick="switchF1Tab('qualifying')" style="background:var(--surface2);padding:12px 16px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--red);cursor:pointer;text-transform:uppercase;border-top:1px solid var(--border);">Full Qualifying →</div>`;
-  content.innerHTML=renderNextBanner()+`<div class="section-title"><span>Qualifying · Round ${upcoming.round} · Top 10</span><span>Most recent</span></div>`+rows+cta;
+  content.innerHTML=top+renderNextBanner()+`<div class="section-title"><span>Qualifying · Round ${upcoming.round} · Top 10</span><span>Most recent</span></div>`+rows+cta;
   setStats('QUAL',`R${upcoming.round}`,'QUAL',`${quali.length}`);
 }
 
@@ -1024,15 +1031,106 @@ async function renderF1(){
   // Refresh the diff badges on every F1 render so they reflect current localStorage.
   setTimeout(updateF1Badges,0);
   if(currentF1Tab==='races')return renderRaceSelector();
+  if(currentF1Tab==='standings')return renderF1Standings();
+  if(currentF1Tab==='schedule')return renderF1Schedule();
+  if(currentF1Tab==='highlights')return renderF1Highlights();
+  // Legacy deep-link keys still callable via the LIVE state machine's CTA.
   if(currentF1Tab==='drivers')return renderDrivers();
   if(currentF1Tab==='constructors')return renderConstructors();
   if(currentF1Tab==='qualifying')return renderQualifying();
   return renderLive();
 }
 
-// renderF1Schedule removed — F1 SCHEDULE sub-tab was dropped in favor of the
-// global SCHEDULE landing tab. Upcoming F1 races are listed there alongside
-// other series chronologically.
+// Session 7: stacked Drivers + Constructors view backing the new "Standings"
+// sub-tab. renderDrivers / renderConstructors each write the full panel into
+// main-content; we capture their output between awaits and concatenate.
+async function renderF1Standings(){
+  const content=document.getElementById('main-content');
+  content.innerHTML=renderSeriesBanner('f1','standings')+renderBackToSeriesHome('f1')+
+    `<div class="state-screen"><div class="state-icon">⟳</div><div class="state-title">Loading...</div></div>`;
+  await renderDrivers();
+  const driversHTML=content.innerHTML;
+  await renderConstructors();
+  const constructorsHTML=content.innerHTML;
+  content.innerHTML=renderSeriesBanner('f1','standings')+renderBackToSeriesHome('f1')+driversHTML+constructorsHTML;
+}
+
+// Session 7: F1-local schedule. Completed rounds above, NEXT_RACES upcoming
+// below. We can't list all 24 rounds — NEXT_RACES only covers the next ~7 —
+// so the upcoming section is labelled "next races" rather than a full season
+// calendar.
+function renderF1Schedule(){
+  const content=document.getElementById('main-content');
+  const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+  const completedRows=completed.map(r=>{
+    const w=r.Results?.[0];
+    return`<div class="race-item" onclick="goToSubTab('f1','races');setTimeout(()=>selectRace('${r.round}'),50);">
+      <div class="round-badge"><div class="round-num">${r.round}</div><div class="round-label">RND</div></div>
+      <div>
+        <div class="race-item-country">${r.Circuit?.Location?.country||''}</div>
+        <div class="race-item-name">${r.raceName.replace(' Grand Prix','')}</div>
+        <div class="race-item-date">${fmtDate(r.date)}</div>
+      </div>
+      <div>
+        <div class="winner-name">${w?.Driver?.familyName||'—'}</div>
+        <div class="winner-team">${w?.Constructor?.name||'—'}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const upcomingRows=NEXT_RACES.map(r=>{
+    const cd=countdown(r.date);
+    const cdNum=cd?cd.num:'—';
+    const cdUnit=cd?(cd.unit==='DAYS'||cd.unit==='DAY'?'D':cd.unit==='HOURS'?'H':'M'):'';
+    return`<div class="race-item">
+      <div class="round-badge"><div class="round-num">${r.round}</div><div class="round-label">RND</div></div>
+      <div>
+        <div class="race-item-country">${r.country}${r.sprint?' · SPRINT':''}</div>
+        <div class="race-item-name">${r.name.replace(' Grand Prix','')}</div>
+        <div class="race-item-date">${fmtDate(r.date)} · ${r.circuit}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--yellow);line-height:1;">${cdNum}${cdUnit}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;color:var(--muted);letter-spacing:0.08em;margin-top:3px;">AWAY</div>
+      </div>
+    </div>`;
+  }).join('');
+  content.innerHTML=renderSeriesBanner('f1','schedule')+renderBackToSeriesHome('f1')+
+    `<div class="section-title"><span>Completed Rounds · ${completed.length}</span><span>Tap to open results</span></div>`+
+    (completedRows||`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Completed Rounds</div></div>`)+
+    `<div class="section-title"><span>Upcoming · Next ${NEXT_RACES.length}</span><span>2026 Season</span></div>`+
+    (upcomingRows||`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Season Complete</div></div>`);
+  setStats('—','—','SCHED',`${completed.length} done`);
+}
+
+// Session 7: Season Highlights. One placeholder card per completed round.
+// IDs follow `highlights-f1-r{round}-{slug}` for the Highlights deep-link
+// from each race-results row. No invented URLs — TODO placeholder only.
+function f1TrackSlug(raceName){
+  return (raceName||'').toLowerCase().replace(/grand prix/g,'').trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'race';
+}
+function renderF1Highlights(){
+  const content=document.getElementById('main-content');
+  const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+  const cards=completed.map(r=>{
+    const w=r.Results?.[0];
+    const slug=f1TrackSlug(r.raceName);
+    const id=`highlights-f1-r${r.round}-${slug}`;
+    const winner=w?`${w.Driver?.familyName||'—'} (${w.Constructor?.name||'—'})`:'—';
+    return`<div class="tx-highlights-card" id="${id}">
+      <div class="tx-highlights-meta">Round ${r.round} · ${r.Circuit?.Location?.country||''} · ${fmtDate(r.date)}</div>
+      <div class="tx-highlights-title">${r.raceName}</div>
+      <div class="tx-highlights-winner">Winner: ${winner}</div>
+      <div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>
+    </div>`;
+  }).join('');
+  content.innerHTML=renderSeriesBanner('f1','highlights')+renderBackToSeriesHome('f1')+
+    `<div class="tx-highlights-header">
+      <div class="tx-highlights-header-title">F1 2026 · Season Highlights</div>
+      <div class="tx-highlights-header-sub">Official race recaps and key moments. Videos are added after verification — placeholders shown for races without a confirmed URL yet.</div>
+    </div>`+
+    (cards||`<div class="state-screen"><div class="state-icon">🎬</div><div class="state-title">No Completed Rounds Yet</div></div>`);
+  setStats('—','—','HILITES',`${completed.length}`);
+}
 
 
 function switchF1Tab(tab){
@@ -1045,7 +1143,7 @@ function switchF1Tab(tab){
   selectedQualiDriver=null;
   // Auto-dismiss diff badge for the tab we just visited (visit = "I've seen it")
   dismissF1Badge(tab);
-  document.querySelectorAll('.f1-sub-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#f1-submenu .f1-sub-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab)?.classList.add('active');
   renderF1();
 }
