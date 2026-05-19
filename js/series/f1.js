@@ -804,6 +804,36 @@ async function computeF1State(){
 //   },
 const HARDCODED_QUALI_VIDEOS={};
 
+// Per-round whole-session official race recaps from the @Formula1 YouTube
+// channel. Consumed by renderF1Highlights() for the HIGHLIGHTS tab. Same
+// oEmbed + embed-page verification workflow as HARDCODED_QUALI_VIDEOS.
+//
+// Shape:
+//   <round>: 'youtubeVideoId',
+const HARDCODED_RACE_HIGHLIGHTS={
+  1: 'lL_d84cN1UY',  // Australian GP
+  2: 't8HpVlineX4',  // Chinese GP
+  3: 'oAtYfF0_4-I',  // Japanese GP
+  4: '5gYys4GL7S0',  // Miami GP
+};
+
+// Per-round whole-session qualifying highlights — distinct from the
+// per-driver HARDCODED_QUALI_VIDEOS above (which the QUALIFYING tab uses
+// for tap-to-expand per-driver lap clips). Consumed by renderF1Highlights().
+const HARDCODED_QUALI_HIGHLIGHTS={
+  1: 'QztBs3IZBHk',  // Australian GP
+  2: '75-_kMm0mb8',  // Chinese GP
+  3: 'oZH_7pYJPTE',  // Japanese GP
+  4: '83GJM1S0FnE',  // Miami GP
+};
+
+// Per-round sprint highlights for rounds that ran a sprint. Same shape and
+// verification workflow as HARDCODED_RACE_HIGHLIGHTS.
+const HARDCODED_SPRINT_HIGHLIGHTS={
+  2: 'ynRZQ9EBfRI',  // Chinese GP sprint
+  4: '0XlphgCNbwQ',  // Miami GP sprint
+};
+
 let selectedQualiDriver=null;
 let _qualiDataCache=null;
 let _qualiDataCacheRound=null;
@@ -1102,31 +1132,56 @@ function renderF1Schedule(){
   setStats('—','—','SCHED',`${completed.length} done`);
 }
 
-// Session 7: Season Highlights. One placeholder card per completed round.
-// IDs follow `highlights-f1-r{round}-{slug}` for the Highlights deep-link
-// from each race-results row. No invented URLs — TODO placeholder only.
+// Season Highlights — one card per completed round with embedded official
+// @Formula1 highlight videos (race, qualifying, optional sprint). Card IDs
+// match `highlights-f1-r{round}-{slug}` for the navigateToHighlights() deep
+// link from each race-results row. Rounds without verified video IDs still
+// render the TODO placeholder.
 function f1TrackSlug(raceName){
   return (raceName||'').toLowerCase().replace(/grand prix/g,'').trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'race';
 }
 function renderF1Highlights(){
   const content=document.getElementById('main-content');
   const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+
+  // 16:9 responsive iframe with the hqdefault thumbnail loaded as a CSS
+  // background underneath — that's the visible fallback if the iframe is
+  // blocked (ad-blocker, CSP, network). The below-iframe link is the
+  // guaranteed escape hatch regardless of iframe state.
+  const slotHTML=(label,videoId)=>{
+    if(!videoId)return '';
+    return `<div style="margin-top:12px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;color:var(--green);text-transform:uppercase;padding-bottom:6px;">⬤ ${label}</div>
+      <div style="position:relative;padding-bottom:56.25%;height:0;background:url('https://i.ytimg.com/vi/${videoId}/hqdefault.jpg') center/cover #000;border-radius:3px;overflow:hidden;">
+        <iframe src="https://www.youtube.com/embed/${videoId}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${label}"></iframe>
+      </div>
+      <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 0;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;">Open on YouTube ↗</a>
+    </div>`;
+  };
+
   const cards=completed.map(r=>{
     const w=r.Results?.[0];
     const slug=f1TrackSlug(r.raceName);
     const id=`highlights-f1-r${r.round}-${slug}`;
     const winner=w?`${w.Driver?.familyName||'—'} (${w.Constructor?.name||'—'})`:'—';
+    const raceVid=HARDCODED_RACE_HIGHLIGHTS[r.round];
+    const qualiVid=HARDCODED_QUALI_HIGHLIGHTS[r.round];
+    const sprintVid=HARDCODED_SPRINT_HIGHLIGHTS[r.round];
+    const hasAny=raceVid||qualiVid||sprintVid;
+    const body=hasAny
+      ? slotHTML('Race Highlights',raceVid)+slotHTML('Qualifying Highlights',qualiVid)+slotHTML('Sprint Highlights',sprintVid)
+      : `<div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>`;
     return`<div class="tx-highlights-card" id="${id}">
       <div class="tx-highlights-meta">Round ${r.round} · ${r.Circuit?.Location?.country||''} · ${fmtDate(r.date)}</div>
       <div class="tx-highlights-title">${r.raceName}</div>
       <div class="tx-highlights-winner">Winner: ${winner}</div>
-      <div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>
+      ${body}
     </div>`;
   }).join('');
   content.innerHTML=renderSeriesBanner('f1','highlights')+renderBackToSeriesHome('f1')+
     `<div class="tx-highlights-header">
       <div class="tx-highlights-header-title">F1 2026 · Season Highlights</div>
-      <div class="tx-highlights-header-sub">Official race recaps and key moments. Videos are added after verification — placeholders shown for races without a confirmed URL yet.</div>
+      <div class="tx-highlights-header-sub">Official race recaps from the @Formula1 YouTube channel. Each round shows race, qualifying, and (when applicable) sprint highlights.</div>
     </div>`+
     (cards||`<div class="state-screen"><div class="state-icon">🎬</div><div class="state-title">No Completed Rounds Yet</div></div>`);
   setStats('—','—','HILITES',`${completed.length}`);
