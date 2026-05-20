@@ -41,89 +41,89 @@ const HOMEPAGE_ARTICLES = [
   {
     id: 'a1',
     series: 'f1',
-    headline: 'Antonelli wins third straight Grand Prix in Miami, extends championship lead to 20 points',
-    source: 'Sky Sports F1',
-    url: 'https://www.skysports.com/f1/news/12433/13542703/canadian-gp-2026-sprint-weekend-dates-schedule-weather-uk-start-time-and-how-to-watch-or-stream-f1-race-in-montreal-live-on-sky-sports',
-    publishedAt: '2026-05-15T08:00:00Z',
-    excerpt: '17-year-old Mercedes driver Kimi Antonelli has won three consecutive Grands Prix, building a 20-point championship lead over teammate George Russell ahead of the Canadian GP.',
-    imageUrl: '',
-    imageCredit: ''
+    headline: 'Sebastian Vettel launches dramatic post-race protest after controversial F1 penalty',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/sebastian-vettel-launches-dramatic-post-race-protest-after-controversial-f1-penalty',
+    publishedAt: '2026-05-19T15:30:00.000Z',
+    excerpt: 'Sebastian Vettel was dramatically denied a race victory in Canada seven years ago after a controversial time penalty handed the win to Lewis Hamilton.',
+    imageUrl: 'https://cdn.racingnews365.com/2019/Vettel-Canada.jpg?v=1779185769&width=1800&height=945&quality=75&crop=5568%2C2924%2C0%2C394',
+    imageCredit: 'Vettel Canada'
   },
   {
     id: 'a2',
     series: 'f1',
-    headline: 'Mercedes brings major upgrades to Canadian GP, aims to neutralize Ferrari race-start advantage',
-    source: 'GPFans',
-    url: 'https://www.gpfans.com/en/f1-news/1083670/f1-mercedes-upgrades-2026-canadian-grand-prix-ferrari-race-starts/',
-    publishedAt: '2026-05-14T08:15:00Z',
-    excerpt: 'Mercedes has revealed a significant upgrade package for the Canadian Grand Prix targeting turbo lag and wheelspin issues that have allowed Ferrari to gain off the line all season.',
-    imageUrl: '',
+    headline: 'Why Mercedes has banned Kimi Antonelli from the Nurburgring',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/f1/news/1095675/1/why-mercedes-has-banned-kimi-antonelli-nurburgring',
+    publishedAt: '2026-05-19T12:50:31.000Z',
+    excerpt: 'Mercedes won\'t allow Kimi Antonelli to race at the Nurburgring. Here\'s why...',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/xpb_1408798_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
     id: 'a3',
     series: 'f1',
-    headline: 'Canadian GP start time pushed to 4pm local to avoid Indianapolis 500 clash',
-    source: 'ESPN F1',
-    url: 'https://www.espn.com/f1/story/_/id/48638259/canadian-grand-prix-2026-race-f1-sprint-start-s-how-watch-schedule-usa-tv-channel-live-stream-predictions-results',
-    publishedAt: '2026-05-16T12:00:00Z',
-    excerpt: 'Sunday\'s Canadian Grand Prix has been pushed back to 4pm local (21:00 BST) to avoid overlapping with the Indianapolis 500, which runs earlier the same day.',
-    imageUrl: '',
-    imageCredit: ''
+    headline: 'Ford open to dramatic F1 engine change',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/ford-open-to-dramatic-f1-engine-change',
+    publishedAt: '2026-05-19T17:10:00.000Z',
+    excerpt: 'As noise is already being made over the next F1 engine formula, Ford is open to seeing a major change occur.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Hadjar/Hadjar-FP1-Miami.jpg?v=1777652927&width=1800&height=945&quality=75&crop=5185%2C2723%2C0%2C369',
+    imageCredit: 'Hadjar FP1 Miami'
   },
   {
     id: 'a4',
-    series: 'f1',
-    headline: 'Verstappen openly questions racing future under new regulations after public 2026 struggles',
-    source: 'Sportsnaut',
-    url: 'https://sportsnaut.com/f1/formula-1-canadian-grand-prix-storylines-antonelli-ferrari',
-    publishedAt: '2026-05-11T10:00:00Z',
-    excerpt: 'Max Verstappen sits seventh in the championship with 26 points and has openly questioned whether he wants to keep racing under the 2026 regulations, calling the new cars "a joke."',
-    imageUrl: '',
+    series: 'nascar',
+    headline: 'NASCAR on Prime trackside coverage to feature several Cup Series legends',
+    source: 'Motorsport.com NASCAR',
+    url: 'https://www.motorsport.com/nascar-cup/news/nascar-on-prime-trackside-coverage-to-feature-several-nascar-legends-/10822235/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-05-19T16:29:49.000Z',
+    excerpt: 'NASCAR on Prime Video is back! As the Cup Series heads to streaming for the next five weeks, the popular trackside coverage that featured lengthy post-race shows is back.Alongside Danielle Trotta and Corey LaJoie, who will be there every week, the panel will have a rotating cast…',
+    imageUrl: 'https://cdn-4.motorsport.com/images/amp/0arKOaw2/s6/from-l-r-carl-edwards-shane-va.jpg',
     imageCredit: ''
   },
   {
     id: 'a5',
     series: 'nascar',
-    headline: 'Katherine Legge to attempt historic Indy 500 / Coca-Cola 600 Double on May 24',
-    source: 'NASCAR.com',
-    url: 'https://www.nascar.com/news-media/2026/05/13/katherine-legge-to-attempt-historic-double-at-indianapolis-500-coca-cola-600/',
-    publishedAt: '2026-05-13T14:00:00Z',
-    excerpt: 'Katherine Legge will become the first woman ever to attempt The Double — the Indianapolis 500 and Coca-Cola 600 on the same day — driving the #11 for HMD Motorsports and the #78 for Live Fast Motorsports.',
-    imageUrl: '',
+    headline: 'Denny Hamlin wins $1 million prize in crash-filled NASCAR All-Star Race at Dover',
+    source: 'Motorsport.com NASCAR',
+    url: 'https://www.motorsport.com/nascar-cup/news/denny-hamlin-wins-nascar-cup-all-star-race-dover/10821763/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-05-17T21:20:24.000Z',
+    excerpt: 'Denny Hamlin now has two wins in NASCAR\'s All-Star Race, taking victory in a chaotic race at Dover\'s \'Monster Mile.\' He will be awarded the $1 million prize. He started from pole position, and led 103 laps.His Joe Gibbs Racing teammate Chase Briscoe finished second after leading…',
+    imageUrl: 'https://cdn-3.motorsport.com/images/amp/YWKwZZkY/s6/gettyimages-2276770493.jpg',
     imageCredit: ''
   },
   {
     id: 'a6',
     series: 'nascar',
-    headline: 'Coca-Cola Company joins 23XI Racing as Bubba Wallace rejoins Coca-Cola Racing Family',
-    source: 'NASCAR.com',
-    url: 'https://www.nascar.com/news-media/2026/05/01/coca-cola-company-partners-with-23xi-racing-bubba-wallace-rejoins-coca-cola-racing-family/',
-    publishedAt: '2026-05-01T13:00:00Z',
-    excerpt: 'The Coca-Cola Company has joined 23XI Racing as the exclusive beverage partner for Bubba Wallace and the #23 team, marking Wallace\'s return to the Coca-Cola Racing Family.',
-    imageUrl: '',
+    headline: 'Kevin Harvick on Natalie Decker: "I don\'t like to see a mockery made out of what our sport is"',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/nascar-truck/news/kevin-harvick-on-natalie-decker-i-dont-like-to-see-a-mockery-made-out-of-nascar/10822247/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-05-19T18:00:54.000Z',
+    excerpt: 'Natalie Decker is back in the news after her recent NASCAR Craftsman Truck Series start at Dover. Earlier this year, she received criticism for arriving late to a wreck in the NASCAR O\'Reilly season-opener at Daytona, but this situation was different.After being penalized by…',
+    imageUrl: 'https://cdn-2.motorsport.com/images/amp/0ZqAgaL6/s6/natalie-decker.jpg',
     imageCredit: ''
   },
   {
     id: 'a7',
-    series: 'nascar',
-    headline: 'Kurt Busch teases potential race announcement during Coca-Cola 600 week',
-    source: 'Heavy Sports',
-    url: 'https://heavy.com/sports/nascar/kurt-busch-teases-nascar-return-coca-cola-600-hint/',
-    publishedAt: '2026-05-13T18:00:00Z',
-    excerpt: 'NASCAR champion Kurt Busch hinted at a potential race announcement during Coca-Cola 600 week, though no series, event, or entry has been confirmed.',
-    imageUrl: '',
+    series: 'motogp',
+    headline: 'Zarco must wait for ligament surgery after horrific MotoGP crash',
+    source: 'The Race',
+    url: 'https://www.the-race.com/motogp/johann-zarco-ligament-surgery-wait-horrific-barcelona-motogp-crash/',
+    publishedAt: '2026-05-19T13:06:42.000Z',
+    excerpt: 'Johann Zarco must wait "a couple of weeks" for surgery on the ligament damage he suffered in his horrific crash during MotoGP\'s Catalan GP',
+    imageUrl: 'https://storage.ghost.io/c/dd/af/ddafbd99-2ccd-468c-b622-4b3cccf80b49/content/images/size/w1200/2026/05/GnG_1316254_HiRes.jpg',
     imageCredit: ''
   },
   {
     id: 'a8',
-    series: 'n24',
-    headline: 'Verstappen Racing #3 retires from Nürburgring 24 with driveshaft failure while leading',
-    source: 'Racing News 365 / TraxStat verified',
-    url: 'https://traxstat.com',
-    publishedAt: '2026-05-12T15:00:00Z',
-    excerpt: 'Max Verstappen\'s Verstappen Racing #3 retired from the Nürburgring 24 Hours in P38 after a driveshaft failure ended a strong run that had the car leading the GT3 class 3.5 hours from the finish.',
-    imageUrl: '',
+    series: 'motogp',
+    headline: 'Johann Zarco recounts gruesome MotoGP crash: ‘I’m mad at myself for restarting’',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/motogp/news/1095665/1/johann-zarco-recounts-gruesome-motogp-crash-im-mad-myself-restarting',
+    publishedAt: '2026-05-19T08:16:32.000Z',
+    excerpt: 'Johann Zarco has given a first recount of his scary Catalunya MotoGP crash to France’s L’Equipe',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/gng_1316251_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   }
 ];
@@ -133,7 +133,52 @@ const HOMEPAGE_ARTICLES = [
 // any primary for an alternate by editing the PR before merge. Same shape
 // as HOMEPAGE_ARTICLES entries. Not rendered on the page itself — exists
 // purely as a write target for the aggregator.
-const HOMEPAGE_ALTERNATES = [];
+const HOMEPAGE_ALTERNATES = [
+  {
+    id: 'a101',
+    series: 'other',
+    headline: 'Alvaro Bautista undergoes surgery after Most WorldSBK crash',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/wsbk/news/1095666/1/alvaro-bautista-undergoes-surgery-after-most-worldsbk-crash',
+    publishedAt: '2026-05-19T08:56:42.000Z',
+    excerpt: 'Alvaro Bautista has had successful surgery following a crash last weekend in Czechia',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/gng_1315601_hires.jpg?width=1600&aspect_ratio=16:9',
+    imageCredit: ''
+  },
+  {
+    id: 'a102',
+    series: 'indycar',
+    headline: 'Ex-F1 driver Alexander Rossi has surgery on injuries suffered in huge Indy 500 crash',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/indycar/news/1095663/1/ex-f1-driver-alexander-rossi-has-surgery-injuries-suffered-huge-indy-500',
+    publishedAt: '2026-05-19T06:40:52.000Z',
+    excerpt: 'Former F1 driver Alexander Rossi has undergone surgery on injuries he suffered in a huge Indy 500 crash.',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-05/screenshot-2026-05-19-at-07.18.33.png?width=1600&aspect_ratio=16:9',
+    imageCredit: ''
+  },
+  {
+    id: 'a103',
+    series: 'indycar',
+    headline: 'Alexander Rossi health update after huge Indy 500 practice crash',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/alexander-rossi-health-update-after-huge-indy-500-practice-crash',
+    publishedAt: '2026-05-19T06:35:00.000Z',
+    excerpt: 'Alexander Rossi was taken to hospital following a huge accident in practice for the Indy 500.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/IndyCar/Alexander-Rossi-Indianapolis-500-Practice-By_-Chris-Jones_Ref-Image-Without-Watermark_m153378.jpg?v=1779172084&width=1200&height=630&quality=75&crop=1080%2C567%2C0%2C76',
+    imageCredit: 'Alexander Rossi Indianapolis 500 Practice By Chris Jones Ref Image Without Watermark m153378'
+  },
+  {
+    id: 'a104',
+    series: 'motogp',
+    headline: 'Francesco Bagnaia fears wrist injury after Johann Zarco crash: “Something’s not quite right”',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/motogp/news/francesco-bagnaia-fears-wrist-issue-after-johann-zarco-crash-somethings-not-quite-right/10822136/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-05-19T10:14:09.000Z',
+    excerpt: 'Francesco Bagnaia has revealed he will have his left wrist re-examined after struggling through Monday’s in-season MotoGP test at Barcelona.Bagnaia had already undergone an X-ray on his wrist on Sunday following a frightening three-way crash with Johann Zarco and Luca Marini at…',
+    imageUrl: 'https://cdn-5.motorsport.com/images/amp/0o5PGVoY/s6/francesco-bagnaia-ducati-team.jpg',
+    imageCredit: ''
+  }
+];
 
 // N24 race-end metadata. Not present as a constant in n24.js, but the
 // 16–17 May 2026 date is stated in that file's header comment (verified).
