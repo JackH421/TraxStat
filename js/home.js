@@ -74,13 +74,13 @@ const HOMEPAGE_ARTICLES = [
   {
     id: 'a4',
     series: 'nascar',
-    headline: 'Team Penske makes another pit crew change for Ryan Blaney',
+    headline: 'NASCAR great Kyle Busch dies at 41 after illness',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/team-penske-makes-another-pit-crew-change-for-ryan-blaney/10822427/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-05-20T18:34:18.000Z',
-    excerpt: 'As Team Penske continues to try and find the right formula for its No. 12 pit crew, they have opted to make another change ahead of this weekend\'s Coca-Cola 600 at Charlotte Motor Speedway.The group has had several problems early in the year with 88 positions lost on pit road in…',
-    imageUrl: 'https://cdn-5.motorsport.com/images/amp/68VWJ442/s6/ryan-blaney-team-penske.jpg',
-    imageCredit: ''
+    url: 'https://www.motorsport.com/nascar-cup/news/nascar-great-kyle-busch-dies-at-41-after-illness/10822748/',
+    publishedAt: '2026-05-21T22:08:00.000Z',
+    excerpt: 'Kyle Busch, one of the most prolific NASCAR drivers of all-time, a husband and father of two, died on Thursday at the age of 41. No cause has been disclosed, but the two-time Cup Series champion was hospitalized earlier in the day.',
+    imageUrl: 'https://cdn-3.motorsport.com/images/amp/6x7Z3MMY/s2/kyle-busch-2x-nascar-cup-serie.jpg',
+    imageCredit: 'Kyle Busch, 2x NASCAR Cup Series champion'
   },
   {
     id: 'a5',
