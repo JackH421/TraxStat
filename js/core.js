@@ -198,12 +198,35 @@ const TX_SERIES_META={
     // few), so we can't claim "Round N of 24" from data alone — fall back.
     return max>0?`2026 Season · After Round ${max}`:'2026 Season';
   }},
-  nascar:{name:'NASCAR Cup',label:'NASCAR',seasonSub:()=>{
-    const total=NASCAR_CUP_SCHEDULE?.length||0;
-    const completed=Object.keys(NASCAR_CUP_RESULTS||{}).map(Number).filter(n=>!isNaN(n));
-    const max=completed.length?Math.max(...completed):0;
-    return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
-  }},
+  nascar:{
+    label:'NASCAR',
+    // `name` is dynamic — the same NASCAR banner is shared across Cup / Xfinity /
+    // Trucks sub-series, but the title should reflect whichever is selected.
+    // The getter reads `currentNascarSeries` (declared in nascar.js) at render
+    // time, by which point all classic scripts have finished loading.
+    get name(){
+      const s=typeof currentNascarSeries!=='undefined'?currentNascarSeries:'cup';
+      return s==='xfinity'?'NASCAR Xfinity'
+           : s==='trucks'?'NASCAR Trucks'
+           : 'NASCAR Cup';
+    },
+    seasonSub:()=>{
+      const s=typeof currentNascarSeries!=='undefined'?currentNascarSeries:'cup';
+      let total, results;
+      if(s==='xfinity'){
+        total=typeof NASCAR_XFINITY_SCHEDULE!=='undefined'?NASCAR_XFINITY_SCHEDULE.length:0;
+        results=typeof NASCAR_XFINITY_RESULTS!=='undefined'?NASCAR_XFINITY_RESULTS:{};
+      } else if(s==='trucks'){
+        return '2026 Season';
+      } else {
+        total=NASCAR_CUP_SCHEDULE?.length||0;
+        results=NASCAR_CUP_RESULTS||{};
+      }
+      const completed=Object.keys(results).map(Number).filter(n=>!isNaN(n));
+      const max=completed.length?Math.max(...completed):0;
+      return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
+    }
+  },
   n24:{name:'Nürburgring 24',label:'N24',seasonSub:()=>'2026 Edition · Nordschleife'},
 };
 

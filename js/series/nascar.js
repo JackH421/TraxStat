@@ -646,5 +646,11 @@ function switchNascarSeries(s){
   selectedNascarMfrChamp=null;
   document.querySelectorAll('.nascar-series-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('nseries-'+s)?.classList.add('active');
-  renderNascar();
+  // Tapping a sub-series tab (CUP / XFINITY / TRUCKS) always lands you on this
+  // series' home menu — the 5-tile "pick a section" page. The banner header
+  // updates per-sub-series via TX_SERIES_META.nascar.name (a getter that reads
+  // currentNascarSeries). From the menu, picking a tile drops into the sub-tab
+  // view via goToSubTab, which is what brings up the LIVE/STANDINGS/RACES/...
+  // sub-menu strip.
+  goToSeriesHome('nascar');
 }
