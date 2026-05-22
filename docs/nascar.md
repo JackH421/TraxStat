@@ -2,6 +2,8 @@
 
 Entirely hardcoded in `js/series/nascar.js` — there is no NASCAR API call anywhere in the codebase.
 
+> **Xfinity (O'Reilly Auto Parts) lives in `js/series/nascar-xfinity.js`** as a sibling module. Phase 1 (current): 33-race 2026 schedule is populated and verified against Wikipedia. Phase 2 (pending): per-race results, driver standings, manufacturer wins. Until Phase 2 lands, Xfinity tabs render correct empty states — never invented data. The same `switchNascarSeries('xfinity')` route powers it; each renderer in `nascar.js` dispatches to `renderNascarXfinity*` when the active series is Xfinity.
+
 All NASCAR constants live in `js/series/nascar.js`:
 
 - `NASCAR_CUP_DRIVERS`: last-name → `{first, team, mfr, num}` map for all full-time entries.

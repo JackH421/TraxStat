@@ -11,7 +11,9 @@ const fs = require('fs');
 const path = require('path');
 
 const SOURCE_PATH = path.join(__dirname, 'js', 'series', 'nascar.js');
+const XFINITY_PATH = path.join(__dirname, 'js', 'series', 'nascar-xfinity.js');
 const source = fs.readFileSync(SOURCE_PATH, 'utf8');
+const xfinitySource = fs.existsSync(XFINITY_PATH) ? fs.readFileSync(XFINITY_PATH, 'utf8') : null;
 
 // ── Extraction ────────────────────────────────────────────────────────────────
 // (Same brace-counting strategy as verify.js. Duplicated here on purpose —
@@ -51,6 +53,13 @@ function extractConst(src, name) {
 
 function loadConst(name) {
   const literal = extractConst(source, name);
+  // eslint-disable-next-line no-eval
+  return eval(`(${literal})`);
+}
+
+function loadXfinityConst(name) {
+  if (!xfinitySource) return null;
+  const literal = extractConst(xfinitySource, name);
   // eslint-disable-next-line no-eval
   return eval(`(${literal})`);
 }
@@ -140,6 +149,36 @@ for (const m of NASCAR_CUP_MFRS) {
   }
 }
 
+// ── Check 4: Xfinity schedule integrity (Phase 1 — schedule only) ─────────────
+// Phase 1 of the Xfinity build populates only the schedule. As Phase 2 adds
+// drivers/results/standings/mfrs we'll extend this block to mirror Checks 1-3
+// against NASCAR_XFINITY_* constants. For now: round numbers must be sequential
+// 1..N, every row must have race/track/date/country, and dates must be valid
+// YYYY-MM-DD strings in ascending order.
+const xfinitySchedChecks = { pass: 0, fail: 0, total: 0 };
+if (xfinitySource) {
+  const sched = loadXfinityConst('NASCAR_XFINITY_SCHEDULE') || [];
+  xfinitySchedChecks.total = sched.length;
+  let prevDate = '0000-00-00';
+  sched.forEach((row, i) => {
+    const expectedRound = i + 1;
+    const problems = [];
+    if (row.round !== expectedRound) problems.push(`round=${row.round}, expected ${expectedRound}`);
+    if (!row.race) problems.push('missing race');
+    if (!row.track) problems.push('missing track');
+    if (!row.country) problems.push('missing country');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(row.date || '')) problems.push(`bad date "${row.date}"`);
+    else if (row.date < prevDate) problems.push(`date ${row.date} earlier than previous ${prevDate}`);
+    if (row.date) prevDate = row.date;
+    if (problems.length) {
+      note('xfinity-schedule', `R${row.round || expectedRound}: ${problems.join('; ')}`);
+      xfinitySchedChecks.fail++;
+    } else {
+      xfinitySchedChecks.pass++;
+    }
+  });
+}
+
 // ── Report ────────────────────────────────────────────────────────────────────
 const fmt = (chk, label) => {
   const ok = chk.fail === 0;
@@ -152,6 +191,9 @@ console.log('================================================');
 console.log(fmt(tallyChecks, 'Winner → mfr wins tally'));
 console.log(fmt(gapChecks,   'Standings gap math      '));
 console.log(fmt(refChecks,   'Driver references       '));
+if (xfinitySource) {
+  console.log(fmt(xfinitySchedChecks, 'Xfinity schedule        '));
+}
 console.log('');
 
 if (errors.length === 0) {

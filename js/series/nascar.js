@@ -223,10 +223,11 @@ function nascarOffAirContext(){
 
 // ── NASCAR LIVE (off-air view) ────────────────────────────────────────────────
 function renderNascarLive(){
+  if(currentNascarSeries==='xfinity')return renderNascarXfinityLive();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','live')+renderBackToSeriesHome('nascar');
   if(currentNascarSeries!=='cup'){
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries==='xfinity'?"O'Reilly Auto Parts Series":'Craftsman Truck Series'} Coming Soon</div><div class="state-sub">Cup Series data is live now. ${currentNascarSeries==='xfinity'?'Xfinity':'Trucks'} support launching in a future update.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Craftsman Truck Series Coming Soon</div><div class="state-sub">Cup and Xfinity data are live now. Trucks support launching in a future update.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');
     return;
   }
@@ -237,10 +238,11 @@ function renderNascarLive(){
 
 // ── NASCAR RACE RESULTS ───────────────────────────────────────────────────────
 function renderNascarRaces(){
+  if(currentNascarSeries==='xfinity')return renderNascarXfinityRaces();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','races')+renderBackToSeriesHome('nascar');
   if(currentNascarSeries!=='cup'){
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries.toUpperCase()} Coming Soon</div><div class="state-sub">Cup Series race results are populated. Other series launching soon.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity race data are populated. Trucks launching soon.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');
     return;
   }
@@ -386,9 +388,10 @@ function selectNascarRace(round){
 
 // ── NASCAR DRIVERS CHAMPIONSHIP ───────────────────────────────────────────────
 function renderNascarDrivers(){
+  if(currentNascarSeries==='xfinity')return renderNascarXfinityDrivers();
   const content=document.getElementById('main-content');
   if(currentNascarSeries!=='cup'){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries.toUpperCase()} Coming Soon</div><div class="state-sub">Cup Series standings are populated. Other series launching soon.</div></div>`;
+    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity standings are populated. Trucks launching soon.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');
     return;
   }
@@ -462,9 +465,10 @@ function renderNascarDriverBreakdown(name,info,points,pos){
 
 // ── NASCAR MANUFACTURERS ──────────────────────────────────────────────────────
 function renderNascarMfrs(){
+  if(currentNascarSeries==='xfinity')return renderNascarXfinityMfrs();
   const content=document.getElementById('main-content');
   if(currentNascarSeries!=='cup'){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries.toUpperCase()} Coming Soon</div><div class="state-sub">Cup Series manufacturer standings are populated.</div></div>`;
+    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity manufacturer standings are populated.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');
     return;
   }
@@ -534,10 +538,11 @@ function renderNascar(){
 // sub-tab. renderNascarDrivers / renderNascarMfrs each write the full panel
 // into main-content; we capture their output and concatenate under the banner.
 function renderNascarStandings(){
+  if(currentNascarSeries==='xfinity')return renderNascarXfinityStandings();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','standings')+renderBackToSeriesHome('nascar');
   if(currentNascarSeries!=='cup'){
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${currentNascarSeries.toUpperCase()} Coming Soon</div><div class="state-sub">Cup Series standings are populated. Other series launching soon.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity standings are populated. Trucks launching soon.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');
     return;
   }
@@ -552,6 +557,7 @@ function renderNascarStandings(){
 // IDs follow `highlights-nascar-r{round}-{trackSlug}` for the deep-link from
 // each race-results row. No invented URLs — TODO placeholder only.
 function renderNascarHighlights(){
+  if(currentNascarSeries==='xfinity')return renderNascarXfinityHighlights();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','highlights')+renderBackToSeriesHome('nascar');
   const completed=NASCAR_CUP_SCHEDULE.filter(s=>NASCAR_CUP_RESULTS[s.round]);
@@ -577,11 +583,11 @@ function renderNascarHighlights(){
 }
 
 function renderNascarSchedule(){
+  if(currentNascarSeries==='xfinity')return renderNascarXfinitySchedule();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','schedule')+renderBackToSeriesHome('nascar');
   if(currentNascarSeries!=='cup'){
-    const label=currentNascarSeries==='xfinity'?"O'Reilly Auto Parts Series":'Craftsman Truck Series';
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">${label} Coming Soon</div><div class="state-sub">Cup Series schedule is live now.</div></div>`;
+    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Craftsman Truck Series Coming Soon</div><div class="state-sub">Cup and Xfinity schedules are live now.</div></div>`;
     setStats('—','—',currentNascarSeries.toUpperCase(),'—');return;
   }
   const now=new Date();

@@ -152,7 +152,7 @@ core.js → series/f1.js → series/nascar.js → series/n24.js → schedule.js 
 | Home | Default landing — news feed. Featured carousel + championship snapshot (F1 + NASCAR) + 8-card article feed. See `js/home.js`. |
 | Race Schedule | Hero card for next race across all series + next 3 closest. Routing key `'schedule'`. |
 | F1 | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive — see `docs/f1.md`. |
-| NASCAR | Cup fully built. Xfinity/Trucks placeholder. See `docs/nascar.md`. |
+| NASCAR | Cup fully built. Xfinity schedule populated (33 rounds, verified Wikipedia); race results / standings / mfrs are Phase-2 backfill. Trucks placeholder. See `docs/nascar.md`. |
 | N24 | Permanent post-race-only module for the 2026 Nürburgring 24. See `docs/n24.md`. |
 | MotoGP, WRC, IndyCar, GT3/WEC | Placeholder — `switchSeries` renders generic "Coming Soon" |
 
