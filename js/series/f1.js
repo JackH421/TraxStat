@@ -1097,40 +1097,83 @@ function renderF1PracticeCard(round,fpKey,data,isLive,expanded){
 }
 
 // ─── QUALIFYING sub-tab ──────────────────────────────────────────────────────
+// OpenF1-first data sourcing. Order of preference:
+//   1. Currently-active main Qualifying session → live timing via OpenF1
+//   2. Currently-active Sprint Qualifying → live timing via OpenF1
+//   3. Most recently completed weekend quali session → OpenF1 captured state
+//      (works for "just finished" sessions where Jolpica still lags)
+//   4. Jolpica historical grid (absolute last resort, e.g. OpenF1 outage)
 async function renderLiveQualifyingBody(state){
   if(state==='post-race'){
     setStats('—','—','POST','QUALI');
     return renderLiveSubTabOffAir('QUALIFYING COMPLETE','Race weekend complete — see <span onclick="switchF1Tab(\'races\')" style="color:var(--red);text-decoration:underline;cursor:pointer;">RACE RESULTS</span>.');
   }
-  // Prefer live timing if quali is in progress.
+
+  const round=currentRaceWeekendRound();
+  const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>Date.now());
+  const race=NEXT_RACES.find(r=>r.round===round)||upcoming;
   const sessions=await fetchF1Sessions();
-  const active=findActiveSession(sessions,'qualifying');
-  if(active){
-    document.getElementById('live-pill').style.display='flex';
-    const {html,summary}=await buildLiveTimingTable(active);
+
+  // Collect quali sessions tied to this weekend (sprint quali + main quali on
+  // sprint weekends, just quali on normal weekends). Sorted oldest → newest.
+  let weekendQuali=[];
+  if(race){
+    const raceMs=new Date(race.date+'T13:00:00Z').getTime();
+    weekendQuali=sessions.filter(s=>{
+      const st=(s.session_type||'').toLowerCase();
+      if(!st.includes('qualif'))return false;
+      const start=new Date(s.date_start).getTime();
+      const days=(start-raceMs)/86400000;
+      return days>=-4&&days<=1;
+    }).sort((a,b)=>new Date(a.date_start).getTime()-new Date(b.date_start).getTime());
+  }
+
+  const now=Date.now();
+  // Choose session: active main quali > active sprint quali > most recent completed.
+  let chosen=null;
+  let isLive=false;
+  const activeSessions=weekendQuali.filter(s=>new Date(s.date_start).getTime()<=now&&new Date(s.date_end).getTime()>=now);
+  if(activeSessions.length){
+    chosen=activeSessions.find(s=>(s.session_type||'').toLowerCase()==='qualifying')||activeSessions[activeSessions.length-1];
+    isLive=true;
+  } else {
+    const completed=weekendQuali.filter(s=>new Date(s.date_end).getTime()<now);
+    chosen=completed[completed.length-1]||null;
+  }
+
+  if(chosen){
+    document.getElementById('live-pill').style.display=isLive?'flex':'none';
+    const {html,summary}=await buildLiveTimingTable(chosen);
     if(html){
-      setStats(summary.fastest,summary.leader,summary.sessionType.toUpperCase().slice(0,4),`L${summary.maxLap||0}`);
-      return html;
+      const statusBadge=isLive
+        ? `<span style="color:var(--green);font-weight:700;">⬤ LIVE · OpenF1</span>`
+        : `<span style="color:var(--muted);">FINAL · OpenF1</span>`;
+      const endStr=isLive?'updating every 30s':`session ended ${f1FormatTimeAgo(new Date(chosen.date_end).getTime())}`;
+      const header=`<div class="section-title"><span>${chosen.session_type} · Round ${round||'—'}</span><span>${statusBadge}</span></div>
+        <div style="padding:6px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);text-align:center;">${endStr}</div>`;
+      setStats(summary.fastest,summary.leader,(summary.sessionType||'QUAL').toUpperCase().slice(0,4),isLive?`L${summary.maxLap||0}`:'FINAL');
+      return header+html;
     }
   }
-  // Fall back to completed quali grid from Jolpica for the upcoming round.
+
+  // Last-resort: Jolpica historical grid. Only reached if OpenF1 has no
+  // weekend quali sessions at all (rare — OpenF1 publishes session metadata
+  // before sessions start) or buildLiveTimingTable returned empty rows.
   document.getElementById('live-pill').style.display='none';
-  const now=Date.now();
-  const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>now);
-  if(!upcoming){
+  const fallbackRound=round||upcoming?.round;
+  if(!fallbackRound){
     setStats('—','—','STANDBY','QUALI');
     return renderLiveSubTabOffAir('QUALIFYING NOT AVAILABLE','No upcoming round — qualifying data resumes when the next weekend begins.');
   }
   let quali=null;
   try{
-    const data=await fetch(`${JOLPICA}/2026/${upcoming.round}/qualifying/`).then(r=>r.json());
+    const data=await fetch(`${JOLPICA}/2026/${fallbackRound}/qualifying/`).then(r=>r.json());
     quali=data.MRData?.RaceTable?.Races?.[0]?.QualifyingResults;
   }catch(e){}
   if(!quali||!quali.length){
     setStats('—','—','STANDBY','QUALI');
-    return renderLiveSubTabOffAir('QUALIFYING NOT YET RUN',`Grid for Round ${upcoming.round} (${upcoming.raceName||''}) will appear once Jolpica has the official results.`);
+    return renderLiveSubTabOffAir('QUALIFYING NOT YET RUN',`Grid for Round ${fallbackRound}${race?` (${race.name})`:''} will appear once OpenF1 streams the session or Jolpica posts the official results.`);
   }
-  // Render the full grid (not just top 10) since this is the dedicated tab.
   const rows=quali.map(r=>{
     const pos=parseInt(r.position);
     const name=r.Driver?.familyName||'—';
@@ -1147,8 +1190,8 @@ async function renderLiveQualifyingBody(state){
       <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);text-align:right;">${q3}</div>
     </div>`;
   }).join('');
-  setStats(quali[0]?.Q3||quali[0]?.Q2||quali[0]?.Q1||'—',quali[0]?.Driver?.familyName||'—','QUAL',`R${upcoming.round}`);
-  const header=`<div class="section-title"><span>Qualifying · Round ${upcoming.round} · ${upcoming.raceName||''}</span><span>${quali.length} cars</span></div>`;
+  setStats(quali[0]?.Q3||quali[0]?.Q2||quali[0]?.Q1||'—',quali[0]?.Driver?.familyName||'—','QUAL',`R${fallbackRound}`);
+  const header=`<div class="section-title"><span>Qualifying · Round ${fallbackRound}${race?` · ${race.name}`:''}</span><span>${quali.length} cars · Jolpica</span></div>`;
   return header+rows;
 }
 
@@ -1236,6 +1279,23 @@ async function computeF1State(){
     if(findActiveSession(sessions,'race'))return 'session-live';
     // Qualifying live beats both practice and any post-race window.
     if(findActiveSession(sessions,'qualifying'))return 'qualifying-available';
+    // OpenF1 recently-completed weekend quali also surfaces qualifying-available
+    // so the LIVE tab defaults to the QUALIFYING sub-tab and renders the
+    // just-finished session via OpenF1 (no Jolpica lag). Window: quali ended
+    // within the last 24h and within ±4 days of the current weekend's race.
+    const round=currentRaceWeekendRound();
+    const weekendRace=round?NEXT_RACES.find(r=>r.round===round):null;
+    if(weekendRace){
+      const raceMs=new Date(weekendRace.date+'T13:00:00Z').getTime();
+      const recentQuali=sessions.find(s=>{
+        const st=(s.session_type||'').toLowerCase();
+        if(!st.includes('qualif'))return false;
+        const end=new Date(s.date_end).getTime();
+        const days=(end-raceMs)/86400000;
+        return days>=-4&&days<=1&&end<now&&(now-end)<24*3600*1000;
+      });
+      if(recentQuali)return 'qualifying-available';
+    }
     // Practice live — lowest of the in-session states.
     if(findActiveSession(sessions,'practice'))return 'practice-available';
   }
@@ -1243,8 +1303,9 @@ async function computeF1State(){
   // Post-race wins over qualifying-available (when nothing live).
   if(findPostRaceRound()!==null)return 'post-race';
 
-  // Qualifying-available also covers the "completed quali in Jolpica" case
-  // — the QUALIFYING sub-tab will render the grid once it's there.
+  // Final Jolpica fallback (only fires if OpenF1 lookup above returned nothing
+  // and we're outside the race window). Same purpose: surface the QUALIFYING
+  // sub-tab so completed grids are discoverable.
   const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>now);
   if(upcoming&&!hardcoded.has(upcoming.round)){
     try{
