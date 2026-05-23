@@ -632,98 +632,562 @@ async function renderConstructors(){
   }catch(e){content.innerHTML=`<div class="state-screen"><div class="state-icon">⚠️</div><div class="state-title">Couldn't Load</div><div class="state-sub">Tap ⟳ to retry.</div></div>`;}
 }
 
-// LIVE tab is an adaptive dispatcher: it renders one of three views based on
-// the current F1 race-weekend state. See getF1RaceWeekendState() for state logic.
-async function renderLive(){
-  const state=await getF1RaceWeekendState();
-  if(state==='session-live')return renderLiveSession();
-  if(state==='qualifying-available')return renderLiveWithQualifying();
-  // 'between-races' and 'post-race' both render the off-air view (banner + last
-  // race recap). Polling runs in background for post-race.
-  document.getElementById('live-pill').style.display='none';
-  const content=document.getElementById('main-content');
-  content.innerHTML=renderSeriesBanner('f1','live')+renderBackToSeriesHome('f1')+renderLiveOffAir(state);
-  setStats('—','—','STANDBY',state==='post-race'?'POST-RACE':'BETWEEN');
+// ─── F1 LIVE TAB · SUB-TABS ──────────────────────────────────────────────────
+// LIVE is split into three inner sub-tabs: PRACTICE / QUALIFYING / RACE. Each
+// owns its own data source and rendering — the outer state machine (computeF1State)
+// just decides which sub-tab to default to when the user first enters LIVE.
+//
+// Behavior summary:
+//   PRACTICE   — live FP1/FP2/FP3 timing via OpenF1 when a practice session is in
+//                progress; otherwise off-air "no practice session active".
+//   QUALIFYING — live Qualifying timing via OpenF1 when quali is in progress;
+//                otherwise the completed qualifying grid pulled from Jolpica;
+//                if neither, off-air.
+//   RACE       — live race timing via OpenF1 when the race is in progress;
+//                otherwise off-air.
+//
+// In `post-race` state all three sub-tabs clear (off-air with "see Race Results"
+// CTA) — the top-level RACE RESULTS tab is the canonical place for finished races.
+
+let currentF1LiveSubTab=null;  // null = derive default from state; once user picks, sticks.
+const F1_LIVE_SUBTABS=['practice','qualifying','race'];
+
+// ─── PRACTICE PERSISTENCE ────────────────────────────────────────────────────
+// FP1 / FP2 / FP3 timing snapshots persist in localStorage across page reloads
+// AND across "session ended" transitions, so the PRACTICE sub-tab keeps showing
+// last-completed standings until the race goes live. On race-start, the cache
+// for that round is wiped (handled at the top of renderLive).
+//
+// Storage key: `traxstat:f1:practice:{round}` → { fp1?, fp2?, fp3? }
+// Each FP entry: { capturedAt, sessionKey, sessionType, sessionEnd,
+//                  fastest, leader, maxLap, rows: [{pos,num,name,team,teamColor,
+//                  lapMs,isFastest,isPit,compound,tireAge,gapVal}, …] }
+const F1_PRACTICE_KEY_PREFIX='traxstat:f1:practice:';
+function f1PracticeKey(round){return F1_PRACTICE_KEY_PREFIX+round;}
+function getF1PracticeCache(round){
+  try{const raw=localStorage.getItem(f1PracticeKey(round));return raw?JSON.parse(raw):{};}catch(e){return {};}
+}
+function setF1PracticeSnapshot(round,fpKey,snapshot){
+  const cache=getF1PracticeCache(round);
+  cache[fpKey]=snapshot;
+  try{localStorage.setItem(f1PracticeKey(round),JSON.stringify(cache));}catch(e){console.warn('F1 practice cache write failed',e);}
+}
+function clearF1PracticeCache(round){
+  try{localStorage.removeItem(f1PracticeKey(round));}catch(e){}
+}
+function sessionTypeToPracticeKey(st){
+  const s=(st||'').toLowerCase();
+  if(s==='practice 1')return 'fp1';
+  if(s==='practice 2')return 'fp2';
+  if(s==='practice 3')return 'fp3';
+  return null;
 }
 
-// Renamed: original renderLive body. Renders OpenF1 live timing when a session
-// is actively running. Called by renderLive() dispatcher when state==='session-live'.
-async function renderLiveSession(){
+// Round number of the closest race weekend (±7 days before / 1 day after race
+// day). Used both for caching practice snapshots and for cache-clearing on
+// race-start. Returns null outside any weekend window.
+function currentRaceWeekendRound(){
+  const now=Date.now();
+  for(const r of NEXT_RACES){
+    const days=(now-new Date(r.date+'T13:00:00Z').getTime())/86400000;
+    if(days>=-7&&days<=1)return r.round;
+  }
+  return null;
+}
+
+// Card expansion state — keyed by `${round}_${fpKey}`. Defaults: currently
+// live session is expanded; the most recent completed practice is expanded;
+// older completed practices are collapsed.
+let f1PracticeExpanded={};
+function toggleF1PracticeCard(round,fpKey){
+  track('f1:practice-card',{fp:fpKey,round});
+  const k=`${round}_${fpKey}`;
+  f1PracticeExpanded[k]=!f1PracticeExpanded[k];
+  renderLive();
+}
+
+// Simple "Nm ago / Nh ago" formatter for the captured-at line on a card.
+function f1FormatTimeAgo(ts){
+  if(!ts)return '—';
+  const diff=Date.now()-ts;
+  if(diff<0)return 'just now';
+  const m=Math.floor(diff/60000);
+  if(m<1)return 'just now';
+  if(m<60)return m+'m ago';
+  const h=Math.floor(m/60);
+  if(h<24)return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+
+// State-transition tracking: when state flips into 'session-live' (race), wipe
+// the practice cache for the current round so race data takes over.
+let _f1LastState=null;
+
+function defaultF1LiveSubTab(state){
+  if(state==='session-live')return 'race';
+  if(state==='qualifying-available')return 'qualifying';
+  if(state==='practice-available')return 'practice';
+  if(state==='post-race')return 'race';
+  return 'practice';
+}
+
+function switchF1LiveTab(t){
+  if(!F1_LIVE_SUBTABS.includes(t))return;
+  track('tab:f1-live',{sub:t});
+  currentF1LiveSubTab=t;
+  renderLive();
+}
+
+function renderF1LiveSubTabBar(active){
+  const label={practice:'PRACTICE',qualifying:'QUALIFYING',race:'RACE'};
+  const tabs=F1_LIVE_SUBTABS.map(k=>
+    `<div class="f1-sub-tab ${k===active?'active':''}" onclick="switchF1LiveTab('${k}')" id="tab-live-${k}">${label[k]}</div>`
+  ).join('');
+  // Reuse the .f1-submenu visual treatment (same as the outer F1 sub-menu)
+  // so the inner sub-tab bar feels native. position:relative keeps it in flow
+  // inside main-content rather than sticking to the chrome.
+  return `<div class="f1-submenu" style="display:flex;position:relative;">${tabs}</div>`;
+}
+
+// Adaptive LIVE renderer. Banner + sub-tab bar + dispatch to the selected
+// sub-tab's renderer. The state machine picks a default sub-tab on first
+// entry; user picks override.
+//
+// Render order is important: the LIVE banner and sub-tab bar paint IMMEDIATELY
+// so the user sees the tab transition even on slow networks. State-machine
+// network calls (OpenF1, Jolpica) then resolve in the background and the body
+// is filled in afterwards. Previously the entire renderer awaited the state
+// machine before touching the DOM — on flaky mobile networks that left the
+// previous view (e.g. series-home tiles) stuck under the sub-menu bar.
+async function renderLive(){
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('f1','live')+renderBackToSeriesHome('f1');
-  content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">Connecting...</div><div class="state-sub">Fetching live F1 timing data</div></div>`;
+  // Optimistic sub-tab: respect the user's last pick, else assume PRACTICE.
+  // If the state machine resolves a different default, re-render below.
+  const optimisticActive=currentF1LiveSubTab||'practice';
+  const optimisticSubBar=renderF1LiveSubTabBar(optimisticActive);
+  content.innerHTML=top+optimisticSubBar+`<div class="state-screen"><div class="state-icon">⏱</div><div class="state-title">Loading...</div><div class="state-sub">Fetching session state</div></div>`;
+
+  let state;
+  try{state=await getF1RaceWeekendState();}
+  catch(e){console.warn('F1 state machine failed',e);state='between-races';}
+
+  // Cache eviction on race-start. If state has just transitioned into
+  // 'session-live' (race), clear the practice cache for the current round
+  // so race data takes over. Idempotent: clearing twice is fine.
+  if(state==='session-live'){
+    const round=currentRaceWeekendRound();
+    if(round&&_f1LastState!=='session-live'){
+      clearF1PracticeCache(round);
+      console.log(`F1: race-live transition for R${round} — practice cache cleared.`);
+    }
+  }
+  _f1LastState=state;
+
+  const active=currentF1LiveSubTab||defaultF1LiveSubTab(state);
+  const subBar=renderF1LiveSubTabBar(active);
   try{
-    const sessRes=await fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026');
-    const sessions=await sessRes.json();
-    const now=new Date();
-    let session=sessions.find(s=>new Date(s.date_start)<=now&&new Date(s.date_end)>=now);
-    isLive=!!session;
-    document.getElementById('live-pill').style.display=isLive?'flex':'none';
-    if(!session){
-      content.innerHTML=top+renderLiveOffAir('no-session');
-      setStats('—','—','STANDBY','R4');return;
-    }
-    const sk=session.session_key,st=session.session_type||'Session';
-    const [drs,pos,lps,sts,ivs]=await Promise.all([
-      fetch(`https://api.openf1.org/v1/drivers?session_key=${sk}`).then(r=>r.json()),
-      fetch(`https://api.openf1.org/v1/position?session_key=${sk}`).then(r=>r.json()),
-      fetch(`https://api.openf1.org/v1/laps?session_key=${sk}`).then(r=>r.json()),
-      fetch(`https://api.openf1.org/v1/stints?session_key=${sk}`).then(r=>r.json()),
-      fetch(`https://api.openf1.org/v1/intervals?session_key=${sk}`).then(r=>r.json()).catch(()=>[])
-    ]);
-    const dm={};drs.forEach(d=>{dm[d.driver_number]=d;});
-    const positions={};pos.forEach(p=>{if(!positions[p.driver_number]||p.date>positions[p.driver_number].date)positions[p.driver_number]=p;});
-    const ld={};lps.forEach(l=>{if(!ld[l.driver_number])ld[l.driver_number]=[];ld[l.driver_number].push(l);});
-    const stints={};sts.forEach(s=>{if(!stints[s.driver_number]||s.stint_number>(stints[s.driver_number].stint_number||0))stints[s.driver_number]=s;});
-    const intervals={};ivs.forEach(i=>{if(!intervals[i.driver_number]||i.date>intervals[i.driver_number].date)intervals[i.driver_number]=i;});
-    const sorted=Object.values(positions).sort((a,b)=>a.position-b.position);
-    const maxLap=Math.max(...Object.values(ld).map(l=>l.length),0);
-    let ft=Infinity,leader=null;
-    sorted.forEach(p=>{
-      const dl=ld[p.driver_number]||[];
-      if(dl.length>0){const b=Math.min(...dl.filter(l=>l.lap_duration).map(l=>l.lap_duration*1000));if(b<ft)ft=b;}
-      if(p.position===1)leader=dm[p.driver_number];
-    });
-    if(!sorted.length){
-      content.innerHTML=top+renderLiveOffAir('no-data');
-      setStats('—','—','STANDBY','R4');return;
-    }
-    const thRow=`<div class="timing-header-row"><div class="th left">POS</div><div class="th"></div><div class="th left">DRIVER</div><div class="th">GAP</div><div class="th">LAST LAP</div><div class="th">TIRE</div></div>`;
-    const rows=sorted.map((p,i)=>{
-      const dn=p.driver_number,dr=dm[dn]||{},dl=ld[dn]||[],stint=stints[dn]||{},intv=intervals[dn]||{};
-      const ll=dl.length>0?dl[dl.length-1]:null,llms=ll?.lap_duration?ll.lap_duration*1000:null;
-      const blms=dl.length>0?Math.min(...dl.filter(l=>l.lap_duration).map(l=>l.lap_duration*1000)):null;
-      const isFast=blms&&Math.abs(blms-ft)<1,isPit=ll?.is_pit_out_lap,compound=stint.compound||null;
-      const tireAge=stint.lap_start?(maxLap-stint.lap_start+1):null;
-      const gapVal=i===0?0:(intv.gap_to_leader!==undefined?intv.gap_to_leader:null);
-      const color=tc(DT[dn]||'default');
-      const teamName=normalizeTeam(dr.team_name||DT[dn]||'—');
-      return`<div class="driver-row ${i===0?'p1-live':''}">
-        <div class="pos-cell ${posC(p.position)}">${p.position}</div>
-        <div><div class="team-color-bar" style="background:${color}"></div></div>
-        <div><div class="d-name">${dr.full_name?dr.full_name.split(' ').pop().toUpperCase():'#'+dn}</div><div class="d-team">${teamName}</div></div>
-        <div class="${i===0?'gap-leader-cell':'gap-cell'}">${i===0?'LEADER':fmtGap(gapVal)}</div>
-        <div class="lap-cell ${isFast?'lap-fastest':isPit?'lap-pit':'lap-normal'}">${isPit?'PIT':fmtLap(llms)}</div>
-        <div class="tire-cell">${tireBadge(compound,tireAge)}</div>
-      </div>`;
-    }).join('');
-    content.innerHTML=top+thRow+rows;
-    setStats(ft<Infinity?fmtLap(ft):'—',leader?.name_acronym||'—',isLive?'LIVE':st.substring(0,4).toUpperCase(),maxLap>0?`L${maxLap}`:session.meeting_name?.substring(0,6).toUpperCase()||'—');
+    let body;
+    if(active==='practice')body=await renderLivePracticeBody(state);
+    else if(active==='qualifying')body=await renderLiveQualifyingBody(state);
+    else body=await renderLiveRaceBody(state);
+    content.innerHTML=top+subBar+body;
   }catch(e){
-    console.error(e);
-    // On connection failure show the same friendly off-air view, not a scary error screen
-    content.innerHTML=top+renderLiveOffAir('error');
-    setStats('—','—','STANDBY','R4');
+    console.error('renderLive error',e);
+    content.innerHTML=top+subBar+renderLiveOffAir('error');
+    setStats('—','—','STANDBY','—');
   }
 }
 
+// ─── OpenF1 SESSION HELPERS ──────────────────────────────────────────────────
+// Single cached sessions fetch so the three sub-tabs share one OpenF1 hit
+// per minute instead of three. Falls back to [] on network failure.
+let _f1SessionsCache=null;
+let _f1SessionsCacheAt=0;
+// Race a fetch against a 6s timeout so a hung network never blocks the
+// LIVE renderer. Returns [] on failure.
+async function fetchF1Sessions(){
+  if(_f1SessionsCache&&(Date.now()-_f1SessionsCacheAt)<60000)return _f1SessionsCache;
+  const timeout=new Promise(resolve=>setTimeout(()=>resolve(null),6000));
+  const request=fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026')
+    .then(r=>r.ok?r.json():null)
+    .catch(()=>null);
+  const result=await Promise.race([request,timeout]);
+  if(!result){console.warn('F1 sessions fetch timed out or failed');return [];}
+  _f1SessionsCache=result;
+  _f1SessionsCacheAt=Date.now();
+  return _f1SessionsCache;
+}
+// Map a sub-tab key to an OpenF1 session_type matcher. session_type values seen
+// in OpenF1 include "Practice 1/2/3", "Sprint Qualifying", "Sprint", "Qualifying",
+// "Race" — we group Sprint Qualifying with QUALIFYING and Sprint with RACE.
+function sessionMatchesSubTab(session,subTab){
+  const st=(session.session_type||'').toLowerCase();
+  if(subTab==='practice')return st.startsWith('practice');
+  if(subTab==='qualifying')return st.includes('qualif');  // matches "Qualifying" and "Sprint Qualifying"
+  if(subTab==='race')return st==='race'||st==='sprint';
+  return false;
+}
+function findActiveSession(sessions,subTab){
+  const now=Date.now();
+  return sessions.find(s=>sessionMatchesSubTab(s,subTab)&&new Date(s.date_start).getTime()<=now&&new Date(s.date_end).getTime()>=now);
+}
+
+// ─── SHARED: live timing table for any session ───────────────────────────────
+// Extracted from the original renderLiveSession. Returns { html, summary } —
+// the HTML for the full table and a small summary object the caller uses
+// to set the bottom stats bar.
+async function buildLiveTimingTable(session){
+  const sk=session.session_key,st=session.session_type||'Session';
+  const [drs,pos,lps,sts,ivs]=await Promise.all([
+    fetch(`https://api.openf1.org/v1/drivers?session_key=${sk}`).then(r=>r.json()),
+    fetch(`https://api.openf1.org/v1/position?session_key=${sk}`).then(r=>r.json()),
+    fetch(`https://api.openf1.org/v1/laps?session_key=${sk}`).then(r=>r.json()),
+    fetch(`https://api.openf1.org/v1/stints?session_key=${sk}`).then(r=>r.json()),
+    fetch(`https://api.openf1.org/v1/intervals?session_key=${sk}`).then(r=>r.json()).catch(()=>[])
+  ]);
+  const dm={};drs.forEach(d=>{dm[d.driver_number]=d;});
+  const positions={};pos.forEach(p=>{if(!positions[p.driver_number]||p.date>positions[p.driver_number].date)positions[p.driver_number]=p;});
+  const ld={};lps.forEach(l=>{if(!ld[l.driver_number])ld[l.driver_number]=[];ld[l.driver_number].push(l);});
+  const stints={};sts.forEach(s=>{if(!stints[s.driver_number]||s.stint_number>(stints[s.driver_number].stint_number||0))stints[s.driver_number]=s;});
+  const intervals={};ivs.forEach(i=>{if(!intervals[i.driver_number]||i.date>intervals[i.driver_number].date)intervals[i.driver_number]=i;});
+  const sorted=Object.values(positions).sort((a,b)=>a.position-b.position);
+  const maxLap=Math.max(...Object.values(ld).map(l=>l.length),0);
+  let ft=Infinity,leader=null;
+  sorted.forEach(p=>{
+    const dl=ld[p.driver_number]||[];
+    if(dl.length>0){const b=Math.min(...dl.filter(l=>l.lap_duration).map(l=>l.lap_duration*1000));if(b<ft)ft=b;}
+    if(p.position===1)leader=dm[p.driver_number];
+  });
+  if(!sorted.length)return {html:null,summary:null,rows:[]};
+  // Two-stage build: structured row objects first (cache-friendly), then
+  // HTML. The structured rows are what gets persisted to localStorage so
+  // we can re-render a completed practice card without re-querying OpenF1.
+  const rowsData=sorted.map((p,i)=>{
+    const dn=p.driver_number,dr=dm[dn]||{},dl=ld[dn]||[],stint=stints[dn]||{},intv=intervals[dn]||{};
+    const ll=dl.length>0?dl[dl.length-1]:null,lapMs=ll?.lap_duration?ll.lap_duration*1000:null;
+    const blms=dl.length>0?Math.min(...dl.filter(l=>l.lap_duration).map(l=>l.lap_duration*1000)):null;
+    const isFastest=!!(blms&&Math.abs(blms-ft)<1);
+    const isPit=!!ll?.is_pit_out_lap;
+    const compound=stint.compound||null;
+    const tireAge=stint.lap_start?(maxLap-stint.lap_start+1):null;
+    const gapVal=i===0?0:(intv.gap_to_leader!==undefined?intv.gap_to_leader:null);
+    const teamColor=tc(DT[dn]||'default');
+    const teamName=normalizeTeam(dr.team_name||DT[dn]||'—');
+    const name=dr.full_name?dr.full_name.split(' ').pop().toUpperCase():'#'+dn;
+    return {pos:p.position,num:dn,name,team:teamName,teamColor,lapMs,isFastest,isPit,compound,tireAge,gapVal};
+  });
+  const thRow=`<div class="timing-header-row"><div class="th left">POS</div><div class="th"></div><div class="th left">DRIVER</div><div class="th">GAP</div><div class="th">LAST LAP</div><div class="th">TIRE</div></div>`;
+  const rowsHtml=rowsData.map((r,i)=>`<div class="driver-row ${i===0?'p1-live':''}">
+      <div class="pos-cell ${posC(r.pos)}">${r.pos}</div>
+      <div><div class="team-color-bar" style="background:${r.teamColor}"></div></div>
+      <div><div class="d-name">${r.name}</div><div class="d-team">${r.team}</div></div>
+      <div class="${i===0?'gap-leader-cell':'gap-cell'}">${i===0?'LEADER':fmtGap(r.gapVal)}</div>
+      <div class="lap-cell ${r.isFastest?'lap-fastest':r.isPit?'lap-pit':'lap-normal'}">${r.isPit?'PIT':fmtLap(r.lapMs)}</div>
+      <div class="tire-cell">${tireBadge(r.compound,r.tireAge)}</div>
+    </div>`).join('');
+  return {
+    html:thRow+rowsHtml,
+    summary:{fastest:ft<Infinity?fmtLap(ft):'—',leader:leader?.name_acronym||'—',sessionType:st,maxLap,meeting:session.meeting_name||''},
+    rows:rowsData
+  };
+}
+
+// Render a cached row-set (no OpenF1 hit) — used by the persistent practice
+// cards once a session has ended. Same visual treatment as live timing.
+function renderTimingTableFromRows(rows){
+  if(!rows||!rows.length)return '<div style="padding:14px;text-align:center;font-family:\'Barlow\',sans-serif;font-size:11px;color:var(--muted);">No driver data captured for this session.</div>';
+  const thRow=`<div class="timing-header-row"><div class="th left">POS</div><div class="th"></div><div class="th left">DRIVER</div><div class="th">GAP</div><div class="th">LAST LAP</div><div class="th">TIRE</div></div>`;
+  const rowsHtml=rows.map((r,i)=>`<div class="driver-row ${i===0?'p1-live':''}">
+      <div class="pos-cell ${posC(r.pos)}">${r.pos}</div>
+      <div><div class="team-color-bar" style="background:${r.teamColor}"></div></div>
+      <div><div class="d-name">${r.name}</div><div class="d-team">${r.team}</div></div>
+      <div class="${i===0?'gap-leader-cell':'gap-cell'}">${i===0?'LEADER':fmtGap(r.gapVal)}</div>
+      <div class="lap-cell ${r.isFastest?'lap-fastest':r.isPit?'lap-pit':'lap-normal'}">${r.isPit?'PIT':fmtLap(r.lapMs)}</div>
+      <div class="tire-cell">${tireBadge(r.compound,r.tireAge)}</div>
+    </div>`).join('');
+  return thRow+rowsHtml;
+}
+
+// Off-air state with sub-tab-specific copy. Reuses the standard panel layout
+// but customises the headline so the user knows WHY this sub-tab is empty
+// (no session active vs. session not yet started vs. race finished, etc.).
+function renderLiveSubTabOffAir(headline,detail){
+  return `<div style="padding:18px 16px;text-align:center;background:var(--bg);border-bottom:1px solid var(--border);">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.1em;">⬤ ${headline}</div>
+    <div style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;">${detail}</div>
+  </div>`;
+}
+
+// ─── PRACTICE sub-tab ────────────────────────────────────────────────────────
+// Renders three persistent cards (FP1 / FP2 / FP3) for the current race weekend.
+//
+// Mapping of OpenF1 sessions → FP slots:
+//   - Explicit "Practice 1 / 2 / 3" names map directly.
+//   - Sprint-weekend sessions (where OpenF1 returns just "Practice") are slotted
+//     in chronological order into the remaining FP keys.
+//
+// Cache behavior:
+//   - Live session → refetch on every render (30s setInterval).
+//   - Completed session not yet cached → backfill once from OpenF1 (so the tab
+//     populates even if the user opens it AFTER a session ended).
+//   - Completed session already cached → render from localStorage, no fetch.
+//   - When state transitions to 'session-live' (race), renderLive() wipes the
+//     cache and this tab redirects the user to the RACE sub-tab.
+async function renderLivePracticeBody(state){
+  if(state==='post-race'){
+    setStats('—','—','POST','PRACTICE');
+    return renderLiveSubTabOffAir('PRACTICE COMPLETE','Race weekend complete — practice data is no longer cached. See <span onclick="switchF1Tab(\'races\')" style="color:var(--red);text-decoration:underline;cursor:pointer;">RACE RESULTS</span>.');
+  }
+  if(state==='session-live'){
+    setStats('—','—','RACE','LIVE');
+    return renderLiveSubTabOffAir('RACE IS LIVE','Practice cache cleared at race start. Tap <span onclick="switchF1LiveTab(\'race\')" style="color:var(--red);text-decoration:underline;cursor:pointer;">RACE</span> for live timing.');
+  }
+
+  const round=currentRaceWeekendRound();
+  if(!round){
+    document.getElementById('live-pill').style.display='none';
+    setStats('—','—','STANDBY','PRACTICE');
+    return renderLiveSubTabOffAir('NO RACE WEEKEND','Practice cards will appear during the next F1 weekend (within 7 days of race day).');
+  }
+  const race=NEXT_RACES.find(r=>r.round===round);
+  if(!race){
+    setStats('—','—','STANDBY','PRACTICE');
+    return renderLiveSubTabOffAir('ROUND METADATA MISSING','Race metadata for the current weekend isn\'t loaded.');
+  }
+
+  const sessions=await fetchF1Sessions();
+  // Practice sessions tied to THIS weekend (within −4 to +1 days of race day).
+  const raceMs=new Date(race.date+'T13:00:00Z').getTime();
+  const weekendPractices=sessions.filter(s=>{
+    const st=(s.session_type||'').toLowerCase();
+    if(!(st.startsWith('practice')||st==='free practice'))return false;
+    const start=new Date(s.date_start).getTime();
+    const days=(start-raceMs)/86400000;
+    return days>=-4&&days<=1;
+  }).sort((a,b)=>new Date(a.date_start).getTime()-new Date(b.date_start).getTime());
+
+  // Build the fp1/fp2/fp3 → OpenF1-session map. Explicit "Practice 1/2/3" names
+  // get their direct slot; generic "Practice" or "Free Practice" names fill
+  // remaining slots in chronological order. Handles full weekends AND sprint
+  // weekends (1 practice) uniformly.
+  const sessionsByFp={};
+  for(const s of weekendPractices){
+    const st=(s.session_type||'').toLowerCase();
+    if(st==='practice 1')sessionsByFp.fp1=s;
+    else if(st==='practice 2')sessionsByFp.fp2=s;
+    else if(st==='practice 3')sessionsByFp.fp3=s;
+  }
+  const remainingSlots=['fp1','fp2','fp3'].filter(k=>!sessionsByFp[k]);
+  const unnamed=weekendPractices.filter(s=>{
+    const st=(s.session_type||'').toLowerCase();
+    return !['practice 1','practice 2','practice 3'].includes(st);
+  });
+  for(let i=0;i<Math.min(remainingSlots.length,unnamed.length);i++){
+    sessionsByFp[remainingSlots[i]]=unnamed[i];
+  }
+
+  const now=Date.now();
+  let cache=getF1PracticeCache(round);
+  let activeFpKey=null;
+
+  // Walk FP slots in order. For each: live → refetch; completed-not-cached →
+  // backfill from OpenF1; completed-cached → skip.
+  for(const fpKey of ['fp1','fp2','fp3']){
+    const sess=sessionsByFp[fpKey];
+    if(!sess)continue;
+    const start=new Date(sess.date_start).getTime();
+    const end=new Date(sess.date_end).getTime();
+    const isActive=start<=now&&end>=now;
+    if(isActive)activeFpKey=fpKey;
+    if(!isActive&&cache[fpKey])continue;
+    try{
+      const {summary,rows}=await buildLiveTimingTable(sess);
+      if(rows&&rows.length){
+        setF1PracticeSnapshot(round,fpKey,{
+          capturedAt:Date.now(),
+          sessionKey:sess.session_key,
+          sessionType:sess.session_type,
+          sessionEnd:end,
+          fastest:summary.fastest,
+          leader:summary.leader,
+          maxLap:summary.maxLap,
+          rows
+        });
+      }
+    }catch(e){console.warn(`F1 practice ${fpKey} fetch failed`,e);}
+  }
+  cache=getF1PracticeCache(round);
+  document.getElementById('live-pill').style.display=activeFpKey?'flex':'none';
+
+  const fpKeys=['fp1','fp2','fp3'];
+  const anyCached=fpKeys.some(k=>cache[k]);
+  if(!anyCached&&!activeFpKey){
+    setStats('—','—','STANDBY','PRACTICE');
+    return renderLiveSubTabOffAir('NO PRACTICE DATA YET','Live FP1 / FP2 / FP3 timing will appear here once a practice session starts (and stays cached after it ends).');
+  }
+
+  const latestCached=[...fpKeys].reverse().find(k=>cache[k])||null;
+  const isExpanded=(fpKey)=>{
+    const k=`${round}_${fpKey}`;
+    if(k in f1PracticeExpanded)return f1PracticeExpanded[k];
+    if(fpKey===activeFpKey)return true;
+    if(!activeFpKey&&fpKey===latestCached)return true;
+    return false;
+  };
+
+  const cards=fpKeys.map(k=>renderF1PracticeCard(round,k,cache[k],activeFpKey===k,isExpanded(k))).join('');
+  const dimming=(state==='qualifying-available')?'opacity:0.6;':'';
+  const dimNote=(state==='qualifying-available')
+    ? `<div style="padding:8px 16px;background:#1a1500;border-bottom:1px solid var(--border);font-family:'Barlow',sans-serif;font-size:10px;color:var(--yellow);text-align:center;letter-spacing:0.08em;">QUALIFYING IS THE ACTIVE SESSION — PRACTICE CARDS SHOWN FOR REFERENCE</div>`
+    : '';
+
+  if(activeFpKey&&cache[activeFpKey]){
+    const c=cache[activeFpKey];
+    setStats(c.fastest||'—',c.leader||'—',(c.sessionType||'PRAC').toUpperCase().slice(0,4),c.maxLap>0?`L${c.maxLap}`:'PRAC');
+  } else if(latestCached){
+    const c=cache[latestCached];
+    setStats(c.fastest||'—',c.leader||'—',(c.sessionType||'PRAC').toUpperCase().slice(0,4),latestCached.toUpperCase());
+  } else {
+    setStats('—','—','STANDBY','PRACTICE');
+  }
+
+  const header=`<div class="section-title"><span>Practice · Round ${round}</span><span>${activeFpKey?'Live + cached':'Cached locally'}</span></div>`;
+  return header+dimNote+`<div style="${dimming}">${cards}</div>`;
+}
+
+// Card for a single practice session. Always rendered (one of FP1/FP2/FP3),
+// even when there's no data — empty card just shows "session not yet run".
+function renderF1PracticeCard(round,fpKey,data,isLive,expanded){
+  const label={fp1:'FP1',fp2:'FP2',fp3:'FP3'}[fpKey];
+  const fullLabel={fp1:'Practice 1',fp2:'Practice 2',fp3:'Practice 3'}[fpKey];
+  const cardBase=`background:var(--surface2);border:1px solid var(--border);margin:10px 12px;border-radius:6px;overflow:hidden;`;
+
+  if(!data){
+    return `<div style="${cardBase}opacity:0.55;">
+      <div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;color:var(--muted);letter-spacing:0.04em;">${label} · ${fullLabel}</div>
+          <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">Session has not run yet</div>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);">—</div>
+      </div>
+    </div>`;
+  }
+
+  const statusBadge=isLive
+    ? `<span style="color:var(--green);font-weight:700;">⬤ LIVE</span>`
+    : `<span style="color:var(--muted);">FINAL</span>`;
+  const ageStr=isLive?'updating in background':`captured ${f1FormatTimeAgo(data.capturedAt)}`;
+  const summaryLine=data.fastest?`Fastest ${data.fastest} · ${data.leader||'—'}${data.maxLap?` · L${data.maxLap}`:''}`:'';
+  const chev=expanded?'▾':'▸';
+  const bodyHtml=expanded?renderTimingTableFromRows(data.rows):'';
+  const borderBelow=expanded?'border-bottom:1px solid var(--border);':'';
+  return `<div style="${cardBase}">
+    <div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;${borderBelow}" onclick="toggleF1PracticeCard(${round},'${fpKey}')">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;color:var(--white);letter-spacing:0.04em;">${label} · ${fullLabel}</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);margin-top:2px;">${statusBadge} · ${ageStr}</div>
+        ${summaryLine?`<div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);margin-top:4px;">${summaryLine}</div>`:''}
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--text);padding-left:8px;">${chev}</div>
+    </div>
+    ${bodyHtml}
+  </div>`;
+}
+
+// ─── QUALIFYING sub-tab ──────────────────────────────────────────────────────
+async function renderLiveQualifyingBody(state){
+  if(state==='post-race'){
+    setStats('—','—','POST','QUALI');
+    return renderLiveSubTabOffAir('QUALIFYING COMPLETE','Race weekend complete — see <span onclick="switchF1Tab(\'races\')" style="color:var(--red);text-decoration:underline;cursor:pointer;">RACE RESULTS</span>.');
+  }
+  // Prefer live timing if quali is in progress.
+  const sessions=await fetchF1Sessions();
+  const active=findActiveSession(sessions,'qualifying');
+  if(active){
+    document.getElementById('live-pill').style.display='flex';
+    const {html,summary}=await buildLiveTimingTable(active);
+    if(html){
+      setStats(summary.fastest,summary.leader,summary.sessionType.toUpperCase().slice(0,4),`L${summary.maxLap||0}`);
+      return html;
+    }
+  }
+  // Fall back to completed quali grid from Jolpica for the upcoming round.
+  document.getElementById('live-pill').style.display='none';
+  const now=Date.now();
+  const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>now);
+  if(!upcoming){
+    setStats('—','—','STANDBY','QUALI');
+    return renderLiveSubTabOffAir('QUALIFYING NOT AVAILABLE','No upcoming round — qualifying data resumes when the next weekend begins.');
+  }
+  let quali=null;
+  try{
+    const data=await fetch(`${JOLPICA}/2026/${upcoming.round}/qualifying/`).then(r=>r.json());
+    quali=data.MRData?.RaceTable?.Races?.[0]?.QualifyingResults;
+  }catch(e){}
+  if(!quali||!quali.length){
+    setStats('—','—','STANDBY','QUALI');
+    return renderLiveSubTabOffAir('QUALIFYING NOT YET RUN',`Grid for Round ${upcoming.round} (${upcoming.raceName||''}) will appear once Jolpica has the official results.`);
+  }
+  // Render the full grid (not just top 10) since this is the dedicated tab.
+  const rows=quali.map(r=>{
+    const pos=parseInt(r.position);
+    const name=r.Driver?.familyName||'—';
+    const team=normalizeTeam(r.Constructor?.name||'—');
+    const q3=r.Q3||r.Q2||r.Q1||'—';
+    const posColor=pos===1?'var(--yellow)':pos===2?'#c0c0c0':pos===3?'#cd7f32':'var(--muted)';
+    const bg=pos===1?'background:#0d1a08;':'';
+    return`<div style="display:grid;grid-template-columns:32px 1fr 90px;padding:8px 12px;border-bottom:1px solid #141414;align-items:center;gap:6px;${bg}">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:${posColor};text-align:center;">${pos}</div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:${tc(team)};">${name}</div>
+        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);">${team}</div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);text-align:right;">${q3}</div>
+    </div>`;
+  }).join('');
+  setStats(quali[0]?.Q3||quali[0]?.Q2||quali[0]?.Q1||'—',quali[0]?.Driver?.familyName||'—','QUAL',`R${upcoming.round}`);
+  const header=`<div class="section-title"><span>Qualifying · Round ${upcoming.round} · ${upcoming.raceName||''}</span><span>${quali.length} cars</span></div>`;
+  return header+rows;
+}
+
+// ─── RACE sub-tab ────────────────────────────────────────────────────────────
+async function renderLiveRaceBody(state){
+  if(state==='post-race'){
+    setStats('—','—','POST','RACE');
+    return renderLiveSubTabOffAir('RACE COMPLETE','Latest race has finished — full results live on <span onclick="switchF1Tab(\'races\')" style="color:var(--red);text-decoration:underline;cursor:pointer;">RACE RESULTS</span>.');
+  }
+  const sessions=await fetchF1Sessions();
+  const active=findActiveSession(sessions,'race');
+  if(!active){
+    document.getElementById('live-pill').style.display='none';
+    setStats('—','—','STANDBY','RACE');
+    return renderLiveSubTabOffAir('NO RACE IN PROGRESS','Live race timing will appear here when the lights go out.');
+  }
+  document.getElementById('live-pill').style.display='flex';
+  const {html,summary}=await buildLiveTimingTable(active);
+  if(!html){
+    setStats('—','—','STANDBY','RACE');
+    return renderLiveSubTabOffAir('RACE STARTING','Session is live but no timing data yet — check back in a few seconds.');
+  }
+  setStats(summary.fastest,summary.leader,'RACE',summary.maxLap>0?`L${summary.maxLap}`:'GO');
+  return html;
+}
+
 // ─── F1 RACE WEEKEND STATE MACHINE ───────────────────────────────────────────
-// Four states with precedence: session-live > post-race > qualifying-available > between-races.
+// Five states with precedence:
+//   session-live (race live) > post-race > qualifying-available
+//   > practice-available > between-races
 // 60s cache so we don't hammer OpenF1/Jolpica. ?devstate= URL param forces a
-// specific state for manual testing (between-races|qualifying-available|session-live|post-race).
+// specific state for manual testing
+// (between-races|practice-available|qualifying-available|session-live|post-race).
+// `session-live` historically meant "any session live"; after the LIVE sub-tab
+// refactor it specifically means "the RACE is live" — the practice-available
+// state covers FP1/FP2/FP3 and qualifying-available covers Quali.
 let _f1StateCache=null;
 let _f1StateCacheAt=0;
-const F1_STATES=['between-races','qualifying-available','session-live','post-race'];
+const F1_STATES=['between-races','practice-available','qualifying-available','session-live','post-race'];
 
 async function getF1RaceWeekendState(){
   const dev=new URLSearchParams(location.search).get('devstate');
@@ -767,16 +1231,20 @@ async function computeF1State(){
     return days>=-3&&days<=1;
   });
   if(inRaceWindow){
-    try{
-      const sessions=await fetch('https://api.openf1.org/v1/sessions?session_type!=Testing&year=2026').then(r=>r.json());
-      if(sessions.some(s=>new Date(s.date_start).getTime()<=now&&new Date(s.date_end).getTime()>=now))return 'session-live';
-    }catch(e){}
+    const sessions=await fetchF1Sessions();
+    // Race in progress beats everything.
+    if(findActiveSession(sessions,'race'))return 'session-live';
+    // Qualifying live beats both practice and any post-race window.
+    if(findActiveSession(sessions,'qualifying'))return 'qualifying-available';
+    // Practice live — lowest of the in-session states.
+    if(findActiveSession(sessions,'practice'))return 'practice-available';
   }
 
-  // Post-race wins over qualifying-available per precedence rule.
+  // Post-race wins over qualifying-available (when nothing live).
   if(findPostRaceRound()!==null)return 'post-race';
 
-  // Qualifying-available: Jolpica has non-empty qualifying for the upcoming round.
+  // Qualifying-available also covers the "completed quali in Jolpica" case
+  // — the QUALIFYING sub-tab will render the grid once it's there.
   const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>now);
   if(upcoming&&!hardcoded.has(upcoming.round)){
     try{
@@ -935,40 +1403,8 @@ async function renderQualifying(){
   setStats(`R${qualiRound}`,qualiData.raceName.split(' ').slice(0,2).join(' '),'QUAL',`${results.length}`);
 }
 
-// LIVE tab variant: between-races banner + compact top-10 qualifying.
-async function renderLiveWithQualifying(){
-  const content=document.getElementById('main-content');
-  const top=renderSeriesBanner('f1','live')+renderBackToSeriesHome('f1');
-  document.getElementById('live-pill').style.display='none';
-  const upcoming=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z').getTime()>Date.now());
-  if(!upcoming){content.innerHTML=top+renderLiveOffAir('between-races');return;}
-  let quali=null;
-  try{
-    const data=await fetch(`${JOLPICA}/2026/${upcoming.round}/qualifying/`).then(r=>r.json());
-    quali=data.MRData?.RaceTable?.Races?.[0]?.QualifyingResults;
-  }catch(e){}
-  if(!quali||!quali.length){content.innerHTML=top+renderLiveOffAir('between-races');return;}
-  const top10=quali.slice(0,10);
-  const rows=top10.map(r=>{
-    const pos=parseInt(r.position);
-    const name=r.Driver?.familyName||'—';
-    const team=normalizeTeam(r.Constructor?.name||'—');
-    const q3=r.Q3||r.Q2||r.Q1||'—';
-    const posColor=pos===1?'var(--yellow)':pos===2?'#c0c0c0':pos===3?'#cd7f32':'var(--muted)';
-    const bg=pos===1?'background:#0d1a08;':'';
-    return`<div style="display:grid;grid-template-columns:32px 1fr 80px;padding:7px 12px;border-bottom:1px solid #141414;align-items:center;gap:6px;${bg}">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:${posColor};text-align:center;">${pos}</div>
-      <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:${tc(team)};">${name}</div>
-        <div style="font-family:'Barlow',sans-serif;font-size:10px;color:var(--muted);">${team}</div>
-      </div>
-      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);text-align:right;">${q3}</div>
-    </div>`;
-  }).join('');
-  const cta=`<div onclick="switchF1Tab('qualifying')" style="background:var(--surface2);padding:12px 16px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--red);cursor:pointer;text-transform:uppercase;border-top:1px solid var(--border);">Full Qualifying →</div>`;
-  content.innerHTML=top+renderNextBanner()+`<div class="section-title"><span>Qualifying · Round ${upcoming.round} · Top 10</span><span>Most recent</span></div>`+rows+cta;
-  setStats('QUAL',`R${upcoming.round}`,'QUAL',`${quali.length}`);
-}
+// (renderLiveWithQualifying removed — subsumed by the QUALIFYING sub-tab inside
+// renderLive(). Old callers in the state machine no longer reference it.)
 
 // ─── POST-RACE POLLING ───────────────────────────────────────────────────────
 // On entering 'post-race' state for a round, start a setTimeout-driven poll
@@ -1196,6 +1632,10 @@ function switchF1Tab(tab){
   selectedDriverChamp=null;
   selectedConstructorChamp=null;
   selectedQualiDriver=null;
+  // Leaving the LIVE tab resets the inner sub-tab so next entry picks the
+  // state-suggested default again (e.g. if the race has started since they
+  // last visited, they land on RACE instead of whatever they last picked).
+  if(tab!=='live')currentF1LiveSubTab=null;
   // Auto-dismiss diff badge for the tab we just visited (visit = "I've seen it")
   dismissF1Badge(tab);
   document.querySelectorAll('#f1-submenu .f1-sub-tab').forEach(t=>t.classList.remove('active'));
