@@ -759,9 +759,25 @@ function renderF1LiveSubTabBar(active){
 // is filled in afterwards. Previously the entire renderer awaited the state
 // machine before touching the DOM — on flaky mobile networks that left the
 // previous view (e.g. series-home tiles) stuck under the sub-menu bar.
+// Race-specific banner for the LIVE tab — replaces the generic "Live / Formula
+// 1 / 2026 Season · After Round 4" header with the current weekend's race so
+// the user always sees which Grand Prix they're looking at. Falls back to the
+// generic banner outside any weekend window.
+function renderF1LiveBanner(){
+  const round=currentRaceWeekendRound();
+  const race=round?NEXT_RACES.find(r=>r.round===round):null;
+  if(!race)return renderSeriesBanner('f1','live');
+  const sprintLabel=race.sprint?' · SPRINT WEEKEND':'';
+  return `<div class="tx-banner">
+    <div class="tx-banner-label">F1 · LIVE · ROUND ${race.round}${sprintLabel}</div>
+    <div class="tx-banner-title">${race.country} ${race.name}</div>
+    <div class="tx-banner-sub">${race.circuit} · ${fmtDate(race.date)}</div>
+  </div>`;
+}
+
 async function renderLive(){
   const content=document.getElementById('main-content');
-  const top=renderSeriesBanner('f1','live')+renderBackToSeriesHome('f1');
+  const top=renderF1LiveBanner()+renderBackToSeriesHome('f1');
   // Optimistic sub-tab: respect the user's last pick, else assume PRACTICE.
   // If the state machine resolves a different default, re-render below.
   const optimisticActive=currentF1LiveSubTab||'practice';
