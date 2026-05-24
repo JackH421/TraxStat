@@ -15,6 +15,16 @@ const NEXT_RACES=[
   {round:11,name:'Hungarian Grand Prix',circuit:'Hungaroring',country:'🇭🇺',date:'2026-07-26'},
 ];
 
+// Hardcoded race start/end UTC times per round. Needed because (a) OpenF1
+// paywalls their API during live sessions ("Live F1 session in progress.
+// Global API access is restricted to authenticated users until the session
+// ends"), and (b) the legacy 13:00 UTC heuristic in findPostRaceRound is
+// wrong for North-American races. Times verified from OpenF1 pre-session
+// (or F1.com schedule); add more as the season progresses.
+const F1_RACE_TIMES_UTC={
+  5:{start:'20:00',end:'22:00'},  // Canadian GP — Sun 2026-05-24
+};
+
 function renderNextBanner(){
   const now=new Date();
   const next=NEXT_RACES.find(r=>new Date(r.date+'T13:00:00Z')>now);
@@ -1220,6 +1230,20 @@ async function renderLiveRaceBody(state){
   const sessions=await fetchF1Sessions();
   const active=findActiveSession(sessions,'race');
   if(!active){
+    // No active session per OpenF1. Two scenarios diverge here:
+    //   a) Race genuinely isn't running → standard off-air.
+    //   b) Race IS running per hardcoded times but OpenF1 paywalled the
+    //      response → explain to user; state==='session-live' confirms (b).
+    if(state==='session-live'){
+      setStats('—','—','RACE','LIVE');
+      document.getElementById('live-pill').style.display='flex';
+      return renderLiveSubTabOffAir('LIVE TIMING TEMPORARILY UNAVAILABLE',
+        'The race is live now, but OpenF1 (our live-timing source) recently '+
+        'started paywalling their API during active F1 sessions. We\'ll '+
+        'restore live data automatically the moment the session ends and '+
+        'OpenF1 reopens. <br><br>Until then, watch the race on your '+
+        'preferred broadcast — and check <span onclick="switchF1Tab(\'races\')" style="color:var(--red);text-decoration:underline;cursor:pointer;">RACE RESULTS</span> once it\'s over.');
+    }
     document.getElementById('live-pill').style.display='none';
     setStats('—','—','STANDBY','RACE');
     return renderLiveSubTabOffAir('NO RACE IN PROGRESS','Live race timing will appear here when the lights go out.');
@@ -1294,10 +1318,16 @@ function findPostRaceRound(){
       if(end<now&&(now-end)<24*3600*1000)return r.round;
       continue;
     }
-    // Fallback heuristic (OpenF1 cache miss): 13:00 UTC start + 4h.
-    // Imperfect — North-American races start as late as 20:00 UTC and this
-    // can wrongly flag them as post-race for a few hours — but only used
-    // before OpenF1 is fetched.
+    // Next preference: hardcoded race times (covers the OpenF1-paywalled
+    // case during live sessions).
+    const times=F1_RACE_TIMES_UTC[r.round];
+    if(times){
+      const end=new Date(r.date+'T'+times.end+':00Z').getTime();
+      if(end<now&&(now-end)<24*3600*1000)return r.round;
+      continue;
+    }
+    // Last-ditch heuristic: 13:00 UTC start + 4h. Wrong for North-American
+    // races but only fires when neither OpenF1 nor hardcoded times exist.
     const start=new Date(r.date+'T13:00:00Z').getTime();
     if(now>start+4*3600*1000&&now<start+24*3600*1000)return r.round;
   }
@@ -1317,6 +1347,20 @@ async function computeF1State(){
     const sessions=await fetchF1Sessions();
     // Race in progress beats everything.
     if(findActiveSession(sessions,'race'))return 'session-live';
+    // Fallback when OpenF1 is paywalled / unreachable: use hardcoded race
+    // start/end times from F1_RACE_TIMES_UTC. If now is within the race
+    // window, treat as session-live even without OpenF1 confirmation —
+    // renderLiveRaceBody surfaces a "OpenF1 paywalled" message in that case.
+    {
+      const round=currentRaceWeekendRound();
+      const race=round?NEXT_RACES.find(r=>r.round===round):null;
+      const times=round?F1_RACE_TIMES_UTC[round]:null;
+      if(race&&times){
+        const startMs=new Date(race.date+'T'+times.start+':00Z').getTime();
+        const endMs=new Date(race.date+'T'+times.end+':00Z').getTime();
+        if(now>=startMs&&now<=endMs)return 'session-live';
+      }
+    }
     // Qualifying live beats both practice and any post-race window.
     if(findActiveSession(sessions,'qualifying'))return 'qualifying-available';
     // OpenF1 recently-completed weekend quali also surfaces qualifying-available
