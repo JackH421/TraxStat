@@ -1639,7 +1639,9 @@ function f1TrackSlug(raceName){
 }
 function renderF1Highlights(){
   const content=document.getElementById('main-content');
-  const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+  // Most recent round first (descending). Highlights tab is a feed — newest
+  // race at the top matches user expectation.
+  const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(b.round)-parseInt(a.round));
 
   // 16:9 responsive iframe with the hqdefault thumbnail loaded as a CSS
   // background underneath — that's the visible fallback if the iframe is
