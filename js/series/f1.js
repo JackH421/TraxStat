@@ -1254,12 +1254,36 @@ async function getF1RaceWeekendState(){
 // Returns the round number of any race in post-race window (past start+4h,
 // within 24h of start, not yet hardcoded). Returns null otherwise. Used both
 // by the state machine and the polling system, decoupled from each other.
+// Returns the round number of any race whose actual race session has ENDED
+// within the last 24h (and isn't yet in HARDCODED_RACES). Stays synchronous —
+// reads the 60s-cached OpenF1 sessions list (_f1SessionsCache) when available
+// so it knows each round's real start/end times. Falls back to the legacy
+// 13:00 UTC + 4h heuristic only when OpenF1 hasn't been queried yet (cold
+// path on first page load before computeF1State has run).
 function findPostRaceRound(){
   const now=Date.now();
   const hardcoded=new Set(Object.keys(HARDCODED_RACES).map(Number));
+  const cachedSessions=_f1SessionsCache||[];
   for(const r of NEXT_RACES){
+    if(hardcoded.has(r.round))continue;
+    // Prefer the actual Race session end time from OpenF1 (cached).
+    const raceSession=cachedSessions.find(s=>{
+      if((s.session_type||'').toLowerCase()!=='race')return false;
+      const startMs=new Date(s.date_start).getTime();
+      const days=(startMs-new Date(r.date+'T12:00:00Z').getTime())/86400000;
+      return Math.abs(days)<2;
+    });
+    if(raceSession){
+      const end=new Date(raceSession.date_end).getTime();
+      if(end<now&&(now-end)<24*3600*1000)return r.round;
+      continue;
+    }
+    // Fallback heuristic (OpenF1 cache miss): 13:00 UTC start + 4h.
+    // Imperfect — North-American races start as late as 20:00 UTC and this
+    // can wrongly flag them as post-race for a few hours — but only used
+    // before OpenF1 is fetched.
     const start=new Date(r.date+'T13:00:00Z').getTime();
-    if(now>start+4*3600*1000&&now<start+24*3600*1000&&!hardcoded.has(r.round))return r.round;
+    if(now>start+4*3600*1000&&now<start+24*3600*1000)return r.round;
   }
   return null;
 }
