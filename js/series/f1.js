@@ -1757,22 +1757,46 @@ function renderF1Schedule(){
 function f1TrackSlug(raceName){
   return (raceName||'').toLowerCase().replace(/grand prix/g,'').trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'race';
 }
+
+// Click-handler for the lite-YouTube thumbnails on the HIGHLIGHTS tab. Swaps
+// the thumbnail+play-button div with the actual YouTube iframe (with autoplay
+// so the user gets immediate playback after the tap). Global so the inline
+// onclick="loadF1HighlightIframe(...)" can find it.
+function loadF1HighlightIframe(el,videoId,label){
+  track('f1:highlight-play',{round:videoId.slice(0,6)});
+  el.innerHTML=`<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${label}"></iframe>`;
+  el.style.cursor='default';
+  el.onclick=null;
+}
+
 function renderF1Highlights(){
   const content=document.getElementById('main-content');
   // Most recent round first (descending). Highlights tab is a feed — newest
   // race at the top matches user expectation.
   const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(b.round)-parseInt(a.round));
 
-  // 16:9 responsive iframe with the hqdefault thumbnail loaded as a CSS
-  // background underneath — that's the visible fallback if the iframe is
-  // blocked (ad-blocker, CSP, network). The below-iframe link is the
-  // guaranteed escape hatch regardless of iframe state.
+  // Lite-YouTube pattern: render a clickable still-frame thumbnail. On tap
+  // the iframe (with autoplay) replaces the thumbnail. This is much lighter
+  // than always-loading 3 iframes per round (3 × 5 rounds = 15 iframes
+  // previously). The still frame comes from YouTube's auto-generated
+  // /1.jpg, /2.jpg, /3.jpg endpoints (real frames from the video, NOT the
+  // curated cover thumbnail) — picked deterministically per video via a
+  // tiny char-code hash so each clip shows a different moment.
+  const stillFrame=(videoId)=>{
+    const seed=(videoId.charCodeAt(0)+videoId.charCodeAt(1)+videoId.charCodeAt(2))%3+1;
+    return `https://i.ytimg.com/vi/${videoId}/${seed}.jpg`;
+  };
   const slotHTML=(label,videoId)=>{
     if(!videoId)return '';
+    const still=stillFrame(videoId);
+    const fallback=`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
     return `<div style="margin-top:12px;">
       <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;color:var(--green);text-transform:uppercase;padding-bottom:6px;">⬤ ${label}</div>
-      <div style="position:relative;padding-bottom:56.25%;height:0;background:url('https://i.ytimg.com/vi/${videoId}/hqdefault.jpg') center/cover #000;border-radius:3px;overflow:hidden;">
-        <iframe src="https://www.youtube.com/embed/${videoId}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${label}"></iframe>
+      <div onclick="loadF1HighlightIframe(this,'${videoId}','${label.replace(/'/g,"\\'")}')" style="position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:3px;overflow:hidden;cursor:pointer;">
+        <img src="${still}" onerror="this.onerror=null;this.src='${fallback}';" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" alt="${label} thumbnail">
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.4);">
+          <div style="width:0;height:0;border-left:22px solid var(--red);border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:5px;"></div>
+        </div>
       </div>
       <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 0;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;">Open on YouTube ↗</a>
     </div>`;
