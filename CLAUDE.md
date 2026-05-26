@@ -79,9 +79,9 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **Push at natural stopping points**, not after every commit. A working feature, a verified fix, a completed section.
 - **Never amend or force-push** commits already on GitHub. Pushed history is shared history.
 
-## Current season state (as of 2026-05-15)
+## Current season state (as of 2026-05-26)
 
-- **F1**: Round 4 (Miami GP) complete. Standings: Antonelli 100, Russell 80, Leclerc 59. Next: Canadian GP, 2026-05-24.
+- **F1**: Round 5 (Canadian GP) complete. Standings: Antonelli 131, Russell 88, Leclerc 75. Sprint weekend — Russell won Sprint, Antonelli won the GP. Next: Monaco GP, 2026-06-07.
 - **NASCAR Cup**: Round 12 (Watkins Glen) complete. Standings: Reddick 567, +129 over P2 (Hamlin 438). Next: Coca-Cola 600 at Charlotte, 2026-05-24.
 
 When you update the hardcoded constants past these rounds, also update this section and the "After Rxx" labels in the renderers.

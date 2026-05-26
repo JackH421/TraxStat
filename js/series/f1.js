@@ -2,6 +2,7 @@ const SEEDED_FASTEST_LAPS={
   2:{'antonelli':{time:'1:35.275',lap:'52',rank:'1'}},
   3:{'antonelli':{time:'1:32.432',lap:'49',rank:'1'}},
   4:{'norris':{time:'1:31.869',lap:'35',rank:'1'}},
+  5:{'antonelli':{time:'1:14.210',lap:'68',rank:'1'}},
 };
 
 // ── NEXT RACE ─────────────────────────────────────────────────────────────────
@@ -146,44 +147,71 @@ const HARDCODED_RACES={
       {position:'20',Driver:{driverId:'lawson',familyName:'Lawson',nationality:'New Zealander'},Constructor:{name:'Racing Bulls'},points:'0',laps:'55',status:'+2 Laps'},
       {position:'DNF',Driver:{driverId:'gasly',familyName:'Gasly',nationality:'French'},Constructor:{name:'Alpine'},points:'0',laps:'—',status:'DNF (Crash)'},
       {position:'DNF',Driver:{driverId:'hadjar',familyName:'Hadjar',nationality:'French'},Constructor:{name:'Red Bull'},points:'0',laps:'—',status:'DNF (Crash)'},
+    ]},
+  5:{round:'5',raceName:'Canadian Grand Prix',date:'2026-05-24',Circuit:{circuitName:'Circuit Gilles Villeneuve',Location:{country:'🇨🇦'}},
+    Results:[
+      {position:'1',Driver:{driverId:'antonelli',familyName:'Antonelli',nationality:'Italian'},Constructor:{name:'Mercedes'},points:'25',laps:'68',Time:{time:'1:28:15.758'},status:'Finished',FastestLap:{rank:'1',lap:'68',Time:{time:'1:14.210'}}},
+      {position:'2',Driver:{driverId:'hamilton',familyName:'Hamilton',nationality:'British'},Constructor:{name:'Ferrari'},points:'18',laps:'68',Time:{time:'+10.768'},status:'Finished'},
+      {position:'3',Driver:{driverId:'verstappen',familyName:'Verstappen',nationality:'Dutch'},Constructor:{name:'Red Bull'},points:'15',laps:'68',Time:{time:'+11.276'},status:'Finished'},
+      {position:'4',Driver:{driverId:'leclerc',familyName:'Leclerc',nationality:'Monegasque'},Constructor:{name:'Ferrari'},points:'12',laps:'68',Time:{time:'+44.151'},status:'Finished'},
+      {position:'5',Driver:{driverId:'hadjar',familyName:'Hadjar',nationality:'French'},Constructor:{name:'Red Bull'},points:'10',laps:'67',status:'+1 Lap'},
+      {position:'6',Driver:{driverId:'colapinto',familyName:'Colapinto',nationality:'Argentine'},Constructor:{name:'Alpine'},points:'8',laps:'67',status:'+1 Lap'},
+      {position:'7',Driver:{driverId:'lawson',familyName:'Lawson',nationality:'New Zealander'},Constructor:{name:'Racing Bulls'},points:'6',laps:'67',status:'+1 Lap'},
+      {position:'8',Driver:{driverId:'gasly',familyName:'Gasly',nationality:'French'},Constructor:{name:'Alpine'},points:'4',laps:'67',status:'+1 Lap'},
+      {position:'9',Driver:{driverId:'sainz',familyName:'Sainz',nationality:'Spanish'},Constructor:{name:'Williams'},points:'2',laps:'67',status:'+1 Lap'},
+      {position:'10',Driver:{driverId:'bearman',familyName:'Bearman',nationality:'British'},Constructor:{name:'Haas F1 Team'},points:'1',laps:'67',status:'+1 Lap'},
+      {position:'11',Driver:{driverId:'piastri',familyName:'Piastri',nationality:'Australian'},Constructor:{name:'McLaren'},points:'0',laps:'66',status:'+2 Laps'},
+      {position:'12',Driver:{driverId:'hulkenberg',familyName:'Hulkenberg',nationality:'German'},Constructor:{name:'Audi'},points:'0',laps:'66',status:'+2 Laps'},
+      {position:'13',Driver:{driverId:'bortoleto',familyName:'Bortoleto',nationality:'Brazilian'},Constructor:{name:'Audi'},points:'0',laps:'66',status:'+2 Laps'},
+      {position:'14',Driver:{driverId:'ocon',familyName:'Ocon',nationality:'French'},Constructor:{name:'Haas F1 Team'},points:'0',laps:'66',status:'+2 Laps'},
+      {position:'15',Driver:{driverId:'stroll',familyName:'Stroll',nationality:'Canadian'},Constructor:{name:'Aston Martin'},points:'0',laps:'64',status:'+4 Laps'},
+      {position:'16',Driver:{driverId:'bottas',familyName:'Bottas',nationality:'Finnish'},Constructor:{name:'Cadillac'},points:'0',laps:'64',status:'+4 Laps'},
+      {position:'DNF',Driver:{driverId:'perez',familyName:'Perez',nationality:'Mexican'},Constructor:{name:'Cadillac'},points:'0',laps:'39',status:'DNF'},
+      {position:'DNF',Driver:{driverId:'norris',familyName:'Norris',nationality:'British'},Constructor:{name:'McLaren'},points:'0',laps:'38',status:'DNF'},
+      {position:'DNF',Driver:{driverId:'russell',familyName:'Russell',nationality:'British'},Constructor:{name:'Mercedes'},points:'0',laps:'29',status:'DNF'},
+      {position:'DNF',Driver:{driverId:'alonso',familyName:'Alonso',nationality:'Spanish'},Constructor:{name:'Aston Martin'},points:'0',laps:'23',status:'DNF'},
+      {position:'DNF',Driver:{driverId:'albon',familyName:'Albon',nationality:'Thai'},Constructor:{name:'Williams'},points:'0',laps:'11',status:'DNF'},
+      {position:'DNS',Driver:{driverId:'lindblad',familyName:'Lindblad',nationality:'British'},Constructor:{name:'Racing Bulls'},points:'0',laps:'—',status:'DNS'},
     ]}
 };
 
-// Hardcoded verified championship standings (after Miami, R4) — official totals
+// Hardcoded verified championship standings (after Canada, R5) — official totals
+// from Jolpica (driver + constructor standings endpoints). Includes Sprint
+// points from R5 Sprint as well as the main GP result.
 const HARDCODED_DRIVER_STANDINGS=[
-  {position:'1',points:'100',Driver:{driverId:'antonelli',familyName:'Antonelli',givenName:'Kimi',nationality:'Italian'},Constructors:[{name:'Mercedes'}]},
-  {position:'2',points:'80',Driver:{driverId:'russell',familyName:'Russell',givenName:'George',nationality:'British'},Constructors:[{name:'Mercedes'}]},
-  {position:'3',points:'59',Driver:{driverId:'leclerc',familyName:'Leclerc',givenName:'Charles',nationality:'Monegasque'},Constructors:[{name:'Ferrari'}]},
-  {position:'4',points:'51',Driver:{driverId:'norris',familyName:'Norris',givenName:'Lando',nationality:'British'},Constructors:[{name:'McLaren'}]},
-  {position:'5',points:'51',Driver:{driverId:'hamilton',familyName:'Hamilton',givenName:'Lewis',nationality:'British'},Constructors:[{name:'Ferrari'}]},
-  {position:'6',points:'43',Driver:{driverId:'piastri',familyName:'Piastri',givenName:'Oscar',nationality:'Australian'},Constructors:[{name:'McLaren'}]},
-  {position:'7',points:'26',Driver:{driverId:'verstappen',familyName:'Verstappen',givenName:'Max',nationality:'Dutch'},Constructors:[{name:'Red Bull'}]},
-  {position:'8',points:'17',Driver:{driverId:'bearman',familyName:'Bearman',givenName:'Oliver',nationality:'British'},Constructors:[{name:'Haas F1 Team'}]},
-  {position:'9',points:'16',Driver:{driverId:'gasly',familyName:'Gasly',givenName:'Pierre',nationality:'French'},Constructors:[{name:'Alpine'}]},
-  {position:'10',points:'10',Driver:{driverId:'lawson',familyName:'Lawson',givenName:'Liam',nationality:'New Zealander'},Constructors:[{name:'Racing Bulls'}]},
-  {position:'11',points:'7',Driver:{driverId:'colapinto',familyName:'Colapinto',givenName:'Franco',nationality:'Argentine'},Constructors:[{name:'Alpine'}]},
-  {position:'12',points:'4',Driver:{driverId:'lindblad',familyName:'Lindblad',givenName:'Arvid',nationality:'British'},Constructors:[{name:'Racing Bulls'}]},
-  {position:'13',points:'4',Driver:{driverId:'hadjar',familyName:'Hadjar',givenName:'Isack',nationality:'French'},Constructors:[{name:'Red Bull'}]},
-  {position:'14',points:'4',Driver:{driverId:'sainz',familyName:'Sainz',givenName:'Carlos',nationality:'Spanish'},Constructors:[{name:'Williams'}]},
+  {position:'1',points:'131',Driver:{driverId:'antonelli',familyName:'Antonelli',givenName:'Kimi',nationality:'Italian'},Constructors:[{name:'Mercedes'}]},
+  {position:'2',points:'88',Driver:{driverId:'russell',familyName:'Russell',givenName:'George',nationality:'British'},Constructors:[{name:'Mercedes'}]},
+  {position:'3',points:'75',Driver:{driverId:'leclerc',familyName:'Leclerc',givenName:'Charles',nationality:'Monegasque'},Constructors:[{name:'Ferrari'}]},
+  {position:'4',points:'72',Driver:{driverId:'hamilton',familyName:'Hamilton',givenName:'Lewis',nationality:'British'},Constructors:[{name:'Ferrari'}]},
+  {position:'5',points:'58',Driver:{driverId:'norris',familyName:'Norris',givenName:'Lando',nationality:'British'},Constructors:[{name:'McLaren'}]},
+  {position:'6',points:'48',Driver:{driverId:'piastri',familyName:'Piastri',givenName:'Oscar',nationality:'Australian'},Constructors:[{name:'McLaren'}]},
+  {position:'7',points:'43',Driver:{driverId:'verstappen',familyName:'Verstappen',givenName:'Max',nationality:'Dutch'},Constructors:[{name:'Red Bull'}]},
+  {position:'8',points:'20',Driver:{driverId:'gasly',familyName:'Gasly',givenName:'Pierre',nationality:'French'},Constructors:[{name:'Alpine'}]},
+  {position:'9',points:'18',Driver:{driverId:'bearman',familyName:'Bearman',givenName:'Oliver',nationality:'British'},Constructors:[{name:'Haas F1 Team'}]},
+  {position:'10',points:'16',Driver:{driverId:'lawson',familyName:'Lawson',givenName:'Liam',nationality:'New Zealander'},Constructors:[{name:'Racing Bulls'}]},
+  {position:'11',points:'15',Driver:{driverId:'colapinto',familyName:'Colapinto',givenName:'Franco',nationality:'Argentine'},Constructors:[{name:'Alpine'}]},
+  {position:'12',points:'14',Driver:{driverId:'hadjar',familyName:'Hadjar',givenName:'Isack',nationality:'French'},Constructors:[{name:'Red Bull'}]},
+  {position:'13',points:'6',Driver:{driverId:'sainz',familyName:'Sainz',givenName:'Carlos',nationality:'Spanish'},Constructors:[{name:'Williams'}]},
+  {position:'14',points:'5',Driver:{driverId:'lindblad',familyName:'Lindblad',givenName:'Arvid',nationality:'British'},Constructors:[{name:'Racing Bulls'}]},
   {position:'15',points:'2',Driver:{driverId:'bortoleto',familyName:'Bortoleto',givenName:'Gabriel',nationality:'Brazilian'},Constructors:[{name:'Audi'}]},
   {position:'16',points:'1',Driver:{driverId:'ocon',familyName:'Ocon',givenName:'Esteban',nationality:'French'},Constructors:[{name:'Haas F1 Team'}]},
   {position:'17',points:'1',Driver:{driverId:'albon',familyName:'Albon',givenName:'Alexander',nationality:'Thai'},Constructors:[{name:'Williams'}]},
   {position:'18',points:'0',Driver:{driverId:'hulkenberg',familyName:'Hulkenberg',givenName:'Nico',nationality:'German'},Constructors:[{name:'Audi'}]},
   {position:'19',points:'0',Driver:{driverId:'bottas',familyName:'Bottas',givenName:'Valtteri',nationality:'Finnish'},Constructors:[{name:'Cadillac'}]},
   {position:'20',points:'0',Driver:{driverId:'perez',familyName:'Perez',givenName:'Sergio',nationality:'Mexican'},Constructors:[{name:'Cadillac'}]},
-  {position:'21',points:'0',Driver:{driverId:'alonso',familyName:'Alonso',givenName:'Fernando',nationality:'Spanish'},Constructors:[{name:'Aston Martin'}]},
-  {position:'22',points:'0',Driver:{driverId:'stroll',familyName:'Stroll',givenName:'Lance',nationality:'Canadian'},Constructors:[{name:'Aston Martin'}]},
+  {position:'21',points:'0',Driver:{driverId:'stroll',familyName:'Stroll',givenName:'Lance',nationality:'Canadian'},Constructors:[{name:'Aston Martin'}]},
+  {position:'22',points:'0',Driver:{driverId:'alonso',familyName:'Alonso',givenName:'Fernando',nationality:'Spanish'},Constructors:[{name:'Aston Martin'}]},
 ];
 
 const HARDCODED_CONSTRUCTOR_STANDINGS=[
-  {position:'1',points:'180',Constructor:{name:'Mercedes',nationality:'German'}},
-  {position:'2',points:'110',Constructor:{name:'Ferrari',nationality:'Italian'}},
-  {position:'3',points:'94',Constructor:{name:'McLaren',nationality:'British'}},
-  {position:'4',points:'30',Constructor:{name:'Red Bull',nationality:'Austrian'}},
-  {position:'5',points:'23',Constructor:{name:'Alpine',nationality:'French'}},
-  {position:'6',points:'18',Constructor:{name:'Haas F1 Team',nationality:'American'}},
-  {position:'7',points:'14',Constructor:{name:'Racing Bulls',nationality:'Italian'}},
-  {position:'8',points:'5',Constructor:{name:'Williams',nationality:'British'}},
+  {position:'1',points:'219',Constructor:{name:'Mercedes',nationality:'German'}},
+  {position:'2',points:'147',Constructor:{name:'Ferrari',nationality:'Italian'}},
+  {position:'3',points:'106',Constructor:{name:'McLaren',nationality:'British'}},
+  {position:'4',points:'57',Constructor:{name:'Red Bull',nationality:'Austrian'}},
+  {position:'5',points:'35',Constructor:{name:'Alpine',nationality:'French'}},
+  {position:'6',points:'21',Constructor:{name:'Racing Bulls',nationality:'Italian'}},
+  {position:'7',points:'19',Constructor:{name:'Haas F1 Team',nationality:'American'}},
+  {position:'8',points:'7',Constructor:{name:'Williams',nationality:'British'}},
   {position:'9',points:'2',Constructor:{name:'Audi',nationality:'German'}},
   {position:'10',points:'0',Constructor:{name:'Cadillac',nationality:'American'}},
   {position:'11',points:'0',Constructor:{name:'Aston Martin',nationality:'British'}},
@@ -386,6 +414,8 @@ const SPRINT_RESULTS={
      drivers:{'Russell':8,'Leclerc':7,'Hamilton':6,'Norris':5,'Antonelli':4,'Piastri':3,'Lawson':2,'Bearman':1}},
   4:{round:4,race:'Miami',flag:'🇺🇸',winner:'Norris',winnerTeam:'McLaren',
      drivers:{'Norris':8,'Piastri':7,'Leclerc':6,'Russell':5,'Verstappen':4,'Antonelli':3,'Hamilton':2,'Gasly':1}},
+  5:{round:5,race:'Canada',flag:'🇨🇦',winner:'Russell',winnerTeam:'Mercedes',
+     drivers:{'Russell':8,'Norris':7,'Antonelli':6,'Piastri':5,'Leclerc':4,'Hamilton':3,'Verstappen':2,'Lindblad':1}},
 };
 
 function getSprintPts(driverName,round){
@@ -397,23 +427,23 @@ function getSprintPts(driverName,round){
 // added separately from SPRINT_RESULTS so they display as a labeled sub-row.
 // Position 0 = DNS/DNF/DSQ. All totals verified against official standings.
 const DRIVER_RACE_POINTS={
-  'Antonelli':  [{round:1,race:'Australia',flag:'🇦🇺',pos:2,pts:18},{round:2,race:'China',flag:'🇨🇳',pos:1,pts:25},{round:3,race:'Japan',flag:'🇯🇵',pos:1,pts:25},{round:4,race:'Miami',flag:'🇺🇸',pos:1,pts:25}],
-  'Russell':    [{round:1,race:'Australia',flag:'🇦🇺',pos:1,pts:25},{round:2,race:'China',flag:'🇨🇳',pos:2,pts:18},{round:3,race:'Japan',flag:'🇯🇵',pos:4,pts:12},{round:4,race:'Miami',flag:'🇺🇸',pos:4,pts:12}],
-  'Leclerc':    [{round:1,race:'Australia',flag:'🇦🇺',pos:3,pts:15},{round:2,race:'China',flag:'🇨🇳',pos:4,pts:12},{round:3,race:'Japan',flag:'🇯🇵',pos:3,pts:15},{round:4,race:'Miami',flag:'🇺🇸',pos:8,pts:4}],
-  'Norris':     [{round:1,race:'Australia',flag:'🇦🇺',pos:5,pts:10},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:5,pts:10},{round:4,race:'Miami',flag:'🇺🇸',pos:2,pts:18}],
-  'Hamilton':   [{round:1,race:'Australia',flag:'🇦🇺',pos:4,pts:12},{round:2,race:'China',flag:'🇨🇳',pos:3,pts:15},{round:3,race:'Japan',flag:'🇯🇵',pos:6,pts:8},{round:4,race:'Miami',flag:'🇺🇸',pos:6,pts:8}],
-  'Piastri':    [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:2,pts:18},{round:4,race:'Miami',flag:'🇺🇸',pos:3,pts:15}],
-  'Verstappen': [{round:1,race:'Australia',flag:'🇦🇺',pos:6,pts:8},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:8,pts:4},{round:4,race:'Miami',flag:'🇺🇸',pos:5,pts:10}],
-  'Bearman':    [{round:1,race:'Australia',flag:'🇦🇺',pos:7,pts:6},{round:2,race:'China',flag:'🇨🇳',pos:5,pts:10},{round:3,race:'Japan',flag:'🇯🇵',pos:0,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:11,pts:0}],
-  'Gasly':      [{round:1,race:'Australia',flag:'🇦🇺',pos:10,pts:1},{round:2,race:'China',flag:'🇨🇳',pos:6,pts:8},{round:3,race:'Japan',flag:'🇯🇵',pos:7,pts:6},{round:4,race:'Miami',flag:'🇺🇸',pos:0,pts:0}],
-  'Lawson':     [{round:1,race:'Australia',flag:'🇦🇺',pos:13,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:7,pts:6},{round:3,race:'Japan',flag:'🇯🇵',pos:9,pts:2},{round:4,race:'Miami',flag:'🇺🇸',pos:20,pts:0}],
-  'Colapinto':  [{round:1,race:'Australia',flag:'🇦🇺',pos:14,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:10,pts:1},{round:3,race:'Japan',flag:'🇯🇵',pos:16,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:7,pts:6}],
-  'Lindblad':   [{round:1,race:'Australia',flag:'🇦🇺',pos:8,pts:4},{round:2,race:'China',flag:'🇨🇳',pos:12,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:14,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:14,pts:0}],
-  'Hadjar':     [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:8,pts:4},{round:3,race:'Japan',flag:'🇯🇵',pos:12,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:0,pts:0}],
-  'Sainz':      [{round:1,race:'Australia',flag:'🇦🇺',pos:15,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:9,pts:2},{round:3,race:'Japan',flag:'🇯🇵',pos:15,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:9,pts:2}],
-  'Bortoleto':  [{round:1,race:'Australia',flag:'🇦🇺',pos:9,pts:2},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:13,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:12,pts:0}],
-  'Ocon':       [{round:1,race:'Australia',flag:'🇦🇺',pos:11,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:14,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:10,pts:1},{round:4,race:'Miami',flag:'🇺🇸',pos:13,pts:0}],
-  'Albon':      [{round:1,race:'Australia',flag:'🇦🇺',pos:12,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:20,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:10,pts:1}],
+  'Antonelli':  [{round:1,race:'Australia',flag:'🇦🇺',pos:2,pts:18},{round:2,race:'China',flag:'🇨🇳',pos:1,pts:25},{round:3,race:'Japan',flag:'🇯🇵',pos:1,pts:25},{round:4,race:'Miami',flag:'🇺🇸',pos:1,pts:25},{round:5,race:'Canada',flag:'🇨🇦',pos:1,pts:25}],
+  'Russell':    [{round:1,race:'Australia',flag:'🇦🇺',pos:1,pts:25},{round:2,race:'China',flag:'🇨🇳',pos:2,pts:18},{round:3,race:'Japan',flag:'🇯🇵',pos:4,pts:12},{round:4,race:'Miami',flag:'🇺🇸',pos:4,pts:12},{round:5,race:'Canada',flag:'🇨🇦',pos:0,pts:0}],
+  'Leclerc':    [{round:1,race:'Australia',flag:'🇦🇺',pos:3,pts:15},{round:2,race:'China',flag:'🇨🇳',pos:4,pts:12},{round:3,race:'Japan',flag:'🇯🇵',pos:3,pts:15},{round:4,race:'Miami',flag:'🇺🇸',pos:8,pts:4},{round:5,race:'Canada',flag:'🇨🇦',pos:4,pts:12}],
+  'Norris':     [{round:1,race:'Australia',flag:'🇦🇺',pos:5,pts:10},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:5,pts:10},{round:4,race:'Miami',flag:'🇺🇸',pos:2,pts:18},{round:5,race:'Canada',flag:'🇨🇦',pos:0,pts:0}],
+  'Hamilton':   [{round:1,race:'Australia',flag:'🇦🇺',pos:4,pts:12},{round:2,race:'China',flag:'🇨🇳',pos:3,pts:15},{round:3,race:'Japan',flag:'🇯🇵',pos:6,pts:8},{round:4,race:'Miami',flag:'🇺🇸',pos:6,pts:8},{round:5,race:'Canada',flag:'🇨🇦',pos:2,pts:18}],
+  'Piastri':    [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:2,pts:18},{round:4,race:'Miami',flag:'🇺🇸',pos:3,pts:15},{round:5,race:'Canada',flag:'🇨🇦',pos:11,pts:0}],
+  'Verstappen': [{round:1,race:'Australia',flag:'🇦🇺',pos:6,pts:8},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:8,pts:4},{round:4,race:'Miami',flag:'🇺🇸',pos:5,pts:10},{round:5,race:'Canada',flag:'🇨🇦',pos:3,pts:15}],
+  'Bearman':    [{round:1,race:'Australia',flag:'🇦🇺',pos:7,pts:6},{round:2,race:'China',flag:'🇨🇳',pos:5,pts:10},{round:3,race:'Japan',flag:'🇯🇵',pos:0,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:11,pts:0},{round:5,race:'Canada',flag:'🇨🇦',pos:10,pts:1}],
+  'Gasly':      [{round:1,race:'Australia',flag:'🇦🇺',pos:10,pts:1},{round:2,race:'China',flag:'🇨🇳',pos:6,pts:8},{round:3,race:'Japan',flag:'🇯🇵',pos:7,pts:6},{round:4,race:'Miami',flag:'🇺🇸',pos:0,pts:0},{round:5,race:'Canada',flag:'🇨🇦',pos:8,pts:4}],
+  'Lawson':     [{round:1,race:'Australia',flag:'🇦🇺',pos:13,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:7,pts:6},{round:3,race:'Japan',flag:'🇯🇵',pos:9,pts:2},{round:4,race:'Miami',flag:'🇺🇸',pos:20,pts:0},{round:5,race:'Canada',flag:'🇨🇦',pos:7,pts:6}],
+  'Colapinto':  [{round:1,race:'Australia',flag:'🇦🇺',pos:14,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:10,pts:1},{round:3,race:'Japan',flag:'🇯🇵',pos:16,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:7,pts:6},{round:5,race:'Canada',flag:'🇨🇦',pos:6,pts:8}],
+  'Lindblad':   [{round:1,race:'Australia',flag:'🇦🇺',pos:8,pts:4},{round:2,race:'China',flag:'🇨🇳',pos:12,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:14,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:14,pts:0},{round:5,race:'Canada',flag:'🇨🇦',pos:0,pts:0}],
+  'Hadjar':     [{round:1,race:'Australia',flag:'🇦🇺',pos:0,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:8,pts:4},{round:3,race:'Japan',flag:'🇯🇵',pos:12,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:0,pts:0},{round:5,race:'Canada',flag:'🇨🇦',pos:5,pts:10}],
+  'Sainz':      [{round:1,race:'Australia',flag:'🇦🇺',pos:15,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:9,pts:2},{round:3,race:'Japan',flag:'🇯🇵',pos:15,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:9,pts:2},{round:5,race:'Canada',flag:'🇨🇦',pos:9,pts:2}],
+  'Bortoleto':  [{round:1,race:'Australia',flag:'🇦🇺',pos:9,pts:2},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:13,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:12,pts:0},{round:5,race:'Canada',flag:'🇨🇦',pos:13,pts:0}],
+  'Ocon':       [{round:1,race:'Australia',flag:'🇦🇺',pos:11,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:14,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:10,pts:1},{round:4,race:'Miami',flag:'🇺🇸',pos:13,pts:0},{round:5,race:'Canada',flag:'🇨🇦',pos:14,pts:0}],
+  'Albon':      [{round:1,race:'Australia',flag:'🇦🇺',pos:12,pts:0},{round:2,race:'China',flag:'🇨🇳',pos:0,pts:0},{round:3,race:'Japan',flag:'🇯🇵',pos:20,pts:0},{round:4,race:'Miami',flag:'🇺🇸',pos:10,pts:1},{round:5,race:'Canada',flag:'🇨🇦',pos:0,pts:0}],
 };
 
 let selectedDriverChamp=null;
@@ -478,7 +508,7 @@ async function renderDrivers(){
   try{
     const standings=await fetchDriverStandings();
     if(!standings.length){content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">No Data Yet</div></div>`;return;}
-    const hdr=`<div class="section-title"><span>Drivers Championship · 2026 · After R4 Miami</span><span>Tap for breakdown</span></div>`;
+    const hdr=`<div class="section-title"><span>Drivers Championship · 2026 · After R5 Canada</span><span>Tap for breakdown</span></div>`;
     const rows=standings.map((d,i)=>{
       const name=d.Driver?.familyName||'—';
       const team=normalizeTeam(d.Constructors?.[0]?.name||'—');
@@ -519,17 +549,17 @@ async function renderDrivers(){
 // Sprint points are added by computing per-driver sprint earnings from SPRINT_RESULTS.
 // Totals (including sprints) verified against official constructor standings.
 const CONSTRUCTOR_RACE_POINTS={
-  'Mercedes':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Russell',pos:1,pts:25},{name:'Antonelli',pos:2,pts:18}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Antonelli',pos:1,pts:25},{name:'Russell',pos:2,pts:18}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Antonelli',pos:1,pts:25},{name:'Russell',pos:4,pts:12}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Antonelli',pos:1,pts:25},{name:'Russell',pos:4,pts:12}]}],
-  'Ferrari':      [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Leclerc',pos:3,pts:15},{name:'Hamilton',pos:4,pts:12}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Hamilton',pos:3,pts:15},{name:'Leclerc',pos:4,pts:12}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Leclerc',pos:3,pts:15},{name:'Hamilton',pos:6,pts:8}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Hamilton',pos:6,pts:8},{name:'Leclerc',pos:8,pts:4}]}],
-  'McLaren':      [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Norris',pos:5,pts:10},{name:'Piastri',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Norris',pos:0,pts:0},{name:'Piastri',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Piastri',pos:2,pts:18},{name:'Norris',pos:5,pts:10}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Norris',pos:2,pts:18},{name:'Piastri',pos:3,pts:15}]}],
-  'Red Bull':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Verstappen',pos:6,pts:8},{name:'Hadjar',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Hadjar',pos:8,pts:4},{name:'Verstappen',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Verstappen',pos:8,pts:4},{name:'Hadjar',pos:12,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Verstappen',pos:5,pts:10},{name:'Hadjar',pos:0,pts:0}]}],
-  'Alpine':       [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Gasly',pos:10,pts:1},{name:'Colapinto',pos:14,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Gasly',pos:6,pts:8},{name:'Colapinto',pos:10,pts:1}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Gasly',pos:7,pts:6},{name:'Colapinto',pos:16,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Colapinto',pos:7,pts:6},{name:'Gasly',pos:0,pts:0}]}],
-  'Haas F1 Team': [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Bearman',pos:7,pts:6},{name:'Ocon',pos:11,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Bearman',pos:5,pts:10},{name:'Ocon',pos:14,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Ocon',pos:10,pts:1},{name:'Bearman',pos:0,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Bearman',pos:11,pts:0},{name:'Ocon',pos:13,pts:0}]}],
-  'Racing Bulls': [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Lindblad',pos:8,pts:4},{name:'Lawson',pos:13,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Lawson',pos:7,pts:6},{name:'Lindblad',pos:12,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Lawson',pos:9,pts:2},{name:'Lindblad',pos:14,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Lindblad',pos:14,pts:0},{name:'Lawson',pos:20,pts:0}]}],
-  'Williams':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Albon',pos:12,pts:0},{name:'Sainz',pos:15,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Sainz',pos:9,pts:2},{name:'Albon',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Sainz',pos:15,pts:0},{name:'Albon',pos:20,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Sainz',pos:9,pts:2},{name:'Albon',pos:10,pts:1}]}],
-  'Audi':         [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Bortoleto',pos:9,pts:2},{name:'Hulkenberg',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Hulkenberg',pos:11,pts:0},{name:'Bortoleto',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Hulkenberg',pos:11,pts:0},{name:'Bortoleto',pos:13,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Bortoleto',pos:12,pts:0},{name:'Hulkenberg',pos:19,pts:0}]}],
-  'Cadillac':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Perez',pos:16,pts:0},{name:'Bottas',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Bottas',pos:13,pts:0},{name:'Perez',pos:15,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Perez',pos:17,pts:0},{name:'Bottas',pos:19,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Perez',pos:16,pts:0},{name:'Bottas',pos:18,pts:0}]}],
-  'Aston Martin': [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Stroll',pos:17,pts:0},{name:'Alonso',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Alonso',pos:0,pts:0},{name:'Stroll',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Alonso',pos:18,pts:0},{name:'Stroll',pos:0,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Alonso',pos:15,pts:0},{name:'Stroll',pos:17,pts:0}]}],
+  'Mercedes':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Russell',pos:1,pts:25},{name:'Antonelli',pos:2,pts:18}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Antonelli',pos:1,pts:25},{name:'Russell',pos:2,pts:18}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Antonelli',pos:1,pts:25},{name:'Russell',pos:4,pts:12}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Antonelli',pos:1,pts:25},{name:'Russell',pos:4,pts:12}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Antonelli',pos:1,pts:25},{name:'Russell',pos:0,pts:0}]}],
+  'Ferrari':      [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Leclerc',pos:3,pts:15},{name:'Hamilton',pos:4,pts:12}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Hamilton',pos:3,pts:15},{name:'Leclerc',pos:4,pts:12}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Leclerc',pos:3,pts:15},{name:'Hamilton',pos:6,pts:8}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Hamilton',pos:6,pts:8},{name:'Leclerc',pos:8,pts:4}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Hamilton',pos:2,pts:18},{name:'Leclerc',pos:4,pts:12}]}],
+  'McLaren':      [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Norris',pos:5,pts:10},{name:'Piastri',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Norris',pos:0,pts:0},{name:'Piastri',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Piastri',pos:2,pts:18},{name:'Norris',pos:5,pts:10}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Norris',pos:2,pts:18},{name:'Piastri',pos:3,pts:15}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Piastri',pos:11,pts:0},{name:'Norris',pos:0,pts:0}]}],
+  'Red Bull':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Verstappen',pos:6,pts:8},{name:'Hadjar',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Hadjar',pos:8,pts:4},{name:'Verstappen',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Verstappen',pos:8,pts:4},{name:'Hadjar',pos:12,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Verstappen',pos:5,pts:10},{name:'Hadjar',pos:0,pts:0}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Verstappen',pos:3,pts:15},{name:'Hadjar',pos:5,pts:10}]}],
+  'Alpine':       [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Gasly',pos:10,pts:1},{name:'Colapinto',pos:14,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Gasly',pos:6,pts:8},{name:'Colapinto',pos:10,pts:1}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Gasly',pos:7,pts:6},{name:'Colapinto',pos:16,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Colapinto',pos:7,pts:6},{name:'Gasly',pos:0,pts:0}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Colapinto',pos:6,pts:8},{name:'Gasly',pos:8,pts:4}]}],
+  'Haas F1 Team': [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Bearman',pos:7,pts:6},{name:'Ocon',pos:11,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Bearman',pos:5,pts:10},{name:'Ocon',pos:14,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Ocon',pos:10,pts:1},{name:'Bearman',pos:0,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Bearman',pos:11,pts:0},{name:'Ocon',pos:13,pts:0}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Bearman',pos:10,pts:1},{name:'Ocon',pos:14,pts:0}]}],
+  'Racing Bulls': [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Lindblad',pos:8,pts:4},{name:'Lawson',pos:13,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Lawson',pos:7,pts:6},{name:'Lindblad',pos:12,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Lawson',pos:9,pts:2},{name:'Lindblad',pos:14,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Lindblad',pos:14,pts:0},{name:'Lawson',pos:20,pts:0}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Lawson',pos:7,pts:6},{name:'Lindblad',pos:0,pts:0}]}],
+  'Williams':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Albon',pos:12,pts:0},{name:'Sainz',pos:15,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Sainz',pos:9,pts:2},{name:'Albon',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Sainz',pos:15,pts:0},{name:'Albon',pos:20,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Sainz',pos:9,pts:2},{name:'Albon',pos:10,pts:1}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Sainz',pos:9,pts:2},{name:'Albon',pos:0,pts:0}]}],
+  'Audi':         [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Bortoleto',pos:9,pts:2},{name:'Hulkenberg',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Hulkenberg',pos:11,pts:0},{name:'Bortoleto',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Hulkenberg',pos:11,pts:0},{name:'Bortoleto',pos:13,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Bortoleto',pos:12,pts:0},{name:'Hulkenberg',pos:19,pts:0}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Hulkenberg',pos:12,pts:0},{name:'Bortoleto',pos:13,pts:0}]}],
+  'Cadillac':     [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Perez',pos:16,pts:0},{name:'Bottas',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Bottas',pos:13,pts:0},{name:'Perez',pos:15,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Perez',pos:17,pts:0},{name:'Bottas',pos:19,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Perez',pos:16,pts:0},{name:'Bottas',pos:18,pts:0}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Bottas',pos:16,pts:0},{name:'Perez',pos:0,pts:0}]}],
+  'Aston Martin': [{round:1,race:'Australia',flag:'🇦🇺',drivers:[{name:'Stroll',pos:17,pts:0},{name:'Alonso',pos:0,pts:0}]},{round:2,race:'China',flag:'🇨🇳',drivers:[{name:'Alonso',pos:0,pts:0},{name:'Stroll',pos:0,pts:0}]},{round:3,race:'Japan',flag:'🇯🇵',drivers:[{name:'Alonso',pos:18,pts:0},{name:'Stroll',pos:0,pts:0}]},{round:4,race:'Miami',flag:'🇺🇸',drivers:[{name:'Alonso',pos:15,pts:0},{name:'Stroll',pos:17,pts:0}]},{round:5,race:'Canada',flag:'🇨🇦',drivers:[{name:'Stroll',pos:15,pts:0},{name:'Alonso',pos:0,pts:0}]}],
 };
 
 let selectedConstructorChamp=null;
@@ -607,7 +637,7 @@ async function renderConstructors(){
   try{
     const standings=await fetchConstructorStandings();
     if(!standings.length){content.innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">No Data Yet</div></div>`;return;}
-    const hdr=`<div class="section-title"><span>Constructors Championship · 2026 · After R4 Miami</span><span>Tap for breakdown</span></div>`;
+    const hdr=`<div class="section-title"><span>Constructors Championship · 2026 · After R5 Canada</span><span>Tap for breakdown</span></div>`;
     const rows=standings.map((c,i)=>{
       const name=normalizeTeam(c.Constructor?.name||'—');
       const nat=c.Constructor?.nationality||'';
