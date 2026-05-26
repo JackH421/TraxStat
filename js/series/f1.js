@@ -222,8 +222,9 @@ async function renderRaceSelector(){
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('f1','races')+renderBackToSeriesHome('f1');
   content.innerHTML=top+`<div class="section-title"><span>2026 Season Results</span><span class="spin-inline">⟳</span></div>`;
-  // Use hardcoded races since they're fully verified — Jolpica may be incomplete
-  const allRaces=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+  // Use hardcoded races since they're fully verified — Jolpica may be incomplete.
+  // Sorted newest-round-first so the most recent race is at the top.
+  const allRaces=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(b.round)-parseInt(a.round));
   if(!allRaces.length){content.innerHTML+=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Results Yet</div><div class="state-sub">Race results will appear here after each round.</div></div>`;return;}
   const rows=allRaces.map(r=>{
     const winner=r.Results?.[0];
@@ -1702,7 +1703,9 @@ async function renderF1Standings(){
 // calendar.
 function renderF1Schedule(){
   const content=document.getElementById('main-content');
-  const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(a.round)-parseInt(b.round));
+  // Completed races listed newest-round-first (descending); upcoming list
+  // below is still soonest-first since that's chronologically natural.
+  const completed=Object.values(HARDCODED_RACES).sort((a,b)=>parseInt(b.round)-parseInt(a.round));
   const completedRows=completed.map(r=>{
     const w=r.Results?.[0];
     return`<div class="race-item" onclick="goToSubTab('f1','races');setTimeout(()=>selectRace('${r.round}'),50);">

@@ -248,7 +248,8 @@ function renderNascarRaces(){
   }
   const banner=renderNascarNextBanner();
   // Race list — completed races only (where NASCAR_CUP_RESULTS has an entry)
-  const completed=NASCAR_CUP_SCHEDULE.filter(s=>NASCAR_CUP_RESULTS[s.round]);
+  // Newest-round-first so the most recent race is at the top of the list.
+  const completed=NASCAR_CUP_SCHEDULE.filter(s=>NASCAR_CUP_RESULTS[s.round]).slice().sort((a,b)=>b.round-a.round);
   const rows=completed.map(s=>{
     const res=NASCAR_CUP_RESULTS[s.round];
     const w=nascarDrv(res.winner);
@@ -560,7 +561,8 @@ function renderNascarHighlights(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityHighlights();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','highlights')+renderBackToSeriesHome('nascar');
-  const completed=NASCAR_CUP_SCHEDULE.filter(s=>NASCAR_CUP_RESULTS[s.round]);
+  // Newest-round-first so the most recent race is at the top of the list.
+  const completed=NASCAR_CUP_SCHEDULE.filter(s=>NASCAR_CUP_RESULTS[s.round]).slice().sort((a,b)=>b.round-a.round);
   const cards=completed.map(s=>{
     const res=NASCAR_CUP_RESULTS[s.round];
     const winInfo=nascarDrv(res.winner);
