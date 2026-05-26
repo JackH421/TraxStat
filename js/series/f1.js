@@ -1459,6 +1459,7 @@ const HARDCODED_RACE_HIGHLIGHTS={
   2: 't8HpVlineX4',  // Chinese GP
   3: 'oAtYfF0_4-I',  // Japanese GP
   4: '5gYys4GL7S0',  // Miami GP
+  5: 'QrRh2vOJQbw',  // Canadian GP
 };
 
 // Per-round whole-session qualifying highlights — distinct from the
@@ -1469,6 +1470,7 @@ const HARDCODED_QUALI_HIGHLIGHTS={
   2: '75-_kMm0mb8',  // Chinese GP
   3: 'oZH_7pYJPTE',  // Japanese GP
   4: '83GJM1S0FnE',  // Miami GP
+  5: 'rjLDgDc0td4',  // Canadian GP
 };
 
 // Per-round sprint highlights for rounds that ran a sprint. Same shape and
@@ -1476,6 +1478,7 @@ const HARDCODED_QUALI_HIGHLIGHTS={
 const HARDCODED_SPRINT_HIGHLIGHTS={
   2: 'ynRZQ9EBfRI',  // Chinese GP sprint
   4: '0XlphgCNbwQ',  // Miami GP sprint
+  5: 'l3aB-W19bnc',  // Canadian GP sprint
 };
 
 let selectedQualiDriver=null;
