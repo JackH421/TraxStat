@@ -3,3 +3,5 @@
 
 # Node — scripts/ dependencies only; no runtime code uses these.
 node_modules/
+.vercel
+.env*
