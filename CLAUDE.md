@@ -79,10 +79,10 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **Push at natural stopping points**, not after every commit. A working feature, a verified fix, a completed section.
 - **Never amend or force-push** commits already on GitHub. Pushed history is shared history.
 
-## Current season state (as of 2026-05-26)
+## Current season state (as of 2026-05-29)
 
 - **F1**: Round 5 (Canadian GP) complete. Standings: Antonelli 131, Russell 88, Leclerc 75. Sprint weekend — Russell won Sprint, Antonelli won the GP. Next: Monaco GP, 2026-06-07.
-- **NASCAR Cup**: Round 12 (Watkins Glen) complete. Standings: Reddick 567, +129 over P2 (Hamlin 438). Next: Coca-Cola 600 at Charlotte, 2026-05-24.
+- **NASCAR Cup**: Round 13 (Coca-Cola 600) complete — Suárez won the rain-shortened race (373/400 laps). Standings: Reddick 620, +122 over P2 (Hamlin 498). Kyle Busch removed from the standings (official post-R13 list runs 35 deep and omits him; honored in coverage as "the late Kyle Busch") — his `NASCAR_CUP_DRIVERS` roster entry is retained because R1–R12 results still reference him. Next: Cracker Barrel 400 at Nashville, 2026-05-31.
 
 When you update the hardcoded constants past these rounds, also update this section and the "After Rxx" labels in the renderers.
 
