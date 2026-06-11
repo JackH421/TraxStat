@@ -195,3 +195,4 @@ Entirely hardcoded in `js/series/nascar.js` — no NASCAR API call anywhere. Fiv
 - NASCAR Xfinity and Trucks tabs are inert placeholders.
 - F1 lap-times view depends entirely on Jolpica; if Jolpica has no laps for a round the panel says "Lap times not yet available".
 - The hardcoded "after Rxx" labels (e.g. "After R4 Miami", "After R12 Watkins Glen") are baked into renderer strings and must be updated manually alongside the standings.
+
