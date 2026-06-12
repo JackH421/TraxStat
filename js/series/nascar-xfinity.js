@@ -195,6 +195,29 @@ const NASCAR_XFINITY_MFRS = [
   {pos:3, mfr:'Ford',      wins:0,  drivers:[]},
 ];
 
+// Per-round official highlights from the NASCAR YouTube channel (oEmbed
+// author_name exactly "NASCAR"; FOX/NBC/CW uploads rejected). IDs
+// oEmbed-verified + embed-page checked 2026-06-12; thumbs hand-picked from
+// the auto-captured frames (R15 had no clean on-track frame — cover used).
+const NASCAR_XFINITY_HIGHLIGHTS={
+  1: {id:'ST0bWGV2Lhw',thumb:'https://i.ytimg.com/vi/ST0bWGV2Lhw/hq3.jpg'},
+  2: {id:'28MAx9xpjnc',thumb:'https://i.ytimg.com/vi/28MAx9xpjnc/hq1.jpg'},
+  3: {id:'CrmcvrbsR1g',thumb:'https://i.ytimg.com/vi/CrmcvrbsR1g/hq3.jpg'},
+  4: {id:'RnaLPRUsj5k',thumb:'https://i.ytimg.com/vi/RnaLPRUsj5k/hq1.jpg'},
+  5: {id:'RehadaLD2_A',thumb:'https://i.ytimg.com/vi/RehadaLD2_A/hq3.jpg'},
+  6: {id:'2dP8GODLH0E',thumb:'https://i.ytimg.com/vi/2dP8GODLH0E/hq1.jpg'},
+  7: {id:'g6YmYN07Ja0',thumb:'https://i.ytimg.com/vi/g6YmYN07Ja0/hq2.jpg'},
+  8: {id:'HTHnO9HgLFs',thumb:'https://i.ytimg.com/vi/HTHnO9HgLFs/hq1.jpg'},
+  9: {id:'cY4WCQDE2VU',thumb:'https://i.ytimg.com/vi/cY4WCQDE2VU/hq1.jpg'},
+  10:{id:'oQj2ZAO1c2E',thumb:'https://i.ytimg.com/vi/oQj2ZAO1c2E/hq1.jpg'},
+  11:{id:'sgVLzrpITk4',thumb:'https://i.ytimg.com/vi/sgVLzrpITk4/hq1.jpg'},
+  12:{id:'XBAo5qIqgmU',thumb:'https://i.ytimg.com/vi/XBAo5qIqgmU/hq1.jpg'},
+  13:{id:'RCtA1NtgjAs',thumb:'https://i.ytimg.com/vi/RCtA1NtgjAs/hq2.jpg'},
+  14:{id:'ABQ9-5vAH6k',thumb:'https://i.ytimg.com/vi/ABQ9-5vAH6k/hq2.jpg'},
+  15:{id:'d-RtODCP7v0',thumb:'https://i.ytimg.com/vi/d-RtODCP7v0/maxresdefault.jpg'},
+  16:{id:'Ll8C_46jHok',thumb:'https://i.ytimg.com/vi/Ll8C_46jHok/hq1.jpg'},
+};
+
 // ── XFINITY HELPERS ───────────────────────────────────────────────────────────
 // Driver lookup gracefully degrades to placeholders when the roster is empty.
 function nascarXfinityDrv(lastName){
@@ -454,11 +477,15 @@ function renderNascarXfinityHighlights(){
     const winInfo=nascarXfinityDrv(res.winner);
     const slug=nascarTrackSlug(s.track);
     const id=`highlights-nascar-xfinity-r${s.round}-${slug}`;
+    const vid=NASCAR_XFINITY_HIGHLIGHTS[s.round];
+    const body=vid
+      ? txHighlightSlotHTML('Race Highlights',vid.id,vid.thumb)
+      : `<div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>`;
     return`<div class="tx-highlights-card" id="${id}">
       <div class="tx-highlights-meta">Round ${s.round} · ${s.country} · ${fmtDate(s.date)}</div>
       <div class="tx-highlights-title">${s.race}</div>
       <div class="tx-highlights-winner">Winner: ${res.winner} (${winInfo.mfr})</div>
-      <div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>
+      ${body}
     </div>`;
   }).join('');
   content.innerHTML=top+

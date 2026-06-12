@@ -168,10 +168,23 @@ const INDYCAR_ENGINE_WINS=[
   {pos:2, engine:'Chevrolet', wins:3, drivers:['Newgarden (2)','Lundgaard']},
 ];
 
-// Per-round official highlight video IDs (INDYCAR YouTube channel) + chosen
-// action thumbnails. Populated in Phase 3 after per-video channel verification;
-// shape {round: {id:'youtubeVideoId', thumb:'https://i.ytimg.com/...'}}.
-const INDYCAR_HIGHLIGHTS={};
+// Per-round official highlight videos from the INDYCAR YouTube channel
+// (@indycar — oEmbed author_name "NTT INDYCAR SERIES", the channel's display
+// name). Each ID oEmbed-verified + embed-page checked 2026-06-12; thumbs are
+// hand-picked action frames (viewed hq1/hq2/hq3/maxres candidates per video).
+// R6 is the channel's "Extended Race Highlights" (only race-highlight upload
+// for the Sonsio GP).
+const INDYCAR_HIGHLIGHTS={
+  1:{id:'UaqoynqLkVE',thumb:'https://i.ytimg.com/vi/UaqoynqLkVE/hq1.jpg'},
+  2:{id:'bATfFSmV_Lk',thumb:'https://i.ytimg.com/vi/bATfFSmV_Lk/hq1.jpg'},
+  3:{id:'Drsyw_2ujlM',thumb:'https://i.ytimg.com/vi/Drsyw_2ujlM/hq2.jpg'},
+  4:{id:'jk8mOPQXG1E',thumb:'https://i.ytimg.com/vi/jk8mOPQXG1E/hq1.jpg'},
+  5:{id:'7dv20pHnTjs',thumb:'https://i.ytimg.com/vi/7dv20pHnTjs/hq1.jpg'},
+  6:{id:'Zo8HbqY4Xfw',thumb:'https://i.ytimg.com/vi/Zo8HbqY4Xfw/hq1.jpg'},
+  7:{id:'6RzRMLUB_DI',thumb:'https://i.ytimg.com/vi/6RzRMLUB_DI/hq1.jpg'},
+  8:{id:'TsLs7O3s1II',thumb:'https://i.ytimg.com/vi/TsLs7O3s1II/hq1.jpg'},
+  9:{id:'LlZZMfdrJVM',thumb:'https://i.ytimg.com/vi/LlZZMfdrJVM/hq3.jpg'},
+};
 
 // ── INDYCAR HELPERS ───────────────────────────────────────────────────────────
 function indyDrv(lastName){return INDYCAR_DRIVERS[lastName]||{first:'',team:'—',engine:'—',num:'—'};}

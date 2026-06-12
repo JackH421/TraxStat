@@ -123,10 +123,14 @@ const WEC_LMGT3_STANDINGS=[
   {pos:10,car:'87', team:'Akkodis ASP Team',      mfr:'Lexus',        points:8,  gap:-22},
 ];
 
-// Per-round official highlight videos (FIA WEC YouTube channel) + chosen
-// action thumbnails — populated in Phase 3 after channel verification.
-// Shape: {round: {id:'youtubeVideoId', thumb:'https://i.ytimg.com/...'}}
-const WEC_HIGHLIGHTS={};
+// Per-round official race highlights from the FIA WEC YouTube channel
+// (oEmbed author_name "FIA World Endurance Championship"). IDs oEmbed-verified
+// + embed-page checked 2026-06-12; thumbs hand-picked from auto frames
+// (R1's auto frames were all people shots — cover image used, flagged).
+const WEC_HIGHLIGHTS={
+  1:{id:'Clz1zmPODSE',thumb:'https://i.ytimg.com/vi/Clz1zmPODSE/maxresdefault.jpg'},
+  2:{id:'6-R2YdZHg7Q',thumb:'https://i.ytimg.com/vi/6-R2YdZHg7Q/hq1.jpg'},
+};
 
 // ── WEC HELPERS ───────────────────────────────────────────────────────────────
 function wecTrackSlug(circuit){return (circuit||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'race';}

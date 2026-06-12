@@ -348,8 +348,23 @@ function renderNascarTrucksStandings(){
 }
 
 // ── TRUCKS HIGHLIGHTS ─────────────────────────────────────────────────────────
-// {round: {id, thumb}} — populated in Phase 3 after channel verification.
-const NASCAR_TRUCKS_HIGHLIGHTS={};
+// Per-round official highlights from the NASCAR YouTube channel (oEmbed
+// author_name exactly "NASCAR"; FOX/NBC uploads rejected). IDs oEmbed-verified
+// + embed-page checked 2026-06-12; thumbs hand-picked from auto frames.
+const NASCAR_TRUCKS_HIGHLIGHTS={
+  1: {id:'qpTXXT8akvg',thumb:'https://i.ytimg.com/vi/qpTXXT8akvg/hq2.jpg'},
+  2: {id:'l3w3hTyiNuo',thumb:'https://i.ytimg.com/vi/l3w3hTyiNuo/hq3.jpg'},
+  3: {id:'WodyC19f5JY',thumb:'https://i.ytimg.com/vi/WodyC19f5JY/hq1.jpg'},
+  4: {id:'8wP6K8QNSE4',thumb:'https://i.ytimg.com/vi/8wP6K8QNSE4/hq2.jpg'},
+  5: {id:'z7yG-bJOPSw',thumb:'https://i.ytimg.com/vi/z7yG-bJOPSw/hq1.jpg'},
+  6: {id:'KDwhOlENTJc',thumb:'https://i.ytimg.com/vi/KDwhOlENTJc/hq3.jpg'},
+  7: {id:'3QeTlMgbRio',thumb:'https://i.ytimg.com/vi/3QeTlMgbRio/hq3.jpg'},
+  8: {id:'9x7RwucYP7s',thumb:'https://i.ytimg.com/vi/9x7RwucYP7s/hq3.jpg'},
+  9: {id:'dCs8YOnf0eg',thumb:'https://i.ytimg.com/vi/dCs8YOnf0eg/hq2.jpg'},
+  10:{id:'aT7el0tCo6Q',thumb:'https://i.ytimg.com/vi/aT7el0tCo6Q/hq1.jpg'},
+  11:{id:'VNfqfgublJY',thumb:'https://i.ytimg.com/vi/VNfqfgublJY/hq1.jpg'},
+  12:{id:'KUNN8q2kkAA',thumb:'https://i.ytimg.com/vi/KUNN8q2kkAA/hq1.jpg'},
+};
 function renderNascarTrucksHighlights(){
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','highlights')+renderBackToSeriesHome('nascar');

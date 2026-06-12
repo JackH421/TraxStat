@@ -178,10 +178,21 @@ const WRC_MFR_STANDINGS=[
   {pos:4, mfr:'M-Sport Ford WRT',         points:85,  gap:-285},
 ];
 
-// Per-round official highlight videos (FIA World Rally Championship YouTube
-// channel) + chosen action thumbnails — populated in Phase 3.
-// Shape: {round: {id:'youtubeVideoId', thumb:'https://i.ytimg.com/...'}}
-const WRC_HIGHLIGHTS={};
+// Per-rally official "Final Day Highlights" from the WRC YouTube channel
+// (oEmbed author_name "FIA World Rally Championship" — the channel's 2026
+// per-event recap format). IDs oEmbed-verified + embed-page checked
+// 2026-06-12. Thumbs: WRC's auto-captured frames are mostly interview shots,
+// so most rounds use the cover image (carries the action shot + title text —
+// flagged in the session report); R3 uses the trophy-celebration frame.
+const WRC_HIGHLIGHTS={
+  1:{id:'p8KcaiB6hY0',thumb:'https://i.ytimg.com/vi/p8KcaiB6hY0/maxresdefault.jpg'},
+  2:{id:'T9drodnVUpQ',thumb:'https://i.ytimg.com/vi/T9drodnVUpQ/maxresdefault.jpg'},
+  3:{id:'vqTmt_DkGYQ',thumb:'https://i.ytimg.com/vi/vqTmt_DkGYQ/hq3.jpg'},
+  4:{id:'SA_odqlY1XE',thumb:'https://i.ytimg.com/vi/SA_odqlY1XE/maxresdefault.jpg'},
+  5:{id:'9eJNKNthZl8',thumb:'https://i.ytimg.com/vi/9eJNKNthZl8/maxresdefault.jpg'},
+  6:{id:'lxTnctlaJWU',thumb:'https://i.ytimg.com/vi/lxTnctlaJWU/maxresdefault.jpg'},
+  7:{id:'d268Bi2HJe4',thumb:'https://i.ytimg.com/vi/d268Bi2HJe4/maxresdefault.jpg'},
+};
 
 // ── WRC HELPERS ───────────────────────────────────────────────────────────────
 function wrcDrv(lastName){return WRC_DRIVERS[lastName]||{first:'',codriver:'—',team:'—',car:'—',nat:''};}

@@ -564,9 +564,32 @@ function renderNascarStandings(){
   content.innerHTML=top+driversHTML+mfrsHTML;
 }
 
-// Session 7: Season Highlights. One placeholder card per completed Cup race.
-// IDs follow `highlights-nascar-r{round}-{trackSlug}` for the deep-link from
-// each race-results row. No invented URLs — TODO placeholder only.
+// Per-round official extended highlights from the NASCAR YouTube channel
+// (oEmbed author_name exactly "NASCAR"; FOX/NBC uploads rejected). IDs
+// oEmbed-verified + embed-page checked 2026-06-12; thumbs hand-picked from
+// the auto-captured frames (R9/R13 had no clean on-track frame — flagged).
+const NASCAR_CUP_HIGHLIGHTS={
+  1: {id:'fy8eGJ7qzMc',thumb:'https://i.ytimg.com/vi/fy8eGJ7qzMc/hq2.jpg'},
+  2: {id:'h6NRbydlp9w',thumb:'https://i.ytimg.com/vi/h6NRbydlp9w/hq1.jpg'},
+  3: {id:'otwwnGChIIY',thumb:'https://i.ytimg.com/vi/otwwnGChIIY/hq2.jpg'},
+  4: {id:'6AEmtZR4rsQ',thumb:'https://i.ytimg.com/vi/6AEmtZR4rsQ/hq1.jpg'},
+  5: {id:'QiPbZV4zRpo',thumb:'https://i.ytimg.com/vi/QiPbZV4zRpo/hq1.jpg'},
+  6: {id:'_oz2J1uO3Is',thumb:'https://i.ytimg.com/vi/_oz2J1uO3Is/hq2.jpg'},
+  7: {id:'jpS7hpTwmdc',thumb:'https://i.ytimg.com/vi/jpS7hpTwmdc/hq2.jpg'},
+  8: {id:'MQHry_BnlzY',thumb:'https://i.ytimg.com/vi/MQHry_BnlzY/hq1.jpg'},
+  9: {id:'M_N_08SXrzg',thumb:'https://i.ytimg.com/vi/M_N_08SXrzg/maxresdefault.jpg'},
+  10:{id:'N3bQ47dG0wU',thumb:'https://i.ytimg.com/vi/N3bQ47dG0wU/hq2.jpg'},
+  11:{id:'BtL_H0RvQfA',thumb:'https://i.ytimg.com/vi/BtL_H0RvQfA/hq1.jpg'},
+  12:{id:'laxcGBfCXVc',thumb:'https://i.ytimg.com/vi/laxcGBfCXVc/hq3.jpg'},
+  13:{id:'a_6CpnBk-uQ',thumb:'https://i.ytimg.com/vi/a_6CpnBk-uQ/hq3.jpg'},
+  14:{id:'eXY2SBiRdfU',thumb:'https://i.ytimg.com/vi/eXY2SBiRdfU/hq2.jpg'},
+  15:{id:'W27WZJir37g',thumb:'https://i.ytimg.com/vi/W27WZJir37g/hq3.jpg'},
+};
+
+// Season Highlights — one card per completed Cup race with the verified
+// official video (lite-YouTube thumb via txHighlightSlotHTML); rounds without
+// a verified video keep the TODO placeholder. IDs follow
+// `highlights-nascar-r{round}-{trackSlug}` for race-row deep links.
 function renderNascarHighlights(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityHighlights();
   if(currentNascarSeries==='trucks')return renderNascarTrucksHighlights();
@@ -579,11 +602,15 @@ function renderNascarHighlights(){
     const winInfo=nascarDrv(res.winner);
     const slug=nascarTrackSlug(s.track);
     const id=`highlights-nascar-r${s.round}-${slug}`;
+    const vid=NASCAR_CUP_HIGHLIGHTS[s.round];
+    const body=vid
+      ? txHighlightSlotHTML('Race Highlights',vid.id,vid.thumb)
+      : `<div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>`;
     return`<div class="tx-highlights-card" id="${id}">
       <div class="tx-highlights-meta">Round ${s.round} · ${s.country} · ${fmtDate(s.date)}</div>
       <div class="tx-highlights-title">${s.race}</div>
       <div class="tx-highlights-winner">Winner: ${res.winner} (${winInfo.mfr})</div>
-      <div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL</div>
+      ${body}
     </div>`;
   }).join('');
   content.innerHTML=top+

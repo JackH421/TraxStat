@@ -162,10 +162,21 @@ const MOTOGP_CONSTRUCTORS=[
   {pos:5, constructor:'Yamaha',  points:49,  gap:-189},
 ];
 
-// Per-round official highlight videos (MotoGP YouTube channel) + chosen
-// action thumbnails — populated in Phase 3 after channel verification.
-// Shape: {round: {id:'youtubeVideoId', thumb:'https://i.ytimg.com/...'}}
-const MOTOGP_HIGHLIGHTS={};
+// Per-round official Sunday-GP recaps from the MotoGP YouTube channel
+// (oEmbed author_name exactly "MotoGP"). The channel's 2026 recap series is
+// titled "Best MotoGP Moments | 2026 <X> GP" (publish dates match each race
+// Sunday — the old "Race Highlights" format was retired after 2025). Each ID
+// oEmbed-verified + embed-page checked 2026-06-12; thumbs hand-picked.
+const MOTOGP_HIGHLIGHTS={
+  1:{id:'M4BpQ_Sg_Jo',thumb:'https://i.ytimg.com/vi/M4BpQ_Sg_Jo/hq1.jpg'},
+  2:{id:'ci-cuioZ-5w',thumb:'https://i.ytimg.com/vi/ci-cuioZ-5w/hq1.jpg'},
+  3:{id:'txCsdIIAL9E',thumb:'https://i.ytimg.com/vi/txCsdIIAL9E/hq1.jpg'},
+  4:{id:'dUaqIP-8N1Q',thumb:'https://i.ytimg.com/vi/dUaqIP-8N1Q/hq1.jpg'},
+  5:{id:'4_Zozg9Fk7k',thumb:'https://i.ytimg.com/vi/4_Zozg9Fk7k/hq1.jpg'},
+  6:{id:'79KMky2fizY',thumb:'https://i.ytimg.com/vi/79KMky2fizY/hq1.jpg'},
+  7:{id:'18YMxJZ2Bf4',thumb:'https://i.ytimg.com/vi/18YMxJZ2Bf4/hq3.jpg'},
+  8:{id:'h7cYVE-nWDE',thumb:'https://i.ytimg.com/vi/h7cYVE-nWDE/hq1.jpg'},
+};
 
 // ── MOTOGP HELPERS ────────────────────────────────────────────────────────────
 function motogpRider(lastName){return MOTOGP_RIDERS[lastName]||{first:'',team:'—',bike:'—',num:'—',nat:''};}
