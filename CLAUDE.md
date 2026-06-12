@@ -104,9 +104,14 @@ When you update the hardcoded constants past these rounds, also update this sect
 - **Domains**: `traxstat.com`, `traxstat.app`, `traxstat.live` (all point to the same deployment).
 - **Build**: none — Vercel serves static assets. Push → live in ~30 s.
 
-## Automation (never merges)
+## Automation and merge policy
 
-**Automation NEVER merges; all automation ends at an open PR; Jack merges from GitHub mobile/desktop; cloud agents have no GitHub access by deliberate choice.**
+Two cases, by session type:
+
+1. **HEADLESS/AUTOMATED sessions** (launchd routine, dispatcher-initiated, scheduled): **NEVER merge** — propose-only; all automation ends at an open PR assigned to Jack. Unchanged from the original rule.
+2. **INTERACTIVE sessions**: may merge a **specific PR** when Jack explicitly names it in the current session (e.g. "merge #14"). Never merge unprompted; never batch-merge — each PR must be named individually.
+
+Cloud agents have no GitHub access by deliberate choice. Jack otherwise merges from GitHub mobile/desktop.
 
 - **F1 post-race Action** (`.github/workflows/f1-post-race-poll.yml`, cron */30): opens an `auto/f1-r*` PR proposing Jolpica data after each race. Proposal only.
 - **Weekly local routine** (launchd on the Mac mini, Mondays 9:00 AM ET, prompt in `scripts/weekly-data-update-prompt.md`, log in `logs/weekly-update.log`): verifies + completes the auto-PR (or builds the update from official sources), runs the verify scripts, and stops at an open PR assigned to Jack. Details in `docs/f1.md`.
