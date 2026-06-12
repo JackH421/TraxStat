@@ -240,6 +240,13 @@ const TX_SERIES_META={
     const max=completed.length?Math.max(...completed):0;
     return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
   }},
+  wrc:{name:'World Rally Championship',label:'WRC',tabs:['standings','races','schedule','highlights'],seasonSub:()=>{
+    const results=typeof WRC_RESULTS!=='undefined'?WRC_RESULTS:{};
+    const total=typeof WRC_SCHEDULE!=='undefined'?WRC_SCHEDULE.length:0;
+    const completed=Object.keys(results).map(Number).filter(n=>!isNaN(n));
+    const max=completed.length?Math.max(...completed):0;
+    return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
+  }},
   motogp:{name:'MotoGP',label:'MOTOGP',tabs:['standings','races','schedule','highlights'],seasonSub:()=>{
     const results=typeof MOTOGP_RESULTS!=='undefined'?MOTOGP_RESULTS:{};
     const total=typeof MOTOGP_SCHEDULE!=='undefined'?MOTOGP_SCHEDULE.length:0;
@@ -360,6 +367,9 @@ function goToSubTab(seriesKey,subTab){
   }else if(seriesKey==='motogp'){
     document.getElementById('motogp-submenu').style.display='flex';
     switchMotoGPTab(subTab);
+  }else if(seriesKey==='wrc'){
+    document.getElementById('wrc-submenu').style.display='flex';
+    switchWRCTab(subTab);
   }
 }
 
@@ -383,7 +393,7 @@ function switchSeries(s){
   document.getElementById('nascar-series-bar').style.display=s==='nascar'?'flex':'none';
   if(s==='home'){inSeriesHome=false;renderHome();return;}
   if(s==='schedule'){inSeriesHome=false;renderSchedule();return;}
-  if(s==='f1'||s==='nascar'||s==='n24'||s==='indycar'||s==='gt3'||s==='motogp'){goToSeriesHome(s);return;}
+  if(s==='f1'||s==='nascar'||s==='n24'||s==='indycar'||s==='gt3'||s==='motogp'||s==='wrc'){goToSeriesHome(s);return;}
   // All other series — placeholder
   inSeriesHome=false;
   document.getElementById('main-content').innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">${s.toUpperCase()} Coming Soon</div><div class="state-sub">F1 and NASCAR are live now. More series launching soon.</div></div>`;
@@ -396,7 +406,7 @@ function refresh(){
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   let p;
-  if(inSeriesHome && (currentSeries==='f1'||currentSeries==='nascar'||currentSeries==='n24'||currentSeries==='indycar'||currentSeries==='gt3'||currentSeries==='motogp')){
+  if(inSeriesHome && (currentSeries==='f1'||currentSeries==='nascar'||currentSeries==='n24'||currentSeries==='indycar'||currentSeries==='gt3'||currentSeries==='motogp'||currentSeries==='wrc')){
     goToSeriesHome(currentSeries);
     p=Promise.resolve();
   }else if(currentSeries==='home'){p=Promise.resolve(renderHome());}
@@ -406,6 +416,7 @@ function refresh(){
   else if(currentSeries==='indycar'){p=Promise.resolve(renderIndyCar());}
   else if(currentSeries==='gt3'){p=Promise.resolve(renderWEC());}
   else if(currentSeries==='motogp'){p=Promise.resolve(renderMotoGP());}
+  else if(currentSeries==='wrc'){p=Promise.resolve(renderWRC());}
   else{p=renderF1();}
   p.finally(()=>btn.classList.remove('spinning'));
 }

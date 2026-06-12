@@ -189,7 +189,7 @@ core.js → series/f1.js → series/nascar.js → series/nascar-xfinity.js → s
 | IndyCar | Fully built (no LIVE — no free live API). Four sub-tabs: STANDINGS / RACE RESULTS / SCHEDULE / HIGHLIGHTS. 2026 through R9 Gateway, verified indycar.com + Wikipedia. `js/series/indycar.js`, `verify-indycar.js`. |
 | GT3/WEC | Fully built (no LIVE). Class-based results — Hypercar + LMGT3 winner per round. 2026 through R2 Spa (Le Mans runs 2026-06-13/14), verified fiawec.com + Wikipedia. `js/series/wec.js` (routing key `'gt3'`), `verify-wec.js`. |
 | MotoGP | Fully built (no LIVE). Sprint + GP per round, MotoGP class only. 2026 through R8 Hungary, verified Wikipedia season/GP pages + motogp.com news cross-checks. `js/series/motogp.js`, `verify-motogp.js`. |
-| WRC | Placeholder — `switchSeries` renders generic "Coming Soon" |
+| WRC | Fully built (no LIVE). Rally model — podium with time gaps, stage-win tallies, Power Stage results. 2026 through R7 Japan, verified Wikipedia season/rally pages (wrc.com 403 — single-source mfr table flagged). `js/series/wrc.js`, `verify-wrc.js`. |
 
 ## F1 data: hardcoded-first pattern (essentials)
 
