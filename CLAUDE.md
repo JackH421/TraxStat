@@ -26,6 +26,7 @@ Acceptable sources, in rough priority:
 - **FIA** classification PDFs (most authoritative for F1)
 - **Wikipedia** race pages (cross-check against primaries when possible)
 - **racingnews.co** for NASCAR points after each race
+- **beyondtheflag.com** for full NASCAR points tables (publishes all ~35 drivers; precedent: R13/R15 standings commits a15e349, 0c3c0b7)
 - **Jolpica/Ergast API** for archived F1 results (current season may lag)
 
 Rules:
@@ -50,6 +51,17 @@ Process:
 - **Push back** if a request would create tech debt, fight the architecture, or violate the cardinal rule. The user is solo; they need a second opinion, not a yes-man.
 - **No drive-by refactors.** Solve the asked problem with the smallest viable change. If something nearby looks bad, mention it — don't silently rewrite.
 - **Never use `Math.random()` or placeholder values in real code paths.** Test fixtures only.
+
+## Session approval policy
+Run fully autonomously — do not stop to ask permission for edits, builds, installs, or running scripts. Work on a branch, never on main. Do NOT commit or push during the session.
+At the end of the session, present ONE final review package:
+1. Plain-English summary of everything changed and why
+2. Full output of node verify.js and node verify-nascar.js if any data was touched
+3. A local preview URL I can open on my phone
+4. Any decisions you made that I should know about, and anything you skipped
+Only after I reply with approval: commit (one logical commit per concept) and push.
+Exception — automated dispatchers: if this session was initiated by an automated dispatcher (e.g. Puter, a scheduled routine) rather than Jack directly, skip the interactive gate — push the branch, open a PR, and stop. Never merge.
+Exception — cardinal rule: if a data point cannot be verified against an approved source, park it with '—', flag it in the final package. Never silently continue with an unverified number.
 
 ## When to refuse
 
@@ -96,7 +108,7 @@ When you update the hardcoded constants past these rounds, also update this sect
 
 ```
 ~/TraxStat/
-├── index.html              shell only (head, body scaffold, 7 <script src> tags + Vercel analytics stub)
+├── index.html              shell only (head, body scaffold, 8 <script src> tags + Vercel analytics stub)
 ├── styles.css              every CSS rule the app uses
 ├── js/
 │   ├── core.js             utilities, app-wide state, Jolpica API helpers, switchSeries,
@@ -112,10 +124,15 @@ When you update the hardcoded constants past these rounds, also update this sect
 │       │                   post-race polling; switchF1Tab
 │       ├── nascar.js       NASCAR_CUP_* constants; every renderNascar*;
 │       │                   switchNascarTab/Series; nascarOffAirContext
+│       ├── nascar-xfinity.js Xfinity (O'Reilly Auto Parts) sibling module —
+│       │                   Phase 1 schedule + renderers; see docs/nascar.md
 │       ├── n24.js          N24_VERSTAPPEN, N24_2026_* constants; every renderN24*;
 │       │                   switchN24Tab; toggleN24Entry/Recap
 │       └── _template.js    copy-and-rename starter for new series; not loaded
 ├── docs/                   reference material — pulled in by topic when needed
+├── .github/workflows/
+│   ├── f1-post-race-poll.yml      cron */30 — opens auto/f1-r* PRs post-race
+│   └── daily-news-aggregator.yml  daily — refreshes the news PR
 ├── scripts/
 │   ├── post-race-poll.mjs  F1 post-race GitHub Action body
 │   └── news-aggregator.mjs daily news aggregator GitHub Action body
@@ -128,10 +145,10 @@ No `package.json` for the app itself; the script `package.json` declares `fast-x
 
 ### Script load order
 
-Seven `<script src>` tags in `index.html`, in this order:
+Eight `<script src>` tags in `index.html`, in this order:
 
 ```
-core.js → series/f1.js → series/nascar.js → series/n24.js → schedule.js → home.js → init.js
+core.js → series/f1.js → series/nascar.js → series/nascar-xfinity.js → series/n24.js → schedule.js → home.js → init.js
 ```
 
 `core.js` declares shared utilities and the router with no cross-file references. Series files declare their own data + renderers. `schedule.js` and `home.js` read constants from the series files. `init.js` runs the imperative boot last. Traditional `<script>` tags (not `type="module"`) so top-level functions sit on `globalThis` and inline `onclick="…"` handlers find them.
@@ -169,7 +186,9 @@ Full details (state machine, polling cadence + endpoints, server-side GitHub Act
 
 ## NASCAR Cup data (essentials)
 
-Entirely hardcoded in `js/series/nascar.js` — no NASCAR API call anywhere. Five constants: `NASCAR_CUP_DRIVERS`, `NASCAR_CUP_SCHEDULE`, `NASCAR_CUP_RESULTS`, `NASCAR_CUP_STANDINGS`, `NASCAR_CUP_MFRS`. Full details in `docs/nascar.md`.
+Entirely hardcoded in `js/series/nascar.js` — no NASCAR API call anywhere. Five constants: `NASCAR_CUP_DRIVERS`, `NASCAR_CUP_SCHEDULE`, `NASCAR_CUP_RESULTS`, `NASCAR_CUP_STANDINGS`, `NASCAR_CUP_MFRS`. Xfinity lives in the sibling module `js/series/nascar-xfinity.js`. Full details in `docs/nascar.md`.
+
+**Why no NASCAR API:** official NASCAR data is only available through paid providers (Sportradar, SportsDataIO); unofficial endpoints are undocumented and unstable. Evaluated and rejected June 2026. Web research against the approved source list is the permanent approach. Do not reintroduce an API without discussing with Jack.
 
 ## Styling conventions
 
@@ -194,5 +213,5 @@ Entirely hardcoded in `js/series/nascar.js` — no NASCAR API call anywhere. Fiv
 - MotoGP / WRC / IndyCar / GT3 tabs are inert placeholders.
 - NASCAR Xfinity and Trucks tabs are inert placeholders.
 - F1 lap-times view depends entirely on Jolpica; if Jolpica has no laps for a round the panel says "Lap times not yet available".
-- The hardcoded "after Rxx" labels (e.g. "After R4 Miami", "After R12 Watkins Glen") are baked into renderer strings and must be updated manually alongside the standings.
+- The hardcoded "after Rxx" labels (e.g. "After R6 Monaco", "After R15 Michigan") are baked into renderer strings and must be updated manually alongside the standings.
 
