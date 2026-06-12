@@ -240,6 +240,13 @@ const TX_SERIES_META={
     const max=completed.length?Math.max(...completed):0;
     return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
   }},
+  gt3:{name:'FIA WEC',label:'GT3/WEC',tabs:['standings','races','schedule','highlights'],seasonSub:()=>{
+    const results=typeof WEC_RESULTS!=='undefined'?WEC_RESULTS:{};
+    const total=typeof WEC_SCHEDULE!=='undefined'?WEC_SCHEDULE.length:0;
+    const completed=Object.keys(results).map(Number).filter(n=>!isNaN(n));
+    const max=completed.length?Math.max(...completed):0;
+    return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
+  }},
 };
 
 // Tab title + sub-tab labels. Keys match the per-series tab keys.
@@ -340,6 +347,9 @@ function goToSubTab(seriesKey,subTab){
   }else if(seriesKey==='indycar'){
     document.getElementById('indycar-submenu').style.display='flex';
     switchIndyCarTab(subTab);
+  }else if(seriesKey==='gt3'){
+    document.getElementById('gt3-submenu').style.display='flex';
+    switchWECTab(subTab);
   }
 }
 
@@ -363,7 +373,7 @@ function switchSeries(s){
   document.getElementById('nascar-series-bar').style.display=s==='nascar'?'flex':'none';
   if(s==='home'){inSeriesHome=false;renderHome();return;}
   if(s==='schedule'){inSeriesHome=false;renderSchedule();return;}
-  if(s==='f1'||s==='nascar'||s==='n24'||s==='indycar'){goToSeriesHome(s);return;}
+  if(s==='f1'||s==='nascar'||s==='n24'||s==='indycar'||s==='gt3'){goToSeriesHome(s);return;}
   // All other series — placeholder
   inSeriesHome=false;
   document.getElementById('main-content').innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">${s.toUpperCase()} Coming Soon</div><div class="state-sub">F1 and NASCAR are live now. More series launching soon.</div></div>`;
@@ -376,7 +386,7 @@ function refresh(){
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   let p;
-  if(inSeriesHome && (currentSeries==='f1'||currentSeries==='nascar'||currentSeries==='n24'||currentSeries==='indycar')){
+  if(inSeriesHome && (currentSeries==='f1'||currentSeries==='nascar'||currentSeries==='n24'||currentSeries==='indycar'||currentSeries==='gt3')){
     goToSeriesHome(currentSeries);
     p=Promise.resolve();
   }else if(currentSeries==='home'){p=Promise.resolve(renderHome());}
@@ -384,6 +394,7 @@ function refresh(){
   else if(currentSeries==='nascar'){p=Promise.resolve(renderNascar());}
   else if(currentSeries==='n24'){p=Promise.resolve(renderN24());}
   else if(currentSeries==='indycar'){p=Promise.resolve(renderIndyCar());}
+  else if(currentSeries==='gt3'){p=Promise.resolve(renderWEC());}
   else{p=renderF1();}
   p.finally(()=>btn.classList.remove('spinning'));
 }
