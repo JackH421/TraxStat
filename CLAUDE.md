@@ -103,6 +103,13 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **F1**: Round 6 (Monaco GP) complete. Standings: Antonelli 156, Hamilton 90, Russell 88. Antonelli's 5th win in 6 rounds in a chaotic race with seven retirements (Verstappen anti-stall at the start; Leclerc/Stroll/Sainz crashes; Norris, Bearman, Bottas out). Russell penalised twice → P12. Alonso added to `DRIVER_RACE_POINTS` (first point of 2026). Next: Spanish GP, 2026-06-14.
 - **NASCAR Cup**: Round 15 (FireKeepers Casino 400, Michigan) complete — Hamlin won R14 Nashville (62nd career) and R15 Michigan (63rd, tying the late Kyle Busch for 9th all-time) back-to-back. Standings: Reddick 669, +51 over P2 (Hamlin 618) after Reddick crashed out at Michigan (P35, first DNF of 2026). Manufacturers: Toyota 9, Chevrolet 5, Ford 1. Kyle Busch remains removed from the standings (official list runs 35 deep, omits him) but is retained in `NASCAR_CUP_DRIVERS` because R1–R12 results still reference him. Next: The Great American Getaway 400 at Pocono, 2026-06-14.
 
+- **NASCAR Xfinity**: Round 16 (Nashville) complete — Allgaier leads 770, +179 over Love. Next: Pocono, 2026-06-13.
+- **NASCAR Trucks**: Round 12 (Michigan) complete — Riggs leads 497, +26 over Honeycutt. Next: San Diego street race, 2026-06-19.
+- **IndyCar**: Round 9 (Gateway) complete — Palou 342, +49 over Kirkwood. Next: Road America, 2026-06-21.
+- **MotoGP**: Round 8 (Hungary) complete — Bezzecchi 180, +20 over Martin. Next: Czechia (Brno), 2026-06-21.
+- **WEC**: Round 2 (Spa) complete — Rast/Frijns 35; BMW leads mfrs 59. Le Mans (R3) runs 2026-06-13/14.
+- **WRC**: Round 7 (Japan) complete — Evans 151, +20 over Katsuta. Next: Acropolis Greece, 2026-06-28.
+
 When you update the hardcoded constants past these rounds, also update this section and the "After Rxx" labels in the renderers.
 
 ## Deploy workflow

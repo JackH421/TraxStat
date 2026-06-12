@@ -1,6 +1,9 @@
 # TraxStat Handoff
 
-> **Update this doc when anything ships.** Last updated: 2026-06-12 (local-routine migration: weekly update moved off cloud onto Mac mini launchd, propose-only).
+> **Update this doc when anything ships.** Last updated: 2026-06-12 (all-series buildout on
+> `feature/all-series-buildout` — IndyCar/MotoGP/WEC/WRC modules, Xfinity Phase 2, full Trucks
+> module, verified highlight videos for every completed event across all series, home+schedule
+> integration. Awaiting Jack's review; not yet on main).
 
 One-page current-state snapshot for anyone (human or agent) picking up the project. The working
 contract is `CLAUDE.md`; topic detail lives in `docs/*.md`. This file answers "where are we?"
@@ -78,12 +81,17 @@ mobile/desktop; cloud agents have no GitHub access by deliberate choice.**
    re-verified. (R12–R15 are fully cited.)
 2. **NASCAR per-round fastest laps** — never populated (`nascar.js` TODO).
 3. **N24 per-car fastest laps** — never populated (`n24.js` TODO).
-4. **`HARDCODED_QUALI_VIDEOS` is empty** — feature shipped, zero entries; R6 Monaco race
-   highlight also missing.
-5. **NASCAR Xfinity Phase 2** — results / standings / manufacturer backfill.
+4. ~~`HARDCODED_QUALI_VIDEOS` is empty~~ — filled 2026-06-12 (pole-lap onboards R1–R6) and
+   R6 Monaco race/quali highlights added, on `feature/all-series-buildout`.
+5. ~~NASCAR Xfinity Phase 2~~ — landed 2026-06-12 on `feature/all-series-buildout`
+   (with a full Trucks module alongside).
 6. **home.js VIDEO HIGHLIGHTS section** — built, intentionally not rendered (Session 5 hook).
 7. **NEXT_RACES R7–R11 round numbering** — never audited against the revised 22-round
    calendar's official numbering.
+8. **New-series tails parked as unverifiable** (2026-06-12): Xfinity standings below P38 and
+   Trucks below P26 (source tails non-monotonic/uncheckable); WRC powerStage top5 for R3/R4/R7
+   (only winners published); WRC2 scorers' entrant/car details; IndyCar lap counts R2/R4/R7;
+   WEC R5/R7 race durations. All '—'/null in the modules, never guessed.
 
 ## Queued work order (agreed 2026-06-12)
 
