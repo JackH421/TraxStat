@@ -29,6 +29,13 @@ Acceptable sources, in rough priority:
 - **beyondtheflag.com** for full NASCAR points tables (publishes all ~35 drivers; precedent: R13/R15 standings commits a15e349, 0c3c0b7)
 - **Jolpica/Ergast API** for archived F1 results (current season may lag)
 
+Per-series approved sources (added 2026-06-12 for the all-series buildout — no other sources):
+- **MotoGP** → motogp.com official results/standings
+- **IndyCar** → indycar.com
+- **WRC** → wrc.com + FIA
+- **WEC/GT3** → fiawec.com
+- All four may cross-check **Wikipedia** race/rally pages against those primaries.
+
 Rules:
 - When asked to add data, **state the source first**. Cite the URL or document. Do not start typing values until the source is named.
 - If a source can't be verified, **refuse and ask the user**. Do not guess from training-data knowledge. A placeholder dash (`'—'`) with a comment is always better than a fabricated number.
@@ -95,6 +102,13 @@ Report the output before declaring the change done. If a check fails, **fix it b
 
 - **F1**: Round 6 (Monaco GP) complete. Standings: Antonelli 156, Hamilton 90, Russell 88. Antonelli's 5th win in 6 rounds in a chaotic race with seven retirements (Verstappen anti-stall at the start; Leclerc/Stroll/Sainz crashes; Norris, Bearman, Bottas out). Russell penalised twice → P12. Alonso added to `DRIVER_RACE_POINTS` (first point of 2026). Next: Spanish GP, 2026-06-14.
 - **NASCAR Cup**: Round 15 (FireKeepers Casino 400, Michigan) complete — Hamlin won R14 Nashville (62nd career) and R15 Michigan (63rd, tying the late Kyle Busch for 9th all-time) back-to-back. Standings: Reddick 669, +51 over P2 (Hamlin 618) after Reddick crashed out at Michigan (P35, first DNF of 2026). Manufacturers: Toyota 9, Chevrolet 5, Ford 1. Kyle Busch remains removed from the standings (official list runs 35 deep, omits him) but is retained in `NASCAR_CUP_DRIVERS` because R1–R12 results still reference him. Next: The Great American Getaway 400 at Pocono, 2026-06-14.
+
+- **NASCAR Xfinity**: Round 16 (Nashville) complete — Allgaier leads 770, +179 over Love. Next: Pocono, 2026-06-13.
+- **NASCAR Trucks**: Round 12 (Michigan) complete — Riggs leads 497, +26 over Honeycutt. Next: San Diego street race, 2026-06-19.
+- **IndyCar**: Round 9 (Gateway) complete — Palou 342, +49 over Kirkwood. Next: Road America, 2026-06-21.
+- **MotoGP**: Round 8 (Hungary) complete — Bezzecchi 180, +20 over Martin. Next: Czechia (Brno), 2026-06-21.
+- **WEC**: Round 2 (Spa) complete — Rast/Frijns 35; BMW leads mfrs 59. Le Mans (R3) runs 2026-06-13/14.
+- **WRC**: Round 7 (Japan) complete — Evans 151, +20 over Katsuta. Next: Acropolis Greece, 2026-06-28.
 
 When you update the hardcoded constants past these rounds, also update this section and the "After Rxx" labels in the renderers.
 
@@ -182,9 +196,12 @@ core.js → series/f1.js → series/nascar.js → series/nascar-xfinity.js → s
 | Home | Default landing — news feed. Featured carousel + championship snapshot (F1 + NASCAR) + 8-card article feed. See `js/home.js`. |
 | Race Schedule | Hero card for next race across all series + next 3 closest. Routing key `'schedule'`. |
 | F1 | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive — see `docs/f1.md`. |
-| NASCAR | Cup fully built. Xfinity schedule populated (33 rounds, verified Wikipedia); race results / standings / mfrs are Phase-2 backfill. Trucks placeholder. See `docs/nascar.md`. |
+| NASCAR | Cup fully built. Xfinity fully built (R1–R16 results, standings, mfr wins — Phase 2 landed 2026-06-12). Trucks fully built (`js/series/nascar-trucks.js`, R1–R12, 4 manufacturers incl. Ram). See `docs/nascar.md`. |
 | N24 | Permanent post-race-only module for the 2026 Nürburgring 24. See `docs/n24.md`. |
-| MotoGP, WRC, IndyCar, GT3/WEC | Placeholder — `switchSeries` renders generic "Coming Soon" |
+| IndyCar | Fully built (no LIVE — no free live API). Four sub-tabs: STANDINGS / RACE RESULTS / SCHEDULE / HIGHLIGHTS. 2026 through R9 Gateway, verified indycar.com + Wikipedia. `js/series/indycar.js`, `verify-indycar.js`. |
+| GT3/WEC | Fully built (no LIVE). Class-based results — Hypercar + LMGT3 winner per round. 2026 through R2 Spa (Le Mans runs 2026-06-13/14), verified fiawec.com + Wikipedia. `js/series/wec.js` (routing key `'gt3'`), `verify-wec.js`. |
+| MotoGP | Fully built (no LIVE). Sprint + GP per round, MotoGP class only. 2026 through R8 Hungary, verified Wikipedia season/GP pages + motogp.com news cross-checks. `js/series/motogp.js`, `verify-motogp.js`. |
+| WRC | Fully built (no LIVE). Rally model — podium with time gaps, stage-win tallies, Power Stage results. 2026 through R7 Japan, verified Wikipedia season/rally pages (wrc.com 403 — single-source mfr table flagged). `js/series/wrc.js`, `verify-wrc.js`. |
 
 ## F1 data: hardcoded-first pattern (essentials)
 

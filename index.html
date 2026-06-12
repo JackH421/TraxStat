@@ -52,6 +52,30 @@
   <div class="f1-sub-tab" onclick="switchN24Tab('schedule')" id="n24tab-schedule">SCHEDULE</div>
   <div class="f1-sub-tab" onclick="switchN24Tab('highlights')" id="n24tab-highlights">HIGHLIGHTS</div>
 </div>
+<div class="f1-submenu" id="indycar-submenu" style="display:none;">
+  <div class="f1-sub-tab" onclick="switchIndyCarTab('standings')" id="indycartab-standings">STANDINGS</div>
+  <div class="f1-sub-tab" onclick="switchIndyCarTab('races')" id="indycartab-races">RACE RESULTS</div>
+  <div class="f1-sub-tab" onclick="switchIndyCarTab('schedule')" id="indycartab-schedule">SCHEDULE</div>
+  <div class="f1-sub-tab" onclick="switchIndyCarTab('highlights')" id="indycartab-highlights">HIGHLIGHTS</div>
+</div>
+<div class="f1-submenu" id="wrc-submenu" style="display:none;">
+  <div class="f1-sub-tab" onclick="switchWRCTab('standings')" id="wrctab-standings">STANDINGS</div>
+  <div class="f1-sub-tab" onclick="switchWRCTab('races')" id="wrctab-races">RACE RESULTS</div>
+  <div class="f1-sub-tab" onclick="switchWRCTab('schedule')" id="wrctab-schedule">SCHEDULE</div>
+  <div class="f1-sub-tab" onclick="switchWRCTab('highlights')" id="wrctab-highlights">HIGHLIGHTS</div>
+</div>
+<div class="f1-submenu" id="motogp-submenu" style="display:none;">
+  <div class="f1-sub-tab" onclick="switchMotoGPTab('standings')" id="motogptab-standings">STANDINGS</div>
+  <div class="f1-sub-tab" onclick="switchMotoGPTab('races')" id="motogptab-races">RACE RESULTS</div>
+  <div class="f1-sub-tab" onclick="switchMotoGPTab('schedule')" id="motogptab-schedule">SCHEDULE</div>
+  <div class="f1-sub-tab" onclick="switchMotoGPTab('highlights')" id="motogptab-highlights">HIGHLIGHTS</div>
+</div>
+<div class="f1-submenu" id="gt3-submenu" style="display:none;">
+  <div class="f1-sub-tab" onclick="switchWECTab('standings')" id="gt3tab-standings">STANDINGS</div>
+  <div class="f1-sub-tab" onclick="switchWECTab('races')" id="gt3tab-races">RACE RESULTS</div>
+  <div class="f1-sub-tab" onclick="switchWECTab('schedule')" id="gt3tab-schedule">SCHEDULE</div>
+  <div class="f1-sub-tab" onclick="switchWECTab('highlights')" id="gt3tab-highlights">HIGHLIGHTS</div>
+</div>
 <div class="nascar-series-bar" id="nascar-series-bar" style="display:none;">
   <div class="nascar-series-tab active" onclick="switchNascarSeries('cup')" id="nseries-cup">CUP</div>
   <div class="nascar-series-tab" onclick="switchNascarSeries('xfinity')" id="nseries-xfinity">XFINITY</div>
@@ -68,8 +92,13 @@
 
 <script src="/js/core.js"></script>
 <script src="/js/series/f1.js"></script>
+<script src="/js/series/indycar.js"></script>
+<script src="/js/series/motogp.js"></script>
+<script src="/js/series/wec.js"></script>
+<script src="/js/series/wrc.js"></script>
 <script src="/js/series/nascar.js"></script>
 <script src="/js/series/nascar-xfinity.js"></script>
+<script src="/js/series/nascar-trucks.js"></script>
 <script src="/js/series/n24.js"></script>
 <script src="/js/schedule.js"></script>
 <script src="/js/home.js"></script>

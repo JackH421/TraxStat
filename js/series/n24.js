@@ -76,6 +76,10 @@ const N24_2026_RECAP=[
   {title:'Race Highlights: First 6 Hours',    videoId:'MG2LrnmfUck', caption:"Official highlights from the opening 6 hours — chaos, crashes, and Verstappen's wet-weather charge from P10 to the lead."},
   {title:'Verstappen Onboard at Night',       videoId:'B5IXDZlWLIU', caption:'Max Verstappen night-time onboard during Top Qualifying 2 — first time on the Nordschleife in the dark.'},
   {title:'#80 Mercedes (Race Winner) Onboard',videoId:'diS_9fO2uQE', caption:'Live onboard of the winning #80 Mercedes-AMG Team RAVENOL — Engel, Stolz, Schiller, Martin.'},
+  // Added 2026-06-12 (all-series buildout): the organizer channel's official
+  // 2026 recap montage. oEmbed author "ADAC RAVENOL 24h Nürburgring";
+  // embeddability re-verified same day.
+  {title:'24H Magic Moments 2026',            videoId:'45FpLxiW1QA', caption:'The official ADAC RAVENOL 24h Nürburgring recap montage — the defining moments of the 2026 race.'},
 ];
 
 // Sub-tab state. Session 7: the N24 module now uses the universal 5-tab shape
@@ -302,7 +306,8 @@ function renderN24HighlightsBody(){
       <div class="tx-highlights-meta">2026 Edition · 16–17 May 2026</div>
       <div class="tx-highlights-title">24h Nürburgring 2026</div>
       <div class="tx-highlights-winner">Winner: #80 Mercedes-AMG Team RAVENOL — Engel · Stolz · Schiller · Martin</div>
-      <div class="tx-highlights-watch-todo"><b>Watch highlights</b><br>TODO: paste verified official YouTube URL<br><span style="color:var(--muted);font-family:'Barlow',sans-serif;">(Verified recap clips are also available under Race Results · Recap)</span></div>
+      ${txHighlightSlotHTML('24H Magic Moments — Official Recap','45FpLxiW1QA','https://i.ytimg.com/vi/45FpLxiW1QA/maxresdefault.jpg')}
+      <div style="padding:6px 0 0;color:var(--muted);font-family:'Barlow',sans-serif;font-size:11px;">More verified recap clips live under Race Results · Recap.</div>
     </div>`;
 }
 
