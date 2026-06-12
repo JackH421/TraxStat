@@ -186,7 +186,8 @@ core.js → series/f1.js → series/nascar.js → series/nascar-xfinity.js → s
 | F1 | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive — see `docs/f1.md`. |
 | NASCAR | Cup fully built. Xfinity schedule populated (33 rounds, verified Wikipedia); race results / standings / mfrs are Phase-2 backfill. Trucks placeholder. See `docs/nascar.md`. |
 | N24 | Permanent post-race-only module for the 2026 Nürburgring 24. See `docs/n24.md`. |
-| MotoGP, WRC, IndyCar, GT3/WEC | Placeholder — `switchSeries` renders generic "Coming Soon" |
+| IndyCar | Fully built (no LIVE — no free live API). Four sub-tabs: STANDINGS / RACE RESULTS / SCHEDULE / HIGHLIGHTS. 2026 through R9 Gateway, verified indycar.com + Wikipedia. `js/series/indycar.js`, `verify-indycar.js`. |
+| MotoGP, WRC, GT3/WEC | Placeholder — `switchSeries` renders generic "Coming Soon" |
 
 ## F1 data: hardcoded-first pattern (essentials)
 

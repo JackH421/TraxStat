@@ -229,6 +229,17 @@ const TX_SERIES_META={
     }
   },
   n24:{name:'Nürburgring 24',label:'N24',seasonSub:()=>'2026 Edition · Nordschleife'},
+  // New-series entries (all-series buildout 2026-06-12). `tabs` lists the
+  // sub-tabs the series actually has — no LIVE tab (no free live API exists
+  // for these series; see docs/series-data-models.md). renderSeriesHomeMenu
+  // filters its rows on this list.
+  indycar:{name:'IndyCar Series',label:'INDYCAR',tabs:['standings','races','schedule','highlights'],seasonSub:()=>{
+    const results=typeof INDYCAR_RESULTS!=='undefined'?INDYCAR_RESULTS:{};
+    const total=typeof INDYCAR_SCHEDULE!=='undefined'?INDYCAR_SCHEDULE.length:0;
+    const completed=Object.keys(results).map(Number).filter(n=>!isNaN(n));
+    const max=completed.length?Math.max(...completed):0;
+    return max>0&&total>0?`2026 Season · Round ${max} of ${total}`:'2026 Season';
+  }},
 };
 
 // Tab title + sub-tab labels. Keys match the per-series tab keys.
@@ -269,8 +280,12 @@ const TX_HOME_ITEMS=[
   {key:'highlights',num:'05',label:'Season Highlights',desc:'Recap videos and key moments'},
 ];
 function renderSeriesHomeMenu(seriesKey){
-  const rows=TX_HOME_ITEMS.map(it=>`<div class="tx-home-row" onclick="goToSubTab('${seriesKey}','${it.key}')">
-    <div class="tx-home-num">${it.num}</div>
+  // Series with a `tabs` list in TX_SERIES_META (the no-live new series) only
+  // show those rows; rows are renumbered so the menu stays 01..0N.
+  const allowed=TX_SERIES_META[seriesKey]?.tabs;
+  const items=allowed?TX_HOME_ITEMS.filter(it=>allowed.includes(it.key)):TX_HOME_ITEMS;
+  const rows=items.map((it,i)=>`<div class="tx-home-row" onclick="goToSubTab('${seriesKey}','${it.key}')">
+    <div class="tx-home-num">${String(i+1).padStart(2,'0')}</div>
     <div>
       <div class="tx-home-label">${it.label}</div>
       <div class="tx-home-desc">${it.desc}</div>
@@ -291,7 +306,7 @@ function renderBackToSeriesHome(seriesKey){
 // Hides every per-series submenu in the HTML shell. Used both on series-home
 // landing and when switching to a series that has no submenu.
 function hideAllSubmenus(){
-  ['f1-submenu','nascar-submenu','n24-submenu'].forEach(id=>{
+  ['f1-submenu','nascar-submenu','n24-submenu','indycar-submenu','motogp-submenu','gt3-submenu','wrc-submenu'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display='none';
   });
 }
@@ -322,6 +337,9 @@ function goToSubTab(seriesKey,subTab){
   }else if(seriesKey==='n24'){
     document.getElementById('n24-submenu').style.display='flex';
     switchN24Tab(subTab);
+  }else if(seriesKey==='indycar'){
+    document.getElementById('indycar-submenu').style.display='flex';
+    switchIndyCarTab(subTab);
   }
 }
 
@@ -345,7 +363,7 @@ function switchSeries(s){
   document.getElementById('nascar-series-bar').style.display=s==='nascar'?'flex':'none';
   if(s==='home'){inSeriesHome=false;renderHome();return;}
   if(s==='schedule'){inSeriesHome=false;renderSchedule();return;}
-  if(s==='f1'||s==='nascar'||s==='n24'){goToSeriesHome(s);return;}
+  if(s==='f1'||s==='nascar'||s==='n24'||s==='indycar'){goToSeriesHome(s);return;}
   // All other series — placeholder
   inSeriesHome=false;
   document.getElementById('main-content').innerHTML=`<div class="state-screen"><div class="state-icon">🏎</div><div class="state-title">${s.toUpperCase()} Coming Soon</div><div class="state-sub">F1 and NASCAR are live now. More series launching soon.</div></div>`;
@@ -358,15 +376,43 @@ function refresh(){
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   let p;
-  if(inSeriesHome && (currentSeries==='f1'||currentSeries==='nascar'||currentSeries==='n24')){
+  if(inSeriesHome && (currentSeries==='f1'||currentSeries==='nascar'||currentSeries==='n24'||currentSeries==='indycar')){
     goToSeriesHome(currentSeries);
     p=Promise.resolve();
   }else if(currentSeries==='home'){p=Promise.resolve(renderHome());}
   else if(currentSeries==='schedule'){p=Promise.resolve(renderSchedule());}
   else if(currentSeries==='nascar'){p=Promise.resolve(renderNascar());}
   else if(currentSeries==='n24'){p=Promise.resolve(renderN24());}
+  else if(currentSeries==='indycar'){p=Promise.resolve(renderIndyCar());}
   else{p=renderF1();}
   p.finally(()=>btn.classList.remove('spinning'));
+}
+
+// ── HIGHLIGHT VIDEO SLOT (generic lite-YouTube) ──────────────────────────────
+// Shared by the new-series Highlights tabs (and adoptable by NASCAR/N24).
+// Renders a clickable still-frame thumbnail; tapping swaps in the autoplay
+// iframe. `thumb` is the hand-picked action-frame URL chosen during video
+// verification (Phase 3 workflow); falls back to YouTube's hqdefault.
+function loadTxHighlightIframe(el,videoId,label){
+  track('tx:highlight-play',{video:videoId});
+  el.innerHTML=`<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${label}"></iframe>`;
+  el.style.cursor='default';
+  el.onclick=null;
+}
+function txHighlightSlotHTML(label,videoId,thumb){
+  if(!videoId)return '';
+  const still=thumb||`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  const fallback=`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  return `<div style="margin-top:12px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;color:var(--green);text-transform:uppercase;padding-bottom:6px;">⬤ ${label}</div>
+    <div onclick="loadTxHighlightIframe(this,'${videoId}','${(label||'').replace(/'/g,"\\'")}')" style="position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:3px;overflow:hidden;cursor:pointer;">
+      <img src="${still}" onerror="this.onerror=null;this.src='${fallback}';" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" alt="${label} thumbnail">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.4);">
+        <div style="width:0;height:0;border-left:22px solid var(--red);border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:5px;"></div>
+      </div>
+    </div>
+    <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 0;text-decoration:none;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;">Open on YouTube ↗</a>
+  </div>`;
 }
 
 // ── LIVE DOTS ─────────────────────────────────────────────────────────────────
