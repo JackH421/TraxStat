@@ -218,7 +218,8 @@ const TX_SERIES_META={
         total=typeof NASCAR_XFINITY_SCHEDULE!=='undefined'?NASCAR_XFINITY_SCHEDULE.length:0;
         results=typeof NASCAR_XFINITY_RESULTS!=='undefined'?NASCAR_XFINITY_RESULTS:{};
       } else if(s==='trucks'){
-        return '2026 Season';
+        total=typeof NASCAR_TRUCKS_SCHEDULE!=='undefined'?NASCAR_TRUCKS_SCHEDULE.length:0;
+        results=typeof NASCAR_TRUCKS_RESULTS!=='undefined'?NASCAR_TRUCKS_RESULTS:{};
       } else {
         total=NASCAR_CUP_SCHEDULE?.length||0;
         results=NASCAR_CUP_RESULTS||{};

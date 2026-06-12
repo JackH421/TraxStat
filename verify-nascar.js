@@ -149,18 +149,25 @@ for (const m of NASCAR_CUP_MFRS) {
   }
 }
 
-// ── Check 4: Xfinity schedule integrity (Phase 1 — schedule only) ─────────────
-// Phase 1 of the Xfinity build populates only the schedule. As Phase 2 adds
-// drivers/results/standings/mfrs we'll extend this block to mirror Checks 1-3
-// against NASCAR_XFINITY_* constants. For now: round numbers must be sequential
-// 1..N, every row must have race/track/date/country, and dates must be valid
-// YYYY-MM-DD strings in ascending order.
-const xfinitySchedChecks = { pass: 0, fail: 0, total: 0 };
-if (xfinitySource) {
-  const sched = loadXfinityConst('NASCAR_XFINITY_SCHEDULE') || [];
-  xfinitySchedChecks.total = sched.length;
+// ── Check 4: sibling-series integrity (Xfinity Phase 2 + Trucks) ──────────────
+// Mirrors Checks 1-3 against the NASCAR_XFINITY_* and NASCAR_TRUCKS_*
+// constants: schedule shape, winner→mfr tally, standings gap math + ordering,
+// and roster reference integrity.
+const TRUCKS_PATH = path.join(__dirname, 'js', 'series', 'nascar-trucks.js');
+const trucksSource = fs.existsSync(TRUCKS_PATH) ? fs.readFileSync(TRUCKS_PATH, 'utf8') : null;
+function loadTrucksConst(name) {
+  if (!trucksSource) return null;
+  // eslint-disable-next-line no-eval
+  return eval(`(${extractConst(trucksSource, name)})`);
+}
+
+function checkSiblingSeries(label, drivers, schedule, results, standings, mfrs) {
+  const chk = { pass: 0, fail: 0, total: 0 };
+  const sibRoster = new Set(Object.keys(drivers));
+  // Schedule shape
   let prevDate = '0000-00-00';
-  sched.forEach((row, i) => {
+  schedule.forEach((row, i) => {
+    chk.total++;
     const expectedRound = i + 1;
     const problems = [];
     if (row.round !== expectedRound) problems.push(`round=${row.round}, expected ${expectedRound}`);
@@ -170,13 +177,75 @@ if (xfinitySource) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(row.date || '')) problems.push(`bad date "${row.date}"`);
     else if (row.date < prevDate) problems.push(`date ${row.date} earlier than previous ${prevDate}`);
     if (row.date) prevDate = row.date;
-    if (problems.length) {
-      note('xfinity-schedule', `R${row.round || expectedRound}: ${problems.join('; ')}`);
-      xfinitySchedChecks.fail++;
-    } else {
-      xfinitySchedChecks.pass++;
-    }
+    if (problems.length) { note(`${label}-schedule`, `R${row.round || expectedRound}: ${problems.join('; ')}`); chk.fail++; }
+    else chk.pass++;
   });
+  // Winner → mfr tally
+  const computed = {};
+  for (const round in results) {
+    const w = results[round].winner;
+    const drv = w && drivers[w];
+    if (drv && drv.mfr && drv.mfr !== '—') computed[drv.mfr] = (computed[drv.mfr] || 0) + 1;
+  }
+  for (const m of mfrs) {
+    chk.total++;
+    const c = computed[m.mfr] || 0;
+    if (c !== m.wins) { note(`${label}-mfr-tally`, `${m.mfr}: listed ${m.wins} wins; computed ${c}`); chk.fail++; }
+    else chk.pass++;
+  }
+  for (const mfr in computed) {
+    if (!mfrs.some(m => m.mfr === mfr)) {
+      chk.total++; chk.fail++;
+      note(`${label}-mfr-tally`, `${mfr} has ${computed[mfr]} computed wins but isn't listed`);
+    }
+  }
+  // Standings gap math + ordering + roster refs
+  if (standings.length) {
+    const lead = standings[0];
+    let prevPts = Infinity;
+    standings.forEach((row, i) => {
+      chk.total++;
+      const problems = [];
+      if (row.pos !== i + 1) problems.push(`pos=${row.pos}, expected ${i + 1}`);
+      if (row.gap !== row.points - lead.points) problems.push(`gap=${row.gap}, expected ${row.points - lead.points}`);
+      if (row.points > prevPts) problems.push(`points ${row.points} greater than previous ${prevPts}`);
+      prevPts = row.points;
+      if (!sibRoster.has(row.driver)) problems.push(`'${row.driver}' not in roster`);
+      if (problems.length) { note(`${label}-standings`, `${row.driver} (P${row.pos}): ${problems.join('; ')}`); chk.fail++; }
+      else chk.pass++;
+    });
+  }
+  // Results references (winner/p2/p3/polePos)
+  for (const round in results) {
+    const r = results[round];
+    for (const f of ['winner', 'p2', 'p3', 'polePos']) {
+      if (r[f]) {
+        chk.total++;
+        if (!sibRoster.has(r[f])) { note(`${label}-references`, `'${r[f]}' in results[${round}].${f} not in roster`); chk.fail++; }
+        else chk.pass++;
+      }
+    }
+  }
+  return chk;
+}
+
+let xfinityChecks = { pass: 0, fail: 0, total: 0 };
+if (xfinitySource) {
+  xfinityChecks = checkSiblingSeries('xfinity',
+    loadXfinityConst('NASCAR_XFINITY_DRIVERS') || {},
+    loadXfinityConst('NASCAR_XFINITY_SCHEDULE') || [],
+    loadXfinityConst('NASCAR_XFINITY_RESULTS') || {},
+    loadXfinityConst('NASCAR_XFINITY_STANDINGS') || [],
+    loadXfinityConst('NASCAR_XFINITY_MFRS') || []);
+}
+let trucksChecks = { pass: 0, fail: 0, total: 0 };
+if (trucksSource) {
+  trucksChecks = checkSiblingSeries('trucks',
+    loadTrucksConst('NASCAR_TRUCKS_DRIVERS') || {},
+    loadTrucksConst('NASCAR_TRUCKS_SCHEDULE') || [],
+    loadTrucksConst('NASCAR_TRUCKS_RESULTS') || {},
+    loadTrucksConst('NASCAR_TRUCKS_STANDINGS') || [],
+    loadTrucksConst('NASCAR_TRUCKS_MFRS') || []);
 }
 
 // ── Report ────────────────────────────────────────────────────────────────────
@@ -192,7 +261,10 @@ console.log(fmt(tallyChecks, 'Winner → mfr wins tally'));
 console.log(fmt(gapChecks,   'Standings gap math      '));
 console.log(fmt(refChecks,   'Driver references       '));
 if (xfinitySource) {
-  console.log(fmt(xfinitySchedChecks, 'Xfinity schedule        '));
+  console.log(fmt(xfinityChecks, 'Xfinity (full)          '));
+}
+if (trucksSource) {
+  console.log(fmt(trucksChecks, 'Trucks (full)           '));
 }
 console.log('');
 

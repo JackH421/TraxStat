@@ -2,7 +2,9 @@
 
 Entirely hardcoded in `js/series/nascar.js` — there is no NASCAR API call anywhere in the codebase.
 
-> **Xfinity (O'Reilly Auto Parts) lives in `js/series/nascar-xfinity.js`** as a sibling module. Phase 1 (current): 33-race 2026 schedule is populated and verified against Wikipedia. Phase 2 (pending): per-race results, driver standings, manufacturer wins. Until Phase 2 lands, Xfinity tabs render correct empty states — never invented data. The same `switchNascarSeries('xfinity')` route powers it; each renderer in `nascar.js` dispatches to `renderNascarXfinity*` when the active series is Xfinity.
+> **Xfinity (O'Reilly Auto Parts) lives in `js/series/nascar-xfinity.js`** as a sibling module. Phase 2 (landed 2026-06-12): R1–R16 results, 38-driver standings (truncated where the source tail was unverifiable), manufacturer wins (Chevrolet 14 / Toyota 2 / Ford 0), 44-entry roster. The same `switchNascarSeries('xfinity')` route powers it; each renderer in `nascar.js` dispatches to `renderNascarXfinity*` when the active series is Xfinity.
+
+> **Trucks (Craftsman) lives in `js/series/nascar-trucks.js`** as a second sibling module (added 2026-06-12): 25-round schedule, R1–R12 results, standings through P26 (verified portion only; Heim P11 is championship-ineligible part-time), manufacturer wins incl. the new fourth manufacturer Ram (0 wins). Dispatch mirrors Xfinity: `renderNascarTrucks*` when the active sub-series is Trucks. `verify-nascar.js` now runs full schedule/tally/standings/reference checks for both sibling series.
 
 All NASCAR constants live in `js/series/nascar.js`:
 

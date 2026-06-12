@@ -17,10 +17,61 @@
 // function in nascar.js — if currentNascarSeries==='xfinity' it forwards
 // here, otherwise the existing Cup code path runs.
 
+// Phase 2 roster (populated 2026-06-12) — every driver appearing in results
+// or standings. Shared surnames keyed with initials (R./K. Sieg, J./H. Burton,
+// B. Jones, A. Hill, S. Smith, T. Gray). Verified from the Wikipedia 2026
+// NASCAR O'Reilly Auto Parts Series teams/drivers table + racingnews.co race
+// pages. '—' = not stated on fetched pages (cardinal rule — no guesses):
+// Crews (rookie, P14 in points!), Bell (extraction conflicted with Caruth's
+// #88), Sanchez, Gase, Yeley, Labbé, Byrd, Patterson, Snider.
+// Larson note: racingnews lists his car as '#88 HendrickCars.com Chevrolet';
+// Wikipedia credits the wins to JR Motorsports (number shared with Caruth) —
+// entrant recorded as JRM, flagged in the session report.
 const NASCAR_XFINITY_DRIVERS = {
-  // Phase 2: full-time roster keyed by last name → {first, team, mfr, num}.
-  // Source candidate: Wikipedia 2026 NASCAR O'Reilly Auto Parts Series
-  // "Teams and drivers" table + individual team announcements.
+  'Allgaier':      {first:'Justin',   team:'JR Motorsports',            mfr:'Chevrolet', num:7},
+  'Love':          {first:'Jesse',    team:'Richard Childress Racing',  mfr:'Chevrolet', num:2},
+  'Day':           {first:'Corey',    team:'Hendrick Motorsports',      mfr:'Chevrolet', num:17},
+  'Creed':         {first:'Sheldon',  team:'Haas Factory Team',         mfr:'Chevrolet', num:'00'},
+  'B. Jones':      {first:'Brandon',  team:'Joe Gibbs Racing',          mfr:'Toyota',    num:20},
+  'A. Hill':       {first:'Austin',   team:'Richard Childress Racing',  mfr:'Chevrolet', num:21},
+  'Kvapil':        {first:'Carson',   team:'JR Motorsports',            mfr:'Chevrolet', num:1},
+  'S. Smith':      {first:'Sammy',    team:'JR Motorsports',            mfr:'Chevrolet', num:8},
+  'Sawalich':      {first:'William',  team:'Joe Gibbs Racing',          mfr:'Toyota',    num:18},
+  'Retzlaff':      {first:'Parker',   team:'Viking Motorsports',        mfr:'Chevrolet', num:99},
+  'Mayer':         {first:'Sam',      team:'Haas Factory Team',         mfr:'Chevrolet', num:41},
+  'T. Gray':       {first:'Taylor',   team:'Joe Gibbs Racing',          mfr:'Toyota',    num:54},
+  'Caruth':        {first:'Rajah',    team:'JR Motorsports',            mfr:'Chevrolet', num:88},
+  'Crews':         {first:'Brent',    team:'—',                         mfr:'—',         num:'—'},
+  'R. Sieg':       {first:'Ryan',     team:'RSS Racing',                mfr:'Chevrolet', num:39},
+  'Zilisch':       {first:'Connor',   team:'JR Motorsports',            mfr:'Chevrolet', num:1},
+  'van Gisbergen': {first:'Shane',    team:'JR Motorsports',            mfr:'Chevrolet', num:9},
+  'Larson':        {first:'Kyle',     team:'JR Motorsports',            mfr:'Chevrolet', num:88},
+  'Chastain':      {first:'Ross',     team:'JR Motorsports',            mfr:'Chevrolet', num:9},
+  'Briscoe':       {first:'Chase',    team:'Joe Gibbs Racing',          mfr:'Toyota',    num:19},
+  'Bell':          {first:'Christopher',team:'—',                       mfr:'—',         num:'—'},
+  'Sanchez':       {first:'Nick',     team:'—',                         mfr:'—',         num:'—'},
+  'Poole':         {first:'Brennan',  team:'Alpha Prime Racing',        mfr:'Chevrolet', num:44},
+  'Alfredo':       {first:'Anthony',  team:'Viking Motorsports',        mfr:'Chevrolet', num:96},
+  'Thompson':      {first:'Dean',     team:'Sam Hunt Racing',           mfr:'Toyota',    num:26},
+  'Clements':      {first:'Jeremy',   team:'Jeremy Clements Racing',    mfr:'Chevrolet', num:51},
+  'J. Burton':     {first:'Jeb',      team:'Jordan Anderson Racing',    mfr:'Chevrolet', num:27},
+  'Perkins':       {first:'Blaine',   team:'Jordan Anderson Racing',    mfr:'Chevrolet', num:31},
+  'Staropoli':     {first:'Patrick',  team:'Big Machine Racing',        mfr:'Chevrolet', num:48},
+  'H. Burton':     {first:'Harrison', team:'Sam Hunt Racing',           mfr:'Toyota',    num:24},
+  'Green':         {first:'Austin',   team:'Peterson Racing',           mfr:'Chevrolet', num:87},
+  'Scott':         {first:'Lavar',    team:'Alpha Prime Racing',        mfr:'Chevrolet', num:45},
+  'K. Sieg':       {first:'Kyle',     team:'RSS Racing',                mfr:'Chevrolet', num:28},
+  'Bilicki':       {first:'Josh',     team:'SS-Green Light Racing',     mfr:'Chevrolet', num:'07'},
+  'Ellis':         {first:'Ryan',     team:"Young's Motorsports",       mfr:'Chevrolet', num:'02'},
+  'Williams':      {first:'Josh',     team:'DGM Racing w/ Jesse Iwuji', mfr:'Chevrolet', num:92},
+  'Gase':          {first:'Joey',     team:'—',                         mfr:'—',         num:'—'},
+  'Smithley':      {first:'Garrett',  team:'SS-Green Light w/ BRK',     mfr:'Chevrolet', num:0},
+  'Yeley':         {first:'J.J.',     team:'—',                         mfr:'—',         num:'—'},
+  'Maggio':        {first:'Mason',    team:'DGM Racing w/ Jesse Iwuji', mfr:'Chevrolet', num:91},
+  'Labbé':         {first:'Alex',     team:'—',                         mfr:'—',         num:'—'},
+  'Byrd':          {first:'Nathan',   team:'—',                         mfr:'—',         num:'—'},
+  'Patterson':     {first:'Andrew',   team:'—',                         mfr:'—',         num:'—'},
+  'Snider':        {first:'Myatt',    team:'—',                         mfr:'—',         num:'—'},
 };
 
 // 2026 schedule (R1–R33). Verified 2026-05-22 from
@@ -66,9 +117,83 @@ const NASCAR_XFINITY_SCHEDULE = [
   {round:33,race:'Hard Rock Bet 300',                         track:'Homestead-Miami Speedway',        country:'🇺🇸', date:'2026-11-07', chase:true},
 ];
 
-const NASCAR_XFINITY_RESULTS  = { /* Phase 2 — race-by-race verified results */ };
-const NASCAR_XFINITY_STANDINGS = [ /* Phase 2 — verified racingnews.co points */ ];
-const NASCAR_XFINITY_MFRS      = [ /* Phase 2 — counted from results.winner */ ];
+// Phase 2 results (populated 2026-06-12), R1–R16. Every winner AND pole
+// cross-verified across two allowed sources with zero conflicts: the
+// Wikipedia season results table + racingnews.co per-race result pages
+// (nascar.com returned 403 this session; its search snippets corroborate
+// Nashville/Talladega). Per-race URLs in the Phase-2 commit body.
+const NASCAR_XFINITY_RESULTS = {
+  1: {winner:'A. Hill',       p2:'Allgaier', p3:'R. Sieg',  polePos:'A. Hill',  note:'Austin Hill won the United Rentals 300 from pole, sweeping all three stages and surviving multiple late cautions.'},
+  2: {winner:'Creed',         p2:'Retzlaff', p3:'Sanchez',  polePos:'Mayer',    note:'Sheldon Creed took his first career series win in a final-lap battle at Atlanta, clearing the field in turn four.'},
+  3: {winner:'van Gisbergen', p2:'A. Hill',  p3:'S. Smith', polePos:'Zilisch',  note:'SVG led a race-high 31 laps and made a decisive three-wide pass in the final stage at COTA.'},
+  4: {winner:'Allgaier',      p2:'Love',     p3:'Kvapil',   polePos:'T. Gray',  note:'Allgaier passed long-time leader Jesse Love with 11 laps remaining — first win of 2026 and the points lead.'},
+  5: {winner:'Larson',        p2:'Briscoe',  p3:'Creed',    polePos:'Mayer',    note:'Cup regular Kyle Larson surged late to beat Chase Briscoe; polesitter Mayer retired early with a loss of power.'},
+  6: {winner:'Allgaier',      p2:'B. Jones', p3:'Bell',     polePos:'Larson',   note:'Larson won pole and both stages, but Allgaier used pit strategy to lead the final 34 laps at Darlington.'},
+  7: {winner:'Allgaier',      p2:'S. Smith', p3:'Day',      polePos:'Allgaier', note:'Allgaier won the NFPA 250 from pole — second straight win, third of the season.'},
+  8: {winner:'Sawalich',      p2:'B. Jones', p3:'Allgaier', polePos:'Day',      note:"Corey Day took his first career pole and won two stages, but Sawalich took control late for Toyota's first 2026 win at Rockingham."},
+  9: {winner:'Zilisch',       p2:'Larson',   p3:'Crews',    polePos:'Sawalich', note:'Larson dominated and won both stages, but Zilisch executed a late-race strategy to beat him at Bristol.'},
+  10:{winner:'T. Gray',       p2:'Creed',    p3:'Allgaier', polePos:'Kvapil',   note:'Taylor Gray won at Kansas; an early red flag flew when polesitter Kvapil was flipped after contact from William Byron.'},
+  11:{winner:'Day',           p2:'Creed',    p3:'Crews',    polePos:'Love',     note:"Corey Day's first career series win — Mayer spun while blocking on the last lap and Talladega ended under caution."},
+  12:{winner:'Larson',        p2:'Allgaier', p3:'Mayer',    polePos:'Allgaier', note:"Larson held off a late charge from polesitter Allgaier for his second win of the season at Texas."},
+  13:{winner:'Zilisch',       p2:'Love',     p3:'T. Gray',  polePos:'Caruth',   note:'Zilisch made a last-lap dive at turn six and won when Love missed his braking point in the final corner at Watkins Glen.'},
+  14:{winner:'Day',           p2:'Allgaier', p3:'Mayer',    polePos:'Chastain', note:'Day charged late on the outside lane at Dover, passing Allgaier in traffic for his second win of 2026.'},
+  15:{winner:'Chastain',      p2:'Love',     p3:'A. Hill',  polePos:'Allgaier', note:'Ross Chastain won a race called at the end of Stage 2 due to weather at Charlotte.'},
+  16:{winner:'Allgaier',      p2:'Crews',    p3:'Sawalich', polePos:'Love',     note:'Allgaier dominated the final stage at Nashville and held off rookie Brent Crews for his series-best fourth win of 2026.'},
+};
+
+// Driver points after R16 Nashville (2026-05-30) — verified 2026-06-12 from
+// the Wikipedia season page table ("after 16 of 33 races"). Truncated at P38:
+// the extracted P39–P59 tail was non-monotonic (extraction noise) and is
+// omitted per the cardinal rule. gap = points − leader points.
+const NASCAR_XFINITY_STANDINGS = [
+  {pos:1, driver:'Allgaier',  points:770, gap:0},
+  {pos:2, driver:'Love',      points:591, gap:-179},
+  {pos:3, driver:'Day',       points:574, gap:-196},
+  {pos:4, driver:'Creed',     points:532, gap:-238},
+  {pos:5, driver:'B. Jones',  points:512, gap:-258},
+  {pos:6, driver:'A. Hill',   points:499, gap:-271},
+  {pos:7, driver:'Kvapil',    points:493, gap:-277},
+  {pos:8, driver:'S. Smith',  points:482, gap:-288},
+  {pos:9, driver:'Sawalich',  points:429, gap:-341},
+  {pos:10,driver:'Retzlaff',  points:416, gap:-354},
+  {pos:11,driver:'Mayer',     points:413, gap:-357},
+  {pos:12,driver:'T. Gray',   points:399, gap:-371},
+  {pos:13,driver:'Caruth',    points:387, gap:-383},
+  {pos:14,driver:'Crews',     points:384, gap:-386},
+  {pos:15,driver:'R. Sieg',   points:384, gap:-386},
+  {pos:16,driver:'Poole',     points:309, gap:-461},
+  {pos:17,driver:'Alfredo',   points:286, gap:-484},
+  {pos:18,driver:'Thompson',  points:282, gap:-488},
+  {pos:19,driver:'Clements',  points:260, gap:-510},
+  {pos:20,driver:'J. Burton', points:253, gap:-517},
+  {pos:21,driver:'Perkins',   points:237, gap:-533},
+  {pos:22,driver:'Staropoli', points:221, gap:-549},
+  {pos:23,driver:'H. Burton', points:221, gap:-549},
+  {pos:24,driver:'Green',     points:205, gap:-565},
+  {pos:25,driver:'Scott',     points:190, gap:-580},
+  {pos:26,driver:'K. Sieg',   points:184, gap:-586},
+  {pos:27,driver:'Bilicki',   points:184, gap:-586},
+  {pos:28,driver:'Ellis',     points:153, gap:-617},
+  {pos:29,driver:'Williams',  points:119, gap:-651},
+  {pos:30,driver:'Gase',      points:112, gap:-658},
+  {pos:31,driver:'Smithley',  points:93,  gap:-677},
+  {pos:32,driver:'Sanchez',   points:81,  gap:-689},
+  {pos:33,driver:'Yeley',     points:79,  gap:-691},
+  {pos:34,driver:'Maggio',    points:65,  gap:-705},
+  {pos:35,driver:'Labbé',     points:62,  gap:-708},
+  {pos:36,driver:'Byrd',      points:59,  gap:-711},
+  {pos:37,driver:'Patterson', points:49,  gap:-721},
+  {pos:38,driver:'Snider',    points:35,  gap:-735},
+];
+
+// Manufacturer wins after R16 — derived from the verified winners above and
+// independently matched by Wikipedia's manufacturer standings table
+// (Chevrolet 14, Toyota 2, Ford 0). Cross-checked by verify-nascar.js.
+const NASCAR_XFINITY_MFRS = [
+  {pos:1, mfr:'Chevrolet', wins:14, drivers:['Allgaier (4)','Day (2)','Larson (2)','Zilisch (2)','A. Hill','Creed','van Gisbergen','Chastain']},
+  {pos:2, mfr:'Toyota',    wins:2,  drivers:['Sawalich','T. Gray']},
+  {pos:3, mfr:'Ford',      wins:0,  drivers:[]},
+];
 
 // ── XFINITY HELPERS ───────────────────────────────────────────────────────────
 // Driver lookup gracefully degrades to placeholders when the roster is empty.

@@ -184,7 +184,7 @@ core.js → series/f1.js → series/nascar.js → series/nascar-xfinity.js → s
 | Home | Default landing — news feed. Featured carousel + championship snapshot (F1 + NASCAR) + 8-card article feed. See `js/home.js`. |
 | Race Schedule | Hero card for next race across all series + next 3 closest. Routing key `'schedule'`. |
 | F1 | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive — see `docs/f1.md`. |
-| NASCAR | Cup fully built. Xfinity schedule populated (33 rounds, verified Wikipedia); race results / standings / mfrs are Phase-2 backfill. Trucks placeholder. See `docs/nascar.md`. |
+| NASCAR | Cup fully built. Xfinity fully built (R1–R16 results, standings, mfr wins — Phase 2 landed 2026-06-12). Trucks fully built (`js/series/nascar-trucks.js`, R1–R12, 4 manufacturers incl. Ram). See `docs/nascar.md`. |
 | N24 | Permanent post-race-only module for the 2026 Nürburgring 24. See `docs/n24.md`. |
 | IndyCar | Fully built (no LIVE — no free live API). Four sub-tabs: STANDINGS / RACE RESULTS / SCHEDULE / HIGHLIGHTS. 2026 through R9 Gateway, verified indycar.com + Wikipedia. `js/series/indycar.js`, `verify-indycar.js`. |
 | GT3/WEC | Fully built (no LIVE). Class-based results — Hypercar + LMGT3 winner per round. 2026 through R2 Spa (Le Mans runs 2026-06-13/14), verified fiawec.com + Wikipedia. `js/series/wec.js` (routing key `'gt3'`), `verify-wec.js`. |

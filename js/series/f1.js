@@ -1471,7 +1471,19 @@ async function computeF1State(){
 //     'verstappen': 'abc123def45',
 //     'leclerc':    'xyz987uvw65',
 //   },
-const HARDCODED_QUALI_VIDEOS={};
+// Populated 2026-06-12: official FORMULA 1 channel pole-lap onboards, one per
+// round, keyed by the polesitter's Jolpica driverId. Each ID oEmbed-verified
+// (author_name exactly "FORMULA 1") + embed-page checked (ytcfg.set present,
+// no EMBED_NOT_ALLOWED). Titles name the polesitter — e.g. "George Russell's
+// Pole Lap | 2026 Australian Grand Prix | Pirelli".
+const HARDCODED_QUALI_VIDEOS={
+  1:{'russell':'Rbll4MnQuec'},    // George Russell's Pole Lap | 2026 Australian GP
+  2:{'antonelli':'lDQgZMA7M7U'},  // Kimi Antonelli's Pole Lap | 2026 Chinese GP
+  3:{'antonelli':'VT8ULSU6em8'},  // Kimi Antonelli's Pole Lap | 2026 Japanese GP
+  4:{'antonelli':'7pGVugNI59c'},  // Kimi Antonelli's Pole Lap | 2026 Miami GP
+  5:{'russell':'CNjJdmNPLMs'},    // George Russell's Pole Lap | 2026 Canadian GP
+  6:{'antonelli':'h42iD4tm4OA'},  // Kimi Antonelli's Pole Lap | 2026 Monaco GP
+};
 
 // Per-round whole-session official race recaps from the @Formula1 YouTube
 // channel. Consumed by renderF1Highlights() for the HIGHLIGHTS tab. Same
@@ -1485,6 +1497,7 @@ const HARDCODED_RACE_HIGHLIGHTS={
   3: 'oAtYfF0_4-I',  // Japanese GP
   4: '5gYys4GL7S0',  // Miami GP
   5: 'QrRh2vOJQbw',  // Canadian GP
+  6: 'ipOT9ruRobc',  // Monaco GP — added 2026-06-12, oEmbed author "FORMULA 1"
 };
 
 // Per-round whole-session qualifying highlights — distinct from the
@@ -1496,6 +1509,7 @@ const HARDCODED_QUALI_HIGHLIGHTS={
   3: 'oZH_7pYJPTE',  // Japanese GP
   4: '83GJM1S0FnE',  // Miami GP
   5: 'rjLDgDc0td4',  // Canadian GP
+  6: 'xmk0j-HdgwY',  // Monaco GP — added 2026-06-12, oEmbed author "FORMULA 1"
 };
 
 // Per-round sprint highlights for rounds that ran a sprint. Same shape and
@@ -1504,6 +1518,30 @@ const HARDCODED_SPRINT_HIGHLIGHTS={
   2: 'ynRZQ9EBfRI',  // Chinese GP sprint
   4: '0XlphgCNbwQ',  // Miami GP sprint
   5: 'l3aB-W19bnc',  // Canadian GP sprint
+};
+
+// Hand-picked action-frame thumbnails per highlight video, chosen 2026-06-12
+// by viewing YouTube's auto-captured frames (hq1/hq2/hq3 + maxresdefault)
+// and selecting the most dynamic on-track shot (avoiding title cards,
+// lap-number graphics, talking heads). Keyed by videoId; consumed by
+// stillFrame() below. maxresdefault entries mean no auto-frame showed
+// on-track action (flagged in the session report).
+const HARDCODED_HIGHLIGHT_THUMBS={
+  'lL_d84cN1UY':'https://i.ytimg.com/vi/lL_d84cN1UY/hq1.jpg',  // R1 race — start into T1
+  'QztBs3IZBHk':'https://i.ytimg.com/vi/QztBs3IZBHk/hq1.jpg',  // R1 quali — Red Bull on track
+  't8HpVlineX4':'https://i.ytimg.com/vi/t8HpVlineX4/hq1.jpg',  // R2 race — Haas/Ferrari battle
+  '75-_kMm0mb8':'https://i.ytimg.com/vi/75-_kMm0mb8/hq3.jpg',  // R2 quali — driver wave (no action frame)
+  'ynRZQ9EBfRI':'https://i.ytimg.com/vi/ynRZQ9EBfRI/hq1.jpg',  // R2 sprint — multi-car wide shot
+  'oAtYfF0_4-I':'https://i.ytimg.com/vi/oAtYfF0_4-I/hq3.jpg',  // R3 race — podium (no action frame)
+  'oZH_7pYJPTE':'https://i.ytimg.com/vi/oZH_7pYJPTE/maxresdefault.jpg', // R3 quali — cover (no action frame)
+  '5gYys4GL7S0':'https://i.ytimg.com/vi/5gYys4GL7S0/hq1.jpg',  // R4 race — Ferrari/Aston side-by-side
+  '83GJM1S0FnE':'https://i.ytimg.com/vi/83GJM1S0FnE/maxresdefault.jpg', // R4 quali — cover (no action frame)
+  '0XlphgCNbwQ':'https://i.ytimg.com/vi/0XlphgCNbwQ/hq1.jpg',  // R4 sprint — stopped car, driver out
+  'QrRh2vOJQbw':'https://i.ytimg.com/vi/QrRh2vOJQbw/hq1.jpg',  // R5 race — Hamilton Ferrari
+  'rjLDgDc0td4':'https://i.ytimg.com/vi/rjLDgDc0td4/maxresdefault.jpg', // R5 quali — cover (no action frame)
+  'l3aB-W19bnc':'https://i.ytimg.com/vi/l3aB-W19bnc/hq1.jpg',  // R5 sprint — McLaren action
+  'ipOT9ruRobc':'https://i.ytimg.com/vi/ipOT9ruRobc/hq2.jpg',  // R6 race — Ferrari at Monaco
+  'xmk0j-HdgwY':'https://i.ytimg.com/vi/xmk0j-HdgwY/hq2.jpg',  // R6 quali — Leclerc on track
 };
 
 let selectedQualiDriver=null;
@@ -1808,6 +1846,9 @@ function renderF1Highlights(){
   // curated cover thumbnail) — picked deterministically per video via a
   // tiny char-code hash so each clip shows a different moment.
   const stillFrame=(videoId)=>{
+    // Hand-picked action frame wins; deterministic char-code hash over the
+    // auto frames remains the fallback for any video without a curated pick.
+    if(HARDCODED_HIGHLIGHT_THUMBS[videoId])return HARDCODED_HIGHLIGHT_THUMBS[videoId];
     const seed=(videoId.charCodeAt(0)+videoId.charCodeAt(1)+videoId.charCodeAt(2))%3+1;
     return `https://i.ytimg.com/vi/${videoId}/${seed}.jpg`;
   };

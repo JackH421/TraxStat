@@ -254,13 +254,9 @@ function nascarOffAirContext(){
 // ── NASCAR LIVE (off-air view) ────────────────────────────────────────────────
 function renderNascarLive(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityLive();
+  if(currentNascarSeries==='trucks')return renderNascarTrucksLive();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','live')+renderBackToSeriesHome('nascar');
-  if(currentNascarSeries!=='cup'){
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Craftsman Truck Series Coming Soon</div><div class="state-sub">Cup and Xfinity data are live now. Trucks support launching in a future update.</div></div>`;
-    setStats('—','—',currentNascarSeries.toUpperCase(),'—');
-    return;
-  }
   content.innerHTML=top+renderLiveOffAir('no-session',nascarOffAirContext());
   const lastRound=Object.keys(NASCAR_CUP_RESULTS).sort((a,b)=>parseInt(b)-parseInt(a))[0];
   setStats('—','—','STANDBY',lastRound?`R${lastRound}`:'—');
@@ -269,13 +265,9 @@ function renderNascarLive(){
 // ── NASCAR RACE RESULTS ───────────────────────────────────────────────────────
 function renderNascarRaces(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityRaces();
+  if(currentNascarSeries==='trucks')return renderNascarTrucksRaces();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','races')+renderBackToSeriesHome('nascar');
-  if(currentNascarSeries!=='cup'){
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity race data are populated. Trucks launching soon.</div></div>`;
-    setStats('—','—',currentNascarSeries.toUpperCase(),'—');
-    return;
-  }
   const banner=renderNascarNextBanner();
   // Race list — completed races only (where NASCAR_CUP_RESULTS has an entry)
   // Newest-round-first so the most recent race is at the top of the list.
@@ -420,12 +412,8 @@ function selectNascarRace(round){
 // ── NASCAR DRIVERS CHAMPIONSHIP ───────────────────────────────────────────────
 function renderNascarDrivers(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityDrivers();
+  if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  if(currentNascarSeries!=='cup'){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity standings are populated. Trucks launching soon.</div></div>`;
-    setStats('—','—',currentNascarSeries.toUpperCase(),'—');
-    return;
-  }
   const hdr=`<div class="section-title"><span>Cup Drivers · 2026 · After R15 Michigan</span><span>Top 16 = Chase</span></div>`;
   const rows=NASCAR_CUP_STANDINGS.map(d=>{
     const info=nascarDrv(d.driver);
@@ -497,12 +485,8 @@ function renderNascarDriverBreakdown(name,info,points,pos){
 // ── NASCAR MANUFACTURERS ──────────────────────────────────────────────────────
 function renderNascarMfrs(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityMfrs();
+  if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  if(currentNascarSeries!=='cup'){
-    content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity manufacturer standings are populated.</div></div>`;
-    setStats('—','—',currentNascarSeries.toUpperCase(),'—');
-    return;
-  }
   const hdr=`<div class="section-title"><span>Cup Manufacturers · 2026 · After R15</span><span>Wins through Michigan</span></div>`;
   const note=`<div style="padding:12px 16px;background:#1a1a05;border-bottom:1px solid var(--border);font-family:'Barlow',sans-serif;font-size:11px;color:var(--yellow);line-height:1.5;">
     ℹ️ NASCAR no longer publicly publishes official manufacturer points after each race. Wins shown below are verified from NASCAR.com.
@@ -570,13 +554,9 @@ function renderNascar(){
 // into main-content; we capture their output and concatenate under the banner.
 function renderNascarStandings(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityStandings();
+  if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','standings')+renderBackToSeriesHome('nascar');
-  if(currentNascarSeries!=='cup'){
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">TRUCKS Coming Soon</div><div class="state-sub">Cup and Xfinity standings are populated. Trucks launching soon.</div></div>`;
-    setStats('—','—',currentNascarSeries.toUpperCase(),'—');
-    return;
-  }
   renderNascarDrivers();
   const driversHTML=content.innerHTML;
   renderNascarMfrs();
@@ -589,6 +569,7 @@ function renderNascarStandings(){
 // each race-results row. No invented URLs — TODO placeholder only.
 function renderNascarHighlights(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityHighlights();
+  if(currentNascarSeries==='trucks')return renderNascarTrucksHighlights();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','highlights')+renderBackToSeriesHome('nascar');
   // Newest-round-first so the most recent race is at the top of the list.
@@ -616,12 +597,9 @@ function renderNascarHighlights(){
 
 function renderNascarSchedule(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinitySchedule();
+  if(currentNascarSeries==='trucks')return renderNascarTrucksSchedule();
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('nascar','schedule')+renderBackToSeriesHome('nascar');
-  if(currentNascarSeries!=='cup'){
-    content.innerHTML=top+`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">Craftsman Truck Series Coming Soon</div><div class="state-sub">Cup and Xfinity schedules are live now.</div></div>`;
-    setStats('—','—',currentNascarSeries.toUpperCase(),'—');return;
-  }
   const now=new Date();
   const upcoming=NASCAR_CUP_SCHEDULE.filter(r=>new Date(r.date+'T18:00:00Z')>now);
   if(!upcoming.length){
