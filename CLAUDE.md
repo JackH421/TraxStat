@@ -68,6 +68,7 @@ At the end of the session, present ONE final review package:
 4. Any decisions you made that I should know about, and anything you skipped
 Only after I reply with approval: commit (one logical commit per concept) and push.
 Exception — automated dispatchers: if this session was initiated by an automated dispatcher (e.g. Puter, a scheduled routine) rather than Jack directly, skip the interactive gate — push the branch, open a PR, and stop. Never merge.
+Exception — overnight builds: when Jack explicitly requests an overnight autonomous build, checkpoint commits on the working branch DURING the session are allowed (one per completed phase, so progress survives interruption). The no-push rule still applies — pushing waits for approval.
 Exception — cardinal rule: if a data point cannot be verified against an approved source, park it with '—', flag it in the final package. Never silently continue with an unverified number.
 
 ## When to refuse
