@@ -29,6 +29,13 @@ Acceptable sources, in rough priority:
 - **beyondtheflag.com** for full NASCAR points tables (publishes all ~35 drivers; precedent: R13/R15 standings commits a15e349, 0c3c0b7)
 - **Jolpica/Ergast API** for archived F1 results (current season may lag)
 
+Per-series approved sources (added 2026-06-12 for the all-series buildout — no other sources):
+- **MotoGP** → motogp.com official results/standings
+- **IndyCar** → indycar.com
+- **WRC** → wrc.com + FIA
+- **WEC/GT3** → fiawec.com
+- All four may cross-check **Wikipedia** race/rally pages against those primaries.
+
 Rules:
 - When asked to add data, **state the source first**. Cite the URL or document. Do not start typing values until the source is named.
 - If a source can't be verified, **refuse and ask the user**. Do not guess from training-data knowledge. A placeholder dash (`'—'`) with a comment is always better than a fabricated number.
