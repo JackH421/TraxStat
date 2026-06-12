@@ -17,8 +17,34 @@ function renderSchedule(){
     round:r.round, sprint:false, chase:!!r.chase, type:r.type,
     dateObj:new Date(r.date+'T18:00:00Z')
   }));
+  // New series (all-series buildout 2026-06-12). US-afternoon series use the
+  // 18:00 UTC heuristic like NASCAR; MotoGP/WRC use 13:00 UTC like F1.
+  const indycarUp=INDYCAR_SCHEDULE.filter(r=>new Date(r.date+'T18:00:00Z')>now).map(r=>({
+    series:'indycar', tag:'INDY', tagColor:'#37bedd',
+    name:r.race, circuit:r.track, country:r.country, date:r.date,
+    round:r.round, sprint:false, chase:false,
+    dateObj:new Date(r.date+'T18:00:00Z')
+  }));
+  const motogpUp=MOTOGP_SCHEDULE.filter(r=>new Date(r.date+'T13:00:00Z')>now).map(r=>({
+    series:'motogp', tag:'MGP', tagColor:'var(--orange)',
+    name:r.gp, circuit:r.circuit, country:r.country, date:r.date,
+    round:r.round, sprint:false, chase:false,
+    dateObj:new Date(r.date+'T13:00:00Z')
+  }));
+  const wecUp=WEC_SCHEDULE.filter(r=>new Date(r.date+'T18:00:00Z')>now).map(r=>({
+    series:'gt3', tag:'WEC', tagColor:'var(--green)',
+    name:r.race, circuit:r.circuit, country:r.country, date:r.date,
+    round:r.round, sprint:false, chase:false,
+    dateObj:new Date(r.date+'T18:00:00Z')
+  }));
+  const wrcUp=WRC_SCHEDULE.filter(r=>new Date(r.date+'T13:00:00Z')>now).map(r=>({
+    series:'wrc', tag:'WRC', tagColor:'#b0b0b0',
+    name:r.rally, circuit:wrcSurfaceLabel(r.surface)+' · final day', country:r.country, date:r.date,
+    round:r.round, sprint:false, chase:false,
+    dateObj:new Date(r.date+'T13:00:00Z')
+  }));
 
-  const all=[...f1Up,...nascarUp].sort((a,b)=>a.dateObj-b.dateObj);
+  const all=[...f1Up,...nascarUp,...indycarUp,...motogpUp,...wecUp,...wrcUp].sort((a,b)=>a.dateObj-b.dateObj);
 
   if(!all.length){
     content.innerHTML=`<div class="state-screen"><div class="state-icon">🏁</div><div class="state-title">No Upcoming Races</div><div class="state-sub">Season schedule complete.</div></div>`;

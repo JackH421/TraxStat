@@ -322,6 +322,14 @@ function openHomeFeaturedCard(series){
 
 function openHomeChampionship(series){
   track('home:championship',{series});
+  // New-series cards route straight into the Standings sub-tab; 'wec' is the
+  // display key for the 'gt3' routing key.
+  if(series==='indycar'||series==='motogp'||series==='wrc'||series==='wec'){
+    const key=series==='wec'?'gt3':series;
+    switchSeries(key);
+    goToSubTab(key,'standings');
+    return;
+  }
   switchSeries(series);
   if(series==='f1')switchF1Tab('drivers');
   else if(series==='nascar')switchNascarTab('drivers');
@@ -372,6 +380,16 @@ function renderHomeChampionships(){
   const nGap=nL&&nP2?(nL.points-nP2.points):0;
   const f1Team=f1L?.Constructors?.[0]?.name||'—';
   const nDrv=NASCAR_CUP_DRIVERS[nL?.driver]||{};
+  // New-series leaders (all-series buildout 2026-06-12). Each card reads its
+  // module's verified standings constants; gaps derive from the P2 row.
+  const iL=INDYCAR_STANDINGS[0],iGap=iL.points-INDYCAR_STANDINGS[1].points;
+  const iDrv=INDYCAR_DRIVERS[iL.driver]||{};
+  const mL=MOTOGP_STANDINGS[0],mGap=mL.points-MOTOGP_STANDINGS[1].points;
+  const mRider=MOTOGP_RIDERS[mL.rider]||{};
+  const wL=WEC_HYPERCAR_STANDINGS[0],wGap=wL.points-WEC_HYPERCAR_STANDINGS[1].points;
+  const wMfr=(wL.team.match(/BMW|Toyota|Ferrari|Alpine|Peugeot|Cadillac|Genesis|Aston Martin/)||['default'])[0];
+  const rL=WRC_STANDINGS[0],rGap=rL.points-WRC_STANDINGS[1].points;
+  const rDrv=WRC_DRIVERS[rL.driver]||{};
   return`<div class="section-title"><span>Championship Leaders</span><span>Tap to open</span></div>
   <div class="home-champ-grid">
     <div class="home-champ-card" onclick="openHomeChampionship('f1')">
@@ -385,6 +403,30 @@ function renderHomeChampionships(){
       <div class="home-champ-name" style="color:${nascarMfrColor(nDrv.mfr)};">${nL?.driver||'—'}</div>
       <div class="home-champ-team">${nDrv.team||'—'}</div>
       <div class="home-champ-pts"><span style="color:var(--yellow);">${nL?.points||0} PTS</span><span style="color:var(--muted);">  ·  +${nGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('indycar')">
+      <div class="home-champ-series" style="color:#37bedd;">INDYCAR</div>
+      <div class="home-champ-name" style="color:${indyEngineColor(iDrv.engine)};">${iL.driver}</div>
+      <div class="home-champ-team">${iDrv.team||'—'}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  +${iGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('motogp')">
+      <div class="home-champ-series" style="color:var(--orange);">MOTOGP</div>
+      <div class="home-champ-name" style="color:${motogpBikeColor(mRider.bike)};">${mL.rider}</div>
+      <div class="home-champ-team">${mRider.team||'—'}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${mL.points} PTS</span><span style="color:var(--muted);">  ·  +${mGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('wec')">
+      <div class="home-champ-series" style="color:var(--green);">WEC</div>
+      <div class="home-champ-name" style="color:${wecMfrColor(wMfr)};">${wL.crew}</div>
+      <div class="home-champ-team">${wL.team}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${wL.points} PTS</span><span style="color:var(--muted);">  ·  +${wGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('wrc')">
+      <div class="home-champ-series" style="color:#b0b0b0;">WRC</div>
+      <div class="home-champ-name" style="color:${wrcTeamColor(rDrv.team)};">${rL.driver}</div>
+      <div class="home-champ-team">${rDrv.team||'—'}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  +${rGap}</span></div>
     </div>
   </div>`;
 }
