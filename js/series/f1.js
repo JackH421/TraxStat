@@ -1726,9 +1726,9 @@ async function renderF1Standings(){
 }
 
 // Session 7: F1-local schedule. Completed rounds above, NEXT_RACES upcoming
-// below. We can't list all 24 rounds — NEXT_RACES only covers the next ~7 —
-// so the upcoming section is labelled "next races" rather than a full season
-// calendar.
+// below. We can't list all 22 rounds (24 originally; Bahrain + Saudi
+// cancelled) — NEXT_RACES only covers the next ~7 — so the upcoming section
+// is labelled "next races" rather than a full season calendar.
 function renderF1Schedule(){
   const content=document.getElementById('main-content');
   // Completed races listed newest-round-first (descending); upcoming list

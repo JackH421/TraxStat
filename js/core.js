@@ -194,8 +194,9 @@ const TX_SERIES_META={
   f1:{name:'Formula 1',label:'F1',seasonSub:()=>{
     const completed=Object.keys(HARDCODED_RACES||{}).map(Number).filter(n=>!isNaN(n));
     const max=completed.length?Math.max(...completed):0;
-    // NEXT_RACES doesn't cover the whole 24-round 2026 calendar (only the next
-    // few), so we can't claim "Round N of 24" from data alone — fall back.
+    // NEXT_RACES doesn't cover the whole 22-round 2026 calendar (24 originally;
+    // Bahrain + Saudi cancelled) — only the next few — so we can't claim
+    // "Round N of 22" from data alone. Fall back.
     return max>0?`2026 Season · After Round ${max}`:'2026 Season';
   }},
   nascar:{
