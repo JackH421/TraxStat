@@ -5,3 +5,6 @@
 node_modules/
 .vercel
 .env*
+
+# Local automation logs (launchd weekly data update)
+logs/

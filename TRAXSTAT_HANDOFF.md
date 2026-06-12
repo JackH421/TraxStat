@@ -1,6 +1,6 @@
 # TraxStat Handoff
 
-> **Update this doc when anything ships.** Last updated: 2026-06-12 (post-audit cleanup session).
+> **Update this doc when anything ships.** Last updated: 2026-06-12 (local-routine migration: weekly update moved off cloud onto Mac mini launchd, propose-only).
 
 One-page current-state snapshot for anyone (human or agent) picking up the project. The working
 contract is `CLAUDE.md`; topic detail lives in `docs/*.md`. This file answers "where are we?"
@@ -20,19 +20,26 @@ contract is `CLAUDE.md`; topic detail lives in `docs/*.md`. This file answers "w
 
 ## Automation (how data stays current)
 
+**Automation NEVER merges; all automation ends at an open PR; Jack merges from GitHub
+mobile/desktop; cloud agents have no GitHub access by deliberate choice.**
+
 1. **GitHub Action** `.github/workflows/f1-post-race-poll.yml` (cron */30): inside a post-race
    window it opens an `auto/f1-r*` PR proposing race + standings data from Jolpica. Proposal
    only — it never merges.
-2. **Weekly cloud routine** "TraxStat weekly post-race data update (F1 + NASCAR)"
-   (`trig_01AP1xwFenUJXbAdJ8UamCF2`, Mondays 13:00 UTC, sonnet-4-6, claude.ai/code/routines):
+2. **Weekly LOCAL routine** — launchd job `com.traxstat.weekly-data-update` on the Mac mini
+   (`~/Library/LaunchAgents/com.traxstat.weekly-data-update.plist`), Mondays 9:00 AM
+   America/New_York, headless Claude Code (sonnet) with `scripts/weekly-data-update-prompt.md`;
+   logs to `logs/weekly-update.log` (gitignored). Missed-while-asleep runs fire on next wake.
+   Propose-only:
    - First closes any auto-PR whose round already exists in `HARDCODED_RACES` (superseded rule).
    - Cross-checks remaining auto-PRs vs formula1.com/FIA; completes per-race points, fastest
-     laps, sprint results, labels, `NEXT_RACES` pruning, CLAUDE.md season state; merges only
-     when `verify.js` passes 100%. Mismatch → PR comment, no merge.
+     laps, sprint results, labels, `NEXT_RACES` pruning, CLAUDE.md season state; runs
+     `verify.js`; stops at an open PR (sources in a comment, verify output in the description,
+     assigned to JackH421). Mismatch → PR comment, no merge.
    - NASCAR: researches missing rounds (NASCAR.com / Wikipedia / beyondtheflag), updates the
-     five constants, merges via PR only when `verify-nascar.js` passes.
-   - **Dependency: cloud GitHub access** (`/web-setup` or Claude GitHub App). Not yet
-     confirmed connected — first run 2026-06-15 will fail at clone if not fixed.
+     five constants, runs `verify-nascar.js`, stops at an open PR.
+   - The earlier **cloud** routine (`trig_01AP1xwFenUJXbAdJ8UamCF2`) is **disabled** — Jack
+     decided against cloud GitHub access; `/web-setup` will not be run.
 3. **Daily news Action** `.github/workflows/daily-news-aggregator.yml`: refreshes a rolling
    `auto/news-*` PR in place each day. **Merging it is manual** — the weekly routine does NOT
    cover news PRs. If the home feed looks stale, an unmerged news PR is why.
@@ -80,7 +87,7 @@ contract is `CLAUDE.md`; topic detail lives in `docs/*.md`. This file answers "w
 
 ## Queued work order (agreed 2026-06-12)
 
-1. Confirm cloud GitHub access before Monday 2026-06-15 13:00 UTC (routine's first run).
-2. Watch the routine's first run (Spain + Pocono); fix prompt gaps it reveals.
-3. Merge the rolling news PR or automate its merge path.
-4. Debt items above, roughly in order — each one data-verified per the cardinal rule.
+1. Watch the local routine's first scheduled run (Mon 2026-06-15 9:00 AM ET, Spain + Pocono);
+   review + merge the PRs it opens; fix prompt gaps it reveals (`logs/weekly-update.log`).
+2. Merge the rolling news PR each time it accumulates, or decide its merge cadence.
+3. Debt items above, roughly in order — each one data-verified per the cardinal rule.
