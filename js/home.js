@@ -41,89 +41,89 @@ const HOMEPAGE_ARTICLES = [
   {
     id: 'a1',
     series: 'f1',
-    headline: 'Adjusted 2026 F1 championship standings after Monaco penalty rescinded',
-    source: 'RacingNews365',
-    url: 'https://racingnews365.com/adjusted-2026-f1-championship-standings-after-monaco-penalty-rescinded',
-    publishedAt: '2026-06-12T10:50:00.000Z',
-    excerpt: 'There has been a change to the championship standings following Pierre Gasly\'s penalty being rescinded.',
-    imageUrl: 'https://cdn.racingnews365.com/2026/Monaco-start_2026-06-10-170838_yawk.jpg?v=1781111320&width=1800&height=945&quality=75&crop=5185%2C2723%2C0%2C369',
-    imageCredit: 'Monaco start'
+    headline: 'Russell just pips Hamilton to Barcelona pole as Leclerc crashes out',
+    source: 'Sky Sports F1',
+    url: 'https://www.skysports.com/f1/news/12433/13553600/barcelona-catalunya-gp-qualifying-george-russell-pips-lewis-hamilton-to-pole-position-as-charles-lederc-crashes-out',
+    publishedAt: '2026-06-13T15:00:00.000Z',
+    excerpt: 'George Russell just pipped Lewis Hamilton to claim a much-needed pole position in his bid to kick start a championship fightback at the Barcelona-Catalunya Grand Prix.',
+    imageUrl: 'https://e0.365dm.com/26/06/1600x900/skysports-lewis-hamilton-ferrari_7272539.jpg?20260613163903',
+    imageCredit: ''
   },
   {
     id: 'a2',
     series: 'f1',
-    headline: 'Dramatic penalty strips former F1 driver of Le Mans 24 Hours pole',
-    source: 'RacingNews365',
-    url: 'https://racingnews365.com/dramatic-penalty-strips-former-f1-driver-of-le-mans-24-hours-pole',
-    publishedAt: '2026-06-11T20:37:00.000Z',
-    excerpt: 'A late twist to qualifying at Le Mans as the pole position award changed hands after the session ended.',
-    imageUrl: 'https://cdn.racingnews365.com/2026/38-Cadillac.jpg?v=1781208115&width=1800&height=945&quality=75&crop=6000%2C3150%2C0%2C425',
-    imageCredit: '38 Cadillac'
+    headline: 'Leclerc crashes in Q3 to end pole hopes!',
+    source: 'Sky Sports F1',
+    url: 'https://www.skysports.com/watch/video/13553716/barcelona-catalunya-gp-charles-leclerc-crashes-out-of-qualifying',
+    publishedAt: '2026-06-13T14:58:00.000Z',
+    excerpt: 'Charles Leclerc crashed again for the second time in seven days as he found the wall at Turn Four during qualifying at the Barcelona-Catalunya Grand Prix.',
+    imageUrl: 'https://e0.365dm.com/26/06/1600x900/skysports-leclerc-charles-leclerc_7272499.jpg?20260613160319',
+    imageCredit: ''
   },
   {
     id: 'a3',
     series: 'f1',
-    headline: 'Mercedes weighs up legal options over Gasly Monaco F1 penalty precedent',
+    headline: 'F1 Barcelona GP: Russell beats Hamilton to pole as Leclerc crashes',
     source: 'Autosport',
-    url: 'https://www.autosport.com/f1/news/mercedes-weighs-up-legal-options-over-gasly-monaco-f1-penalty-precedent/10829603/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
-    publishedAt: '2026-06-12T15:46:14.000Z',
-    excerpt: 'Toto Wolff says Mercedes is "looking what it can do" for George Russell after FIA stewards overturned Pierre Gasly\'s Formula 1 Monaco Grand Prix penalty.Gasly was one of five drivers penalised for pitlane speeding, with it emerging after the race that there had been an error…',
-    imageUrl: 'https://cdn-5.motorsport.com/images/amp/YvKQX3n6/s6/george-russell-mercedes-2.jpg',
+    url: 'https://www.autosport.com/f1/news/f1-barcelona-gp-george-russell-beats-lewis-hamilton-to-pole-as-charles-leclerc-crashes/10829941/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
+    publishedAt: '2026-06-13T15:28:46.000Z',
+    excerpt: 'George Russell finally struck back in the 2026 Formula 1 world title fight as he ended Kimi Antonelli’s dominant streak to take pole for the Barcelona Grand Prix.Russell set a 1m14.679s for his third pole of 2026, 0.064s quicker than second-placed Lewis Hamilton with Antonelli…',
+    imageUrl: 'https://cdn-2.motorsport.com/images/amp/2jED9Mg0/s6/george-russell-mercedes-4.jpg',
     imageCredit: ''
   },
   {
     id: 'a4',
     series: 'nascar',
-    headline: 'Will Denny Hamlin catch Tyler Reddick for the championship lead?',
+    headline: 'NASCAR moves up start time for Pocono Cup race due to weather threat',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/will-denny-hamlin-catch-tyler-reddick-for-the-championship-lead/10829606/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-12T15:58:02.000Z',
-    excerpt: 'On NASCAR\'s Inside the Race podcast with Steve Letarte and Kyle Petty, they broke down the recent race at Michigan International Speedway, which featured a record-number of cautions.One of those cautions involved Tyler Reddick, whose incredible top 15 streak came to an abrupt…',
-    imageUrl: 'https://cdn-5.motorsport.com/images/amp/2y7A1Ny6/s6/tyler-reddick-no-45-23xi-racin.jpg',
+    url: 'https://www.motorsport.com/nascar-cup/news/nascar-moves-up-start-time-for-pocono-cup-race-due-to-weather-threat/10829924/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-06-13T14:43:34.000Z',
+    excerpt: 'Sunday\'s NASCAR Cup Series race at Pocono Raceway was originally scheduled to start just after 3pm EST, with the green flag planned for 3:21pm EST.Due to the threat of inclement weather, the start of Sunday\'s 400-mile/160-lap event has been moved up a full two hours to 1pm EST.…',
+    imageUrl: 'https://cdn-5.motorsport.com/images/amp/0rVxbMy0/s6/gettyimages-1561127040.jpg',
     imageCredit: ''
   },
   {
     id: 'a5',
     series: 'nascar',
-    headline: 'Kyle Busch Remembered: From winning Pocono with one gear to KBM\'s 100th',
-    source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/kyle-busch-remembered-pocono-one-gear-kbm-win/10829330/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-12T16:04:18.000Z',
-    excerpt: 'As NASCAR heads to Pocono, we want to highlight the most iconic Kyle Busch moments from his time racing at the Tricky Triangle. It was the site of several milestone wins for KB, and a track he seemed to enjoy quite a bit with a total of eight wins.Busch is the winningest driver…',
-    imageUrl: 'https://cdn-9.motorsport.com/images/amp/0kZAzbq6/s6/kyle-busch-earns-kyle-busch-mo.jpg',
+    headline: 'Byron’s points haul a long way off last year’s but he’s still positive about what’s ahead',
+    source: 'Racer',
+    url: 'https://racer.com/2026/06/13/byron-s-points-haul-a-long-way-off-last-year-s-but-he-s-still-positive-about-what-s-ahead',
+    publishedAt: '2026-06-13T15:30:42.000Z',
+    excerpt: 'William Byron reiterated the belief Saturday at Pocono Raceway that he and his Hendrick Motorsports team are "on the cusp" of turning things around, and the sooner the better.',
+    imageUrl: '',
     imageCredit: ''
   },
   {
     id: 'a6',
     series: 'nascar',
-    headline: 'The many ways Pocono Raceway is honoring Kyle Busch this weekend',
+    headline: 'Kevin Harvick’s message to Carson Hocevar: ‘Do not change’',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/the-many-ways-pocono-raceway-is-honoring-kyle-busch-this-weekend/10829336/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-12T13:35:02.000Z',
-    excerpt: 'Pocono Raceway doesn\'t have infield grass where they can stencil a black No. 8, but the track is going out of its way to honor fallen NASCAR legend Kyle Busch.The 41-year-old died unexpectedly on May 21st after a severe case of pneumonia progressed into sepsis. With 234 NASCAR…',
-    imageUrl: 'https://cdn-8.motorsport.com/images/amp/0qgPDmgY/s6/kbpocono-2.jpg',
+    url: 'https://www.motorsport.com/nascar-cup/news/kevin-harvicks-message-to-carson-hocevar-do-not-change-/10829706/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-06-12T20:49:02.000Z',
+    excerpt: 'Kevin Harvick doesn’t want Carson Hocevar to change.While the likes of Austin Dillon and Bubba Wallace expressed frustrations on Sunday at Michigan International Speedway, specifically over a Lap 83 restart where Hocevar tagged the rear of John Hunter Nemechek and ignited a…',
+    imageUrl: 'https://cdn-7.motorsport.com/images/amp/6n7ABJe0/s6/harvitex-jpg.jpg',
     imageCredit: ''
   },
   {
     id: 'a7',
     series: 'wec',
-    headline: '“I know I’m going to die here” – Davidson reflects on back-breaking Le Mans crash',
-    source: 'Autosport',
-    url: 'https://www.autosport.com/wec/news/i-know-im-going-to-die-here-anthony-davidson-reflects-on-back-breaking-le-mans-crash/10829374/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
-    publishedAt: '2026-06-12T07:56:16.000Z',
-    excerpt: 'Anthony Davidson says he thought he was “going to die” in his frightening, race-ending crash at the 2012 Le Mans 24 Hours.Davidson was running third overall in the #8 Toyota when he collided with the #81 AF Corse Ferrari driven by Piergiuseppe Perazzini, as he attempted to lap…',
-    imageUrl: 'https://cdn-7.motorsport.com/images/amp/2Qe85XN2/s6/8-toyota-ts-030-hybrid.jpg',
+    headline: 'Gidley Cruises to GTA Race 1 Pole at Road Atlanta',
+    source: 'Sportscar365',
+    url: 'https://sportscar365.com/sro/gt-america/gidley-cruises-to-gta-race-1-pole-at-road-atlanta/',
+    publishedAt: '2026-06-13T13:34:10.000Z',
+    excerpt: 'Memo Gidley continues recent strong GT America form with pole in qualifying...',
+    imageUrl: 'https://sportscar365.com/wp-content/uploads/2026/06/Gidley.jpg',
     imageCredit: ''
   },
   {
     id: 'a8',
-    series: 'wec',
-    headline: 'Le Mans polesetter Dries Vanthoor on record-breaking lap, penalty drama, and BMW’s odds for victory',
-    source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/wec/news/le-mans-polesetter-dries-vanthoor-on-record-breaking-lap-penalty-drama-and-bmws-odds-for-victory/10829517/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-12T13:02:53.000Z',
-    excerpt: 'Motorsport: Dries, yesterday you officially set the fastest ever Hypercar lap at Le Mans, in 3m22.564s. Can you tell us about that lap, and what it was like from your perspective?Dries Vanthoor: “It was a great day yesterday, obviously. I think the lap itself was pretty good. I…',
-    imageUrl: 'https://cdn-1.motorsport.com/images/amp/YK13ZJb0/s6/15-bmw-m-team-wrt-bmw-m-hybrid.jpg',
+    series: 'other',
+    headline: '2026 Misano WorldSBK: Championship standings after Race 1',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/wsbk/results/1098001/1/2026-misano-worldsbk-championship-standings-after-race-1',
+    publishedAt: '2026-06-13T14:26:10.000Z',
+    excerpt: 'WorldSBK riders\' standings after Race 1 at the 2026 Misano round, the seventh of the 2026 season.',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-06/gng_1324587_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   }
 ];
@@ -136,46 +136,46 @@ const HOMEPAGE_ARTICLES = [
 const HOMEPAGE_ALTERNATES = [
   {
     id: 'a101',
-    series: 'wec',
-    headline: '“I know I’m going to die here” – Anthony Davidson reflects on back-breaking Le Mans crash',
-    source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/wec/news/i-know-im-going-to-die-here-anthony-davidson-reflects-on-back-breaking-le-mans-crash/10829361/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-12T07:54:15.000Z',
-    excerpt: 'Anthony Davidson says he thought he was “going to die” in his frightening, race-ending crash at the 2012 Le Mans 24 Hours.Davidson was running third overall in the #8 Toyota when he collided with the #81 AF Corse Ferrari driven by Piergiuseppe Perazzini, as he attempted to lap…',
-    imageUrl: 'https://cdn-5.motorsport.com/images/amp/2Qe85XN2/s6/8-toyota-ts-030-hybrid.jpg',
+    series: 'f1',
+    headline: 'George Russell pips Lewis Hamilton to F1 Barcelona GP pole after Charles Leclerc crashes out',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/f1/news/1098053/1/george-russell-pips-lewis-hamilton-f1-barcelona-gp-pole-after-charles-leclerc',
+    publishedAt: '2026-06-13T15:16:08.000Z',
+    excerpt: 'George Russell takes pole ahead of Lewis Hamilton in Barcelona.',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-06/xpb_1417727_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
     id: 'a102',
-    series: 'wec',
-    headline: 'Le Mans 24h: BMW inherits pole position after Cadillac penalty',
-    source: 'Autosport',
-    url: 'https://www.autosport.com/wec/news/le-mans-24h-cadillac-snatches-pole-away-from-bmw-by-0005s/10829274/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
-    publishedAt: '2026-06-11T20:09:12.000Z',
-    excerpt: 'BMW has taken pole position for the 2026 Le Mans 24 Hours with Dries Vanthoor after Cadillac\'s effort, quicker by five-thousandths of a second, was rendered null and void by the stewards.Read Also:WECWhy Cadillac lost pole position for Le Mans 24 HoursIn Hyperpole 1, Earl…',
-    imageUrl: 'https://cdn-1.motorsport.com/images/amp/6zoJOXJ0/s6/15-bmw-m-team-wrt-bmw-m-hybrid-2.jpg',
-    imageCredit: ''
+    series: 'f1',
+    headline: 'Charles Leclerc triggers red flag with disastrous Barcelona qualifying crash',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/charles-leclerc-triggers-red-flag-with-disastrous-barcelona-qualifying-crash',
+    publishedAt: '2026-06-13T14:59:00.000Z',
+    excerpt: 'The Ferrari driver suffered an unusual crash during Q3 for the Barcelona-Catalunya Grand Prix.',
+    imageUrl: 'https://cdn.racingnews365.com/Screenshot-2026-06-13-at-16.52.47.png?v=1781362468&width=1200&height=630&quality=75&crop=1602%2C842%2C0%2C132',
+    imageCredit: 'Screenshot 2026 06 13 at 16 52 47'
   },
   {
     id: 'a103',
-    series: 'wec',
-    headline: 'BMW gifted 24 Hours of Le Mans pole after Cadillac penalty',
-    source: 'Crash.net',
-    url: 'https://www.crash.net/le-mans/news/1097631/1/bmw-gifted-24-hours-le-mans-pole-after-cadillac-penalty',
-    publishedAt: '2026-06-11T20:28:28.000Z',
-    excerpt: 'Cadillac scored its second successive pole at the 24 Hours of Le Mans, but was stripped of it post-session',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-06/xpb_1415792_hires.jpg?width=1600&aspect_ratio=16:9',
+    series: 'f1',
+    headline: 'F1 Barcelona GP: George Russell beats Lewis Hamilton to pole as Charles Leclerc crashes',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/f1/news/f1-barcelona-gp-qualifying-report/10829928/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-06-13T15:26:38.000Z',
+    excerpt: 'George Russell finally struck back in the 2026 Formula 1 world title fight as he ended Kimi Antonelli’s dominant streak to take pole for the Barcelona Grand Prix.Russell set a 1m14.679s for his third pole of 2026, 0.064s quicker than second-placed Lewis Hamilton with Antonelli…',
+    imageUrl: 'https://cdn-1.motorsport.com/images/amp/6DGq977Y/s6/george-russell-mercedes-3.jpg',
     imageCredit: ''
   },
   {
     id: 'a104',
-    series: 'wec',
-    headline: 'Le Mans 24h: Cadillac snatches pole away from BMW by 0.005s... then gets penalty',
-    source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/wec/news/le-mans-24h-hyperpole/10829260/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-11T20:04:00.000Z',
-    excerpt: 'BMW has taken pole position for the 2026 Le Mans 24 Hours with Dries Vanthoor after Cadillac\'s effort, quicker by five-thousandths of a second, was rendered null and void by the stewards.Read Also:WECWhy Cadillac lost pole position for 2026 Le Mans 24 HoursHypercarIn Hyperpole…',
-    imageUrl: 'https://cdn-6.motorsport.com/images/amp/YpbPZB30/s6/38-cadillac-hertz-team-jota-ca.jpg',
+    series: 'f1',
+    headline: 'Russell beats Hamilton to Barcelona pole as Leclerc crashes out',
+    source: 'Racer',
+    url: 'https://racer.com/2026/06/13/russell-beats-hamilton-to-barcelona-pole-as-leclerc-crashes-out',
+    publishedAt: '2026-06-13T15:25:19.000Z',
+    excerpt: 'George Russell edged Lewis Hamilton to pole position in a closely contested qualifying session for the Barcelona-Catalunya Grand Prix.',
+    imageUrl: '',
     imageCredit: ''
   }
 ];
@@ -322,6 +322,14 @@ function openHomeFeaturedCard(series){
 
 function openHomeChampionship(series){
   track('home:championship',{series});
+  // New-series cards route straight into the Standings sub-tab; 'wec' is the
+  // display key for the 'gt3' routing key.
+  if(series==='indycar'||series==='motogp'||series==='wrc'||series==='wec'){
+    const key=series==='wec'?'gt3':series;
+    switchSeries(key);
+    goToSubTab(key,'standings');
+    return;
+  }
   switchSeries(series);
   if(series==='f1')switchF1Tab('drivers');
   else if(series==='nascar')switchNascarTab('drivers');
@@ -372,6 +380,16 @@ function renderHomeChampionships(){
   const nGap=nL&&nP2?(nL.points-nP2.points):0;
   const f1Team=f1L?.Constructors?.[0]?.name||'—';
   const nDrv=NASCAR_CUP_DRIVERS[nL?.driver]||{};
+  // New-series leaders (all-series buildout 2026-06-12). Each card reads its
+  // module's verified standings constants; gaps derive from the P2 row.
+  const iL=INDYCAR_STANDINGS[0],iGap=iL.points-INDYCAR_STANDINGS[1].points;
+  const iDrv=INDYCAR_DRIVERS[iL.driver]||{};
+  const mL=MOTOGP_STANDINGS[0],mGap=mL.points-MOTOGP_STANDINGS[1].points;
+  const mRider=MOTOGP_RIDERS[mL.rider]||{};
+  const wL=WEC_HYPERCAR_STANDINGS[0],wGap=wL.points-WEC_HYPERCAR_STANDINGS[1].points;
+  const wMfr=(wL.team.match(/BMW|Toyota|Ferrari|Alpine|Peugeot|Cadillac|Genesis|Aston Martin/)||['default'])[0];
+  const rL=WRC_STANDINGS[0],rGap=rL.points-WRC_STANDINGS[1].points;
+  const rDrv=WRC_DRIVERS[rL.driver]||{};
   return`<div class="section-title"><span>Championship Leaders</span><span>Tap to open</span></div>
   <div class="home-champ-grid">
     <div class="home-champ-card" onclick="openHomeChampionship('f1')">
@@ -385,6 +403,30 @@ function renderHomeChampionships(){
       <div class="home-champ-name" style="color:${nascarMfrColor(nDrv.mfr)};">${nL?.driver||'—'}</div>
       <div class="home-champ-team">${nDrv.team||'—'}</div>
       <div class="home-champ-pts"><span style="color:var(--yellow);">${nL?.points||0} PTS</span><span style="color:var(--muted);">  ·  +${nGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('indycar')">
+      <div class="home-champ-series" style="color:#37bedd;">INDYCAR</div>
+      <div class="home-champ-name" style="color:${indyEngineColor(iDrv.engine)};">${iL.driver}</div>
+      <div class="home-champ-team">${iDrv.team||'—'}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  +${iGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('motogp')">
+      <div class="home-champ-series" style="color:var(--orange);">MOTOGP</div>
+      <div class="home-champ-name" style="color:${motogpBikeColor(mRider.bike)};">${mL.rider}</div>
+      <div class="home-champ-team">${mRider.team||'—'}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${mL.points} PTS</span><span style="color:var(--muted);">  ·  +${mGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('wec')">
+      <div class="home-champ-series" style="color:var(--green);">WEC</div>
+      <div class="home-champ-name" style="color:${wecMfrColor(wMfr)};">${wL.crew}</div>
+      <div class="home-champ-team">${wL.team}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${wL.points} PTS</span><span style="color:var(--muted);">  ·  +${wGap}</span></div>
+    </div>
+    <div class="home-champ-card" onclick="openHomeChampionship('wrc')">
+      <div class="home-champ-series" style="color:#b0b0b0;">WRC</div>
+      <div class="home-champ-name" style="color:${wrcTeamColor(rDrv.team)};">${rL.driver}</div>
+      <div class="home-champ-team">${rDrv.team||'—'}</div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  +${rGap}</span></div>
     </div>
   </div>`;
 }
