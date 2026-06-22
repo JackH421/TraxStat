@@ -53,6 +53,7 @@ const NASCAR_CUP_DRIVERS={
   'Bowman':        {first:'Alex',      team:'Hendrick Motorsports', mfr:'Chevrolet', num:48},
   'Custer':        {first:'Cole',      team:'Haas Factory Team',    mfr:'Chevrolet', num:41},
   'Ware':          {first:'Cody',      team:'Rick Ware Racing',     mfr:'Chevrolet', num:51},
+  'Heim':          {first:'Corey',     team:'23XI Racing',          mfr:'Toyota',    num:67},
 };
 
 // 2026 Cup Series schedule (R1-R36) — verified against Wikipedia
@@ -95,7 +96,7 @@ const NASCAR_CUP_SCHEDULE=[
   {round:36,race:'Straight Talk Wireless 400', track:'Homestead-Miami Speedway',           country:'🇺🇸', date:'2026-11-08', laps:267, chase:true},
 ];
 
-// Completed race results — winners verified from NASCAR.com gallery + race recaps
+// Completed race results through R17 — winners verified from NASCAR.com gallery + race recaps
 // Where podium/stage data is verified, included. Otherwise just winner.
 const NASCAR_CUP_RESULTS={
   1:  {winner:'Reddick',    p2:'Elliott', p3:null,        polePos:'Busch',     stage1:'Smith',    stage2:'Wallace',  note:'68th Daytona 500 — Reddick passes Elliott exiting Turn 4 after restart with 5 to go. Hamlin tap triggers 20-car "Big One" in stage 2.'},
@@ -156,57 +157,59 @@ const NASCAR_CUP_RESULTS={
        ]},
   14: {winner:'Hamlin',     p2:'Bell',    p3:'Briscoe',   polePos:'Hamlin',    stage1:'Allmendinger',stage2:'Suarez',  note:"Hamlin's 2nd win of 2026, his first at Nashville and 62nd career Cup win. Qualifying was rained out and Hamlin took pole on the competition formula; he jumped the initial start and was sent to the rear of the 38-car field, then charged back over 300 green-flag laps to the checkered. Bell P2, Briscoe P3. Stage wins: Allmendinger (1), Suarez (2)."},
   15: {winner:'Hamlin',     p2:'Jones',   p3:'Wallace',   polePos:'Hamlin',    stage1:'Reddick',  stage2:'Elliott',  note:"Hamlin completes the Nashville–Michigan double — 3rd win of 2026 and 63rd career Cup win, tying the late Kyle Busch for 9th on the all-time wins list. He qualified on pole (36.901s) but started from the rear for unapproved adjustments after underbody damage. Points leader Reddick crashed on lap 82 and finished 35th — his first DNF of 2026 — cutting his championship lead over Hamlin to 51. Local driver Erik Jones P2, Wallace P3."},
+  16: {winner:'Hamlin',     p2:'Reddick', p3:'Byron',     polePos:'Hamlin',    stage1:'Hamlin',   stage2:'Gilliland',note:"Hamlin completes the Nashville–Michigan–Pocono triple — 64th career Cup win, record 8th at Pocono. Passes Bell with 5 laps to go and wins by 1.678s over Reddick. Nemechek led the most laps (42). 5 cautions."},
+  17: {winner:'Heim',       p2:'Wallace', p3:'Larson',    polePos:'van Gisbergen',stage1:'Blaney', stage2:'Preece',   note:"Inaugural NASCAR Cup race at Naval Base Coronado (Anduril 250 street race) — Corey Heim takes lead from Reddick with 3 laps to go after Reddick suffers late flat tyre. First career Cup win for Heim in 13th start (23XI Racing, No. 67 Toyota). Reddick's points lead over Hamlin slashed to 8. Race commemorated U.S. Navy's 250th birthday."},
 };
 
-// 2026 Cup driver standings after FireKeepers Casino 400 (R15 of 36) —
-// verified beyondtheflag.com (full 35-driver table), cross-checked vs the
-// post-Michigan recap (Reddick 669, Hamlin 618, 51-point gap).
+// 2026 Cup driver standings after Anduril 250 (R17 of 36) —
+// verified beyondtheflag.com (full 35-driver table), cross-checked vs
+// racingnews.co post-R17 recap (Reddick 716, Hamlin 708, 8-point gap).
 // Kyle Busch removed: official standings list 35 drivers and omit him
 // (he is honored as "the late Kyle Busch" in R13/R15 coverage). He remains in
 // NASCAR_CUP_DRIVERS because R1–R12 results still reference him.
 const NASCAR_CUP_STANDINGS=[
-  {pos:1, driver:'Reddick',       points:669, gap:0},
-  {pos:2, driver:'Hamlin',        points:618, gap:-51},
-  {pos:3, driver:'Blaney',        points:512, gap:-157},
-  {pos:4, driver:'Elliott',       points:482, gap:-187},
-  {pos:5, driver:'Gibbs',         points:470, gap:-199},
-  {pos:6, driver:'Larson',        points:453, gap:-216},
-  {pos:7, driver:'Hocevar',       points:428, gap:-241},
-  {pos:8, driver:'Buescher',      points:424, gap:-245},
-  {pos:9, driver:'Suarez',        points:418, gap:-251},
-  {pos:10,driver:'Bell',          points:410, gap:-259},
-  {pos:11,driver:'Wallace',       points:378, gap:-291},
-  {pos:12,driver:'Byron',         points:377, gap:-292},
-  {pos:13,driver:'Briscoe',       points:370, gap:-299},
-  {pos:14,driver:'van Gisbergen', points:355, gap:-314},
-  {pos:15,driver:'Keselowski',    points:350, gap:-319},
-  {pos:16,driver:'Cindric',       points:332, gap:-337, cutline:true},
-  {pos:17,driver:'Logano',        points:329, gap:-340},
-  {pos:18,driver:'Jones',         points:314, gap:-355},
-  {pos:19,driver:'Preece',        points:313, gap:-356},
-  {pos:20,driver:'Allmendinger',  points:286, gap:-383},
-  {pos:21,driver:'McDowell',      points:286, gap:-383},
-  {pos:22,driver:'Smith',         points:282, gap:-387},
-  {pos:23,driver:'Stenhouse Jr',  points:271, gap:-398},
-  {pos:24,driver:'Chastain',      points:260, gap:-409},
-  {pos:25,driver:'Gilliland',     points:255, gap:-414},
-  {pos:26,driver:'Herbst',        points:250, gap:-419},
-  {pos:27,driver:'Dillon',        points:245, gap:-424},
-  {pos:28,driver:'Nemechek',      points:236, gap:-433},
-  {pos:29,driver:'Gragson',       points:212, gap:-457},
-  {pos:30,driver:'Berry',         points:196, gap:-473},
-  {pos:31,driver:'Ty Dillon',     points:190, gap:-479},
-  {pos:32,driver:'Bowman',        points:178, gap:-491},
-  {pos:33,driver:'Custer',        points:175, gap:-494},
-  {pos:34,driver:'Zilisch',       points:148, gap:-521},
-  {pos:35,driver:'Ware',          points:131, gap:-538},
+  {pos:1, driver:'Reddick',       points:716, gap:0},
+  {pos:2, driver:'Hamlin',        points:708, gap:-8},
+  {pos:3, driver:'Blaney',        points:583, gap:-133},
+  {pos:4, driver:'Larson',        points:536, gap:-180},
+  {pos:5, driver:'Gibbs',         points:535, gap:-181},
+  {pos:6, driver:'Elliott',       points:534, gap:-182},
+  {pos:7, driver:'Buescher',      points:500, gap:-216},
+  {pos:8, driver:'Suarez',        points:478, gap:-238},
+  {pos:9, driver:'Hocevar',       points:476, gap:-240},
+  {pos:10,driver:'Briscoe',       points:431, gap:-285},
+  {pos:11,driver:'Wallace',       points:429, gap:-287},
+  {pos:12,driver:'Bell',          points:422, gap:-294},
+  {pos:13,driver:'Byron',         points:421, gap:-295},
+  {pos:14,driver:'Jones',         points:372, gap:-344},
+  {pos:15,driver:'Cindric',       points:370, gap:-346},
+  {pos:16,driver:'Preece',        points:367, gap:-349, cutline:true},
+  {pos:17,driver:'van Gisbergen', points:362, gap:-354},
+  {pos:18,driver:'Logano',        points:357, gap:-359},
+  {pos:19,driver:'Keselowski',    points:354, gap:-362},
+  {pos:20,driver:'Allmendinger',  points:346, gap:-370},
+  {pos:21,driver:'McDowell',      points:333, gap:-383},
+  {pos:22,driver:'Chastain',      points:327, gap:-389},
+  {pos:23,driver:'Smith',         points:316, gap:-400},
+  {pos:24,driver:'Herbst',        points:309, gap:-407},
+  {pos:25,driver:'Gilliland',     points:306, gap:-410},
+  {pos:26,driver:'Stenhouse Jr',  points:303, gap:-413},
+  {pos:27,driver:'Nemechek',      points:298, gap:-418},
+  {pos:28,driver:'Dillon',        points:270, gap:-446},
+  {pos:29,driver:'Gragson',       points:216, gap:-500},
+  {pos:30,driver:'Berry',         points:208, gap:-508},
+  {pos:31,driver:'Ty Dillon',     points:202, gap:-514},
+  {pos:32,driver:'Bowman',        points:199, gap:-517},
+  {pos:33,driver:'Custer',        points:194, gap:-522},
+  {pos:34,driver:'Zilisch',       points:165, gap:-551},
+  {pos:35,driver:'Ware',          points:152, gap:-564},
 ];
 
-// Manufacturer wins after R15 — verified by counting NASCAR.com winners gallery
+// Manufacturer wins after R17 — verified by counting NASCAR.com winners gallery
 const NASCAR_CUP_MFRS=[
-  {pos:1, mfr:'Toyota',    wins:9, drivers:['Reddick (5)','Hamlin (3)','Gibbs']},
-  {pos:2, mfr:'Chevrolet', wins:5, drivers:['Elliott (2)','Hocevar','van Gisbergen','Suarez']},
-  {pos:3, mfr:'Ford',      wins:1, drivers:['Blaney']},
+  {pos:1, mfr:'Toyota',    wins:11, drivers:['Reddick (5)','Hamlin (4)','Gibbs','Heim']},
+  {pos:2, mfr:'Chevrolet', wins:5,  drivers:['Elliott (2)','Hocevar','van Gisbergen','Suarez']},
+  {pos:3, mfr:'Ford',      wins:1,  drivers:['Blaney']},
 ];
 
 // ── NASCAR HELPERS ────────────────────────────────────────────────────────────
@@ -414,7 +417,7 @@ function renderNascarDrivers(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityDrivers();
   if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  const hdr=`<div class="section-title"><span>Cup Drivers · 2026 · After R15 Michigan</span><span>Top 16 = Chase</span></div>`;
+  const hdr=`<div class="section-title"><span>Cup Drivers · 2026 · After R17 Coronado</span><span>Top 16 = Chase</span></div>`;
   const rows=NASCAR_CUP_STANDINGS.map(d=>{
     const info=nascarDrv(d.driver);
     const isCutline=d.cutline;
@@ -441,7 +444,7 @@ function renderNascarDrivers(){
     </div>`;
   }).join('');
   content.innerHTML=hdr+rows;
-  setStats(`${NASCAR_CUP_STANDINGS[0].points} pts`,NASCAR_CUP_STANDINGS[0].driver,'DRIVERS','R15/36');
+  setStats(`${NASCAR_CUP_STANDINGS[0].points} pts`,NASCAR_CUP_STANDINGS[0].driver,'DRIVERS','R17/36');
 }
 
 function renderNascarDriverBreakdown(name,info,points,pos){
@@ -487,7 +490,7 @@ function renderNascarMfrs(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityMfrs();
   if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  const hdr=`<div class="section-title"><span>Cup Manufacturers · 2026 · After R15</span><span>Wins through Michigan</span></div>`;
+  const hdr=`<div class="section-title"><span>Cup Manufacturers · 2026 · After R17</span><span>Wins through Coronado</span></div>`;
   const note=`<div style="padding:12px 16px;background:#1a1a05;border-bottom:1px solid var(--border);font-family:'Barlow',sans-serif;font-size:11px;color:var(--yellow);line-height:1.5;">
     ℹ️ NASCAR no longer publicly publishes official manufacturer points after each race. Wins shown below are verified from NASCAR.com.
   </div>`;
@@ -509,7 +512,7 @@ function renderNascarMfrs(){
     </div>`;
   }).join('');
   content.innerHTML=hdr+note+rows;
-  setStats(`${NASCAR_CUP_MFRS[0].wins} wins`,NASCAR_CUP_MFRS[0].mfr,'MFRS','R15/36');
+  setStats(`${NASCAR_CUP_MFRS[0].wins} wins`,NASCAR_CUP_MFRS[0].mfr,'MFRS','R17/36');
 }
 
 function renderNascarMfrBreakdown(m){
