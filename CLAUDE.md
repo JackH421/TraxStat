@@ -99,9 +99,9 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **Push at natural stopping points**, not after every commit. A working feature, a verified fix, a completed section.
 - **Never amend or force-push** commits already on GitHub. Pushed history is shared history.
 
-## Current season state (as of 2026-06-11)
+## Current season state (as of 2026-06-22)
 
-- **F1**: Round 6 (Monaco GP) complete. Standings: Antonelli 156, Hamilton 90, Russell 88. Antonelli's 5th win in 6 rounds in a chaotic race with seven retirements (Verstappen anti-stall at the start; Leclerc/Stroll/Sainz crashes; Norris, Bearman, Bottas out). Russell penalised twice → P12. Alonso added to `DRIVER_RACE_POINTS` (first point of 2026). Next: Spanish GP, 2026-06-14.
+- **F1**: Round 7 (Spanish GP, Barcelona) complete. Hamilton wins for Ferrari (P1). Russell P2, Norris P3. Antonelli DNF. Standings: Antonelli 156, Hamilton 115, Russell 106. Monaco R6 P3–P7 corrected vs prior entry: Gasly P3, Hadjar P4, Piastri P5, Lawson P6, Lindblad P7 (verified via back-calculation from official post-R7 standings). Next: Austrian GP R8, 2026-06-28.
 - **NASCAR Cup**: Round 15 (FireKeepers Casino 400, Michigan) complete — Hamlin won R14 Nashville (62nd career) and R15 Michigan (63rd, tying the late Kyle Busch for 9th all-time) back-to-back. Standings: Reddick 669, +51 over P2 (Hamlin 618) after Reddick crashed out at Michigan (P35, first DNF of 2026). Manufacturers: Toyota 9, Chevrolet 5, Ford 1. Kyle Busch remains removed from the standings (official list runs 35 deep, omits him) but is retained in `NASCAR_CUP_DRIVERS` because R1–R12 results still reference him. Next: The Great American Getaway 400 at Pocono, 2026-06-14.
 
 - **NASCAR Xfinity**: Round 16 (Nashville) complete — Allgaier leads 770, +179 over Love. Next: Pocono, 2026-06-13.
