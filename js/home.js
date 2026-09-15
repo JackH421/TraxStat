@@ -41,35 +41,35 @@ const HOMEPAGE_ARTICLES = [
   {
     id: 'a1',
     series: 'f1',
-    headline: 'Ferrari explains brake issues that caused Lewis Hamilton’s Madrid F1 retirement',
+    headline: 'Charles Leclerc set for Baku F1 grid penalty despite positive Ferrari engine news',
     source: 'Crash.net',
-    url: 'https://www.crash.net/f1/news/1104705/1/ferrari-explains-brake-issues-caused-lewis-hamiltons-madrid-f1-retirement',
-    publishedAt: '2026-09-14T12:43:53.000Z',
-    excerpt: 'Ferrari has explained what went wrong with Lewis Hamilton\'s brakes in the Spanish Grand Prix.',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-09/10-spanish-gp-2026-friday_50bd450f-4065-417a-a50d-9e6e9ea58d4c.jpg?width=1600&aspect_ratio=16:9',
+    url: 'https://www.crash.net/motogp/news/1104724/1/charles-leclerc-set-baku-f1-grid-penalty-despite-positive-ferrari-engine-news',
+    publishedAt: '2026-09-15T15:05:35.000Z',
+    excerpt: 'Charles Leclerc is set to take a grid penalty for a new engine at the Azerbaijan GP',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-09/xpb_1436698_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
     id: 'a2',
     series: 'f1',
-    headline: 'The crucial seconds that cost Lando Norris comfortable Spanish GP victory',
-    source: 'RacingNews365',
-    url: 'https://racingnews365.com/the-crucial-seconds-that-cost-lando-norris-comfortable-spanish-gp-victory',
-    publishedAt: '2026-09-14T15:45:00.000Z',
-    excerpt: 'Lando Norris lost a probable victory in the Spanish GP after being unable to pit during a virtual safety car, an opportunity he missed by a matter of seconds.',
-    imageUrl: 'https://cdn.racingnews365.com/2026/Norris/XPB_1436928_HiRes.jpg?v=1789316111&width=1800&height=945&quality=75&crop=5185%2C2723%2C0%2C369',
-    imageCredit: 'Norris Madrid Race'
+    headline: 'Audi F1 junior Freddie Slater signs F2 deal for 2027 season',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/fia-f2/news/f3-runner-up-freddie-slater-signs-f2-deal-for-2027-season/10856038/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-09-15T09:47:13.000Z',
+    excerpt: 'Formula 3 runner-up and Audi Formula 1 junior Freddie Slater will step up to Formula 2 with Invicta Racing in 2027.The 2024 Italian F4 and 2025 Formula Regional European champion was signed by Audi to spearhead its new Driver Development Programme in 2026, while he moved to F3…',
+    imageUrl: 'https://cdn-1.motorsport.com/images/amp/6lmAQVx0/s6/freddie-slater-trident.jpg',
+    imageCredit: ''
   },
   {
     id: 'a3',
     series: 'f1',
-    headline: 'Carlos Sainz accuses Fernando Alonso of getting him Madring penalty',
-    source: 'RacingNews365',
-    url: 'https://racingnews365.com/carlos-sainz-accuses-fernando-alonso-of-getting-him-madring-penalty',
-    publishedAt: '2026-09-14T14:30:00.000Z',
-    excerpt: 'Carlos Sainz and Fernando Alonso have shared their accounts of their collision at the Spanish Grand Prix, with the pair not quite seeing eye to eye...',
-    imageUrl: 'https://cdn.racingnews365.com/2026/Sainz/Sainz-Alonso.jpg?v=1789374503&width=1800&height=945&quality=75&crop=5185%2C2723%2C0%2C369',
-    imageCredit: 'Sainz Alonso'
+    headline: 'What Colapinto learned from Gasly\'s Monza pole to make his Madrid breakthrough',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/f1/news/colapinto-reveals-how-monza-lessons-helped-him-shine-at-madring/10856002/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-09-15T07:18:31.000Z',
+    excerpt: 'Franco Colapinto says studying Pierre Gasly\'s qualifying performance at Monza helped him make progress at the Spanish Grand Prix, where he finished seventh after reaching Q3.Colapinto had been left searching for answers after qualifying eighth at Monza while his Alpine team-mate…',
+    imageUrl: 'https://cdn-3.motorsport.com/images/amp/0arEXMw2/s6/franco-colapinto-alpine.jpg',
+    imageCredit: ''
   },
   {
     id: 'a4',
@@ -79,11 +79,22 @@ const HOMEPAGE_ARTICLES = [
     url: 'https://www.motorsport.com/nascar-cup/news/winners-and-losers-from-a-crash-filled-nascar-cup-race-at-gateway/10855713/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
     publishedAt: '2026-09-14T16:20:50.000Z',
     excerpt: 'There were not many drivers who enjoyed the \'Enjoy Illinois 300\' on Sunday. While the NASCAR Cup race at WWT Raceway featured some great racing, it also suffered from a never-ending string of incidents. There was a season-high and track record 18 cautions, two red flags, and the…',
-    imageUrl: 'https://cdn-2.motorsport.com/images/amp/0mXyqjk6/s6/caution-flag.jpg',
+    imageUrl: 'https://cdn-6.motorsport.com/images/amp/0mXyqjk6/s6/caution-flag.jpg',
     imageCredit: ''
   },
   {
     id: 'a5',
+    series: 'nascar',
+    headline: 'Why Gateway is so hard on NASCAR Cup Series brakes',
+    source: 'Motorsport.com NASCAR',
+    url: 'https://www.motorsport.com/nascar-cup/news/why-gateway-is-so-hard-on-nascar-cup-series-brakes-/10855971/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-09-14T20:02:54.000Z',
+    excerpt: 'The Enjoy Illinois 300 was always going to play out like this.There were no shortage of brake issues on Sunday at World Wide Technology Raceway but there always is at tracks with long straights and heavy braking corners. That has been the case at Loudon, Nashville and Phoenix…',
+    imageUrl: 'https://cdn-8.motorsport.com/images/amp/2wlKgM8Y/s6/chase-elliott-hendrick-motorsp-4.jpg',
+    imageCredit: ''
+  },
+  {
+    id: 'a6',
     series: 'nascar',
     headline: 'Chase Elliott apologizes to Chase Briscoe after Gateway crash: \'I had nowhere to go\'',
     source: 'Motorsport.com NASCAR',
@@ -94,37 +105,26 @@ const HOMEPAGE_ARTICLES = [
     imageCredit: ''
   },
   {
-    id: 'a6',
-    series: 'nascar',
-    headline: 'Brad Keselowski joins exclusive group with special career milestone',
-    source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/brad-keselowski-joins-exclusive-group-with-career-milestone/10855699/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-09-14T12:50:02.000Z',
-    excerpt: 'While Brad Keselowski decision to stay out on older tires didn\'t work out, he still managed to reach a special career milestone at WWT Raceway. In his 621st start, Keselowski led his 10,000th lap, becoming just the 24th driver in Cup Series history to reach that number.The most…',
-    imageUrl: 'https://cdn-6.motorsport.com/images/amp/0Zq8DVR6/s6/brad-keselowski-rfk-racing.jpg',
-    imageCredit: ''
-  },
-  {
     id: 'a7',
     series: 'indycar',
-    headline: 'Kyle Larson wins mad Gateway Cup race after 18 cautions, two red flags, and double overtime',
-    source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/kyle-larson-wins-mad-gateway-cup-race-after-18-cautions-two-red-flags-and-double-overtime/10855627/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-09-13T23:36:33.000Z',
-    excerpt: 'Sunday’s NASCAR Cup race at WWT Raceway descended into a chaotic contest featuring 18 cautions and two red flags.For the first time since attempting the 2025 Indy 500/Coke 600 double, Kyle Larson returned to Victory Lane, winning his 33rd career race and his first in 51…',
-    imageUrl: 'https://cdn-5.motorsport.com/images/amp/6x7LJ95Y/s6/kyle-larson-no-5-hendrick-moto.jpg',
+    headline: 'From Värnamo to victory lane: Hometown hero Felix Rosenqvist set for Sweden celebration',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/indycar/news/from-varnamo-to-victory-lane-hometown-hero-felix-rosenqvist-set-for-sweden-celebration/10856184/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-09-15T16:37:26.000Z',
+    excerpt: 'Fresh off his victory at the 2026 Indianapolis 500 presented by Gainbridge, Felix Rosenqvist will return to his Swedish hometown of Värnamo for a free, family-friendly public celebration on Saturday, Dec. 5. Central Värnamo will open its doors to locals, motorsports fans, and…',
+    imageUrl: 'https://cdn-2.motorsport.com/images/amp/6zoJ3aa0/s6/felix-rosenqvist-meyer-shank-r-2.jpg',
     imageCredit: ''
   },
   {
     id: 'a8',
     series: 'other',
-    headline: 'Maximilian Günther signs multi-year deal in Envision Formula E switch',
-    source: 'RacingNews365',
-    url: 'https://racingnews365.com/maximilian-gunther-signs-multi-year-deal-in-envision-formula-e-switch',
-    publishedAt: '2026-09-14T08:00:00.000Z',
-    excerpt: 'The first part of Envision\'s Formula E driver pairing for the start of the Gen4 era has been confirmed.',
-    imageUrl: 'https://cdn.racingnews365.com/2026/Formula-E/Gunther-Gen4.jpg?v=1789333633&width=1200&height=630&quality=75&crop=2048%2C1076%2C0%2C144',
-    imageCredit: 'Gunther Gen4'
+    headline: 'Jules Gounon suffers only minor hand injury in DTM crash',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/dtm/news/jules-gounon-suffers-only-minor-hand-injury-in-dtm-crash/10856171/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-09-15T15:55:18.000Z',
+    excerpt: 'Relief for Mercedes-AMG works driver Jules Gounon: An examination this morning in his native Andorra found that he suffered only a minor injury to his left hand in the DTM Sunday race at the Sachsenring in his crash with Nicki Thiim."After the first checks at the Medical Center…',
+    imageUrl: 'https://cdn-8.motorsport.com/images/amp/n0madLq0/s6/gounon-nach-dtm-crash-untersucht-wie-es-dem-mercedes-amg-werksfahrer-geht-26091503.jpg',
+    imageCredit: ''
   }
 ];
 
@@ -136,47 +136,47 @@ const HOMEPAGE_ARTICLES = [
 const HOMEPAGE_ALTERNATES = [
   {
     id: 'a101',
-    series: 'f1',
-    headline: 'Why McLaren won’t blame F1 race control for lost Spanish GP victory',
-    source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/f1/news/why-mclaren-wont-blame-race-control-for-lost-spanish-gp-victory/10855804/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-09-14T14:03:26.000Z',
-    excerpt: 'After qualifying on pole position with a stunning lap on Saturday, victory in the Formula 1 Spanish Grand Prix looked certain for Lando Norris – until an ill-timed virtual safety car cost him a shot at the win.However, Mclaren says it won’t blame race control for the bad luck it…',
-    imageUrl: 'https://cdn-6.motorsport.com/images/amp/6x7LQ85Y/s6/lando-norris-mclaren.jpg',
+    series: 'other',
+    headline: 'O\'Sullivan signs with Envision for upcoming FE season',
+    source: 'Racer',
+    url: 'https://racer.com/2026/09/14/o-sullivan-signs-with-envision-for-upcoming-fe-season',
+    publishedAt: '2026-09-15T08:00:00.000Z',
+    excerpt: 'Hot on the heels of the announcement of Maximilian Guenther joining the team for the upcoming Formula E season, Paysafe Envision Racing has now confirmed Zak O’Sullivan will be joining him in the team’s refreshed lineup.Formula 3, Formula 2, and Super GT race winner O’Sullivan…',
+    imageUrl: '',
     imageCredit: ''
   },
   {
     id: 'a102',
-    series: 'f1',
-    headline: '\'Unnecessary\' Alonso radio call led to penalty - Sainz',
-    source: 'Racer',
-    url: 'https://racer.com/2026/09/14/-unnecessary-alonso-radio-call-led-to-penalty---sainz',
-    publishedAt: '2026-09-14T12:05:02.000Z',
-    excerpt: 'Carlos Sainz and Fernando Alonso\'s coming together at their home grand prix came at a "sketchy" part of the track, and Sainz thinks it might not have even resulted in a penalty for him had Alonso not got on the radio.',
-    imageUrl: '',
+    series: 'motogp',
+    headline: 'Vinales still injured as Espargaro replaces him for MotoGP Austrian GP',
+    source: 'Autosport',
+    url: 'https://www.autosport.com/motogp/news/espargaro-replaces-vinales-for-austrian-gp/10856084/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
+    publishedAt: '2026-09-15T11:03:35.000Z',
+    excerpt: 'Tech3 announced on Tuesday that Pol Espargaro will replace the injured Maverick Vinales, who has not competed in a MotoGP race since 12 July, when he retired in the closing stages of the German Grand Prix."Pol Espargarp will continue racing with Tech3 at this weekend\'s Austrian…',
+    imageUrl: 'https://cdn-5.motorsport.com/images/amp/24QG9WXY/s6/pol-espargaro-red-bull-ktm-tec-2.jpg',
     imageCredit: ''
   },
   {
     id: 'a103',
     series: 'f1',
-    headline: 'Spaniards collide! Sainz handed five-second penalty for Alonso crash',
+    headline: '\'It\'s hard to understand\' - what now for Russell amid Antonelli \'pain\'?',
     source: 'Sky Sports F1',
-    url: 'https://www.skysports.com/watch/video/13585393/spanish-grand-prix-carlos-sainz-handed-five-second-penalty-for-fernando-alonso-crash',
-    publishedAt: '2026-09-13T13:46:00.000Z',
-    excerpt: 'Carlos Sainz was given a five-second time penalty for causing a collision with Fernando Alonso.',
-    imageUrl: 'https://e0.365dm.com/26/09/1600x900/skysports-f1-sainz_7350303.jpg?20260913145200',
+    url: 'https://www.skysports.com/f1/news/12433/13586061/george-russell-mercedes-drivers-losses-to-kimi-antonelli-will-feel-painful-says-nico-rosberg-as-driver-backed-for-breakthrough',
+    publishedAt: '2026-09-15T13:00:00.000Z',
+    excerpt: 'Nico Rosberg believes George Russell will currently be driven by a similar level of "insane motivation" to turn the tables on Kimi Antonelli as he was to get the better of Lewis Hamilton after recurring defeats.',
+    imageUrl: 'https://e0.365dm.com/26/09/1600x900/skysports-george-russell-mercedes_7352013.jpg?20260915100617',
     imageCredit: ''
   },
   {
     id: 'a104',
-    series: 'other',
-    headline: 'Kelly\'s masterclass secures Leinster Trophy victory at Mondello Park',
-    source: 'Autosport',
-    url: 'https://www.autosport.com/national/news/kellys-masterclass-secures-leinster-trophy-victory-at-mondello-park/10855790/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
-    publishedAt: '2026-09-14T10:58:32.000Z',
-    excerpt: 'September in Ireland has become synonymous with the awarding of the highly desirable Leinster Trophy, this year again being granted to Formula Vee. The highly popular series didn’t disappoint at Mondello Park last weekend and turned out in strong numbers for this historic…',
-    imageUrl: 'https://cdn-4.motorsport.com/images/amp/0R7B93E2/s6/jordan-kelly-0722-jpg.jpg',
-    imageCredit: ''
+    series: 'f1',
+    headline: 'Lewis Hamilton investigation underway as Max Verstappen reveals quit thoughts - RacingNews365 Review',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/lewis-hamilton-investigation-underway-as-max-verstappen-reveals-quit-thoughts-racingnews365-review',
+    publishedAt: '2026-09-14T20:00:00.000Z',
+    excerpt: 'The Spanish GP may have been dull but we have some cracking content for you to peruse. Check out the best of our articles here!',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Hamilton/XPB_1435204_HiRes.jpg?v=1789229453&width=1800&height=945&quality=75&crop=5472%2C2873%2C0%2C387',
+    imageCredit: 'XPB 1435204 Hi Res'
   }
 ];
 
