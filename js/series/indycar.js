@@ -335,6 +335,10 @@ function selectIndyCarRace(round){
   renderIndyCarRaces();
 }
 
+// Season is decided once every scheduled round has a verified result — P1 is
+// then shown as CHAMPION instead of LEADER (standings + home card).
+function indyCarSeasonComplete(){return INDYCAR_SCHEDULE.every(r=>INDYCAR_RESULTS[r.round]);}
+
 // ── INDYCAR STANDINGS (drivers + engine wins stacked) ─────────────────────────
 function renderIndyCarStandings(){
   const content=document.getElementById('main-content');
@@ -343,7 +347,7 @@ function renderIndyCarStandings(){
   const rows=INDYCAR_STANDINGS.map(d=>{
     const info=indyDrv(d.driver);
     const isSelected=selectedIndyCarDriver===d.driver;
-    const gapText=d.pos===1?'LEADER':`${d.gap}`;
+    const gapText=d.pos===1?(indyCarSeasonComplete()?'🏆 CHAMPION':'LEADER'):`${d.gap}`;
     const posColor=d.pos===1?'var(--yellow)':d.pos<=3?'var(--green)':'var(--text)';
     const breakdown=isSelected?renderIndyCarDriverBreakdown(d.driver,info,d.points,d.pos):'';
     return`<div>

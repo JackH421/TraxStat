@@ -408,7 +408,7 @@ function renderHomeChampionships(){
       <div class="home-champ-series" style="color:#37bedd;">INDYCAR</div>
       <div class="home-champ-name" style="color:${indyEngineColor(iDrv.engine)};">${iL.driver}</div>
       <div class="home-champ-team">${iDrv.team||'—'}</div>
-      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  +${iGap}</span></div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  ${indyCarSeasonComplete()?'🏆 CHAMPION':'+'+iGap}</span></div>
     </div>
     <div class="home-champ-card" onclick="openHomeChampionship('motogp')">
       <div class="home-champ-series" style="color:var(--orange);">MOTOGP</div>
@@ -426,7 +426,7 @@ function renderHomeChampionships(){
       <div class="home-champ-series" style="color:#b0b0b0;">WRC</div>
       <div class="home-champ-name" style="color:${wrcTeamColor(rDrv.team)};">${rL.driver}</div>
       <div class="home-champ-team">${rDrv.team||'—'}</div>
-      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  +${rGap}</span></div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  ${wrcSeasonComplete()?'🏆 CHAMPION':'+'+rGap}</span></div>
     </div>
   </div>`;
 }

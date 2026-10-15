@@ -383,8 +383,13 @@ function selectWRCRally(round){
   renderWRCRaces();
 }
 
+// Season is decided once every scheduled rally has a verified result — P1 is
+// then shown as CHAMPION instead of LEADER (standings + home card).
+function wrcSeasonComplete(){return WRC_SCHEDULE.every(r=>WRC_RESULTS[r.round]);}
+
 // ── WRC STANDINGS (drivers + manufacturers stacked) ───────────────────────────
 function renderWRCStandings(){
+  const p1Label=wrcSeasonComplete()?'🏆 CHAMPION':'LEADER';
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('wrc','standings')+renderBackToSeriesHome('wrc');
   const hdr=`<div class="section-title"><span>WRC Drivers · 2026 · Final · After R13 Sardegna</span><span>Incl. Sunday + Power Stage pts</span></div>`;
@@ -402,7 +407,7 @@ function renderWRCStandings(){
           <div class="champ-team-sm" style="color:${wrcTeamColor(info.team)}">${info.team}</div>
         </div>
         <div class="champ-pts">${d.points}</div>
-        <div class="champ-gap" style="color:${d.pos===1?'var(--yellow)':'var(--muted)'}">${d.pos===1?'LEADER':d.gap}</div>
+        <div class="champ-gap" style="color:${d.pos===1?'var(--yellow)':'var(--muted)'}">${d.pos===1?p1Label:d.gap}</div>
       </div>
       ${breakdown}
     </div>`;
@@ -413,7 +418,7 @@ function renderWRCStandings(){
       <div class="flag-cell" style="color:${wrcTeamColor(m.mfr)};font-size:18px;">●</div>
       <div><div class="champ-name" style="color:${wrcTeamColor(m.mfr)};">${m.mfr}</div></div>
       <div class="champ-pts">${m.points}</div>
-      <div class="champ-gap" style="color:${m.pos===1?'var(--yellow)':'var(--muted)'}">${m.pos===1?'LEADER':m.gap}</div>
+      <div class="champ-gap" style="color:${m.pos===1?'var(--yellow)':'var(--muted)'}">${m.pos===1?p1Label:m.gap}</div>
     </div>`).join('');
   content.innerHTML=top+hdr+rows+mfrHdr+mfrRows;
   setStats(`${WRC_STANDINGS[0].points} pts`,WRC_STANDINGS[0].driver,'DRIVERS','R13/13');
