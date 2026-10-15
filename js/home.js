@@ -41,92 +41,92 @@ const HOMEPAGE_ARTICLES = [
   {
     id: 'a1',
     series: 'f1',
-    headline: 'Laurent Mekies signs new long-term Red Bull F1 contract extension',
-    source: 'Crash.net',
-    url: 'https://www.crash.net/f1/news/1107570/1/laurent-mekies-signs-new-long-term-red-bull-f1-contract-extension',
-    publishedAt: '2026-10-14T16:19:02.000Z',
-    excerpt: 'Red Bull team principal Laurent Mekies has signed a new long-term deal.',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-08/xpb_1429927_hires.jpg?width=1600&aspect_ratio=16:9',
+    headline: 'Rafael Camara signs multi-year deal with Haas as Ocon replacement',
+    source: 'Sky Sports F1',
+    url: 'https://www.skysports.com/watch/video/13599662/rafael-camara-signs-multi-year-deal-with-haas-as-esteban-ocons-replacement',
+    publishedAt: '2026-10-15T14:30:00.000Z',
+    excerpt: 'Rafael Camara has signed a multi-year deal with Haas as Esteban Ocon\'s replacement.',
+    imageUrl: 'https://e0.365dm.com/26/10/1600x900/skysports-camera-f1-haas_7377653.jpg?20261015154443',
     imageCredit: ''
   },
   {
     id: 'a2',
     series: 'f1',
-    headline: 'Honda pledge F1 investigation into mysterious Fernando Alonso problem',
-    source: 'RacingNews365',
-    url: 'https://racingnews365.com/honda-pledge-f1-investigation-into-mysterious-fernando-alonso-problem',
-    publishedAt: '2026-10-14T12:45:00.000Z',
-    excerpt: 'Honda has promised to get to the bottom of what\'s going on with Fernando Alonso\'s engine.',
-    imageUrl: 'https://cdn.racingnews365.com/2026/Alonso/XPB_1440317_HiRes.jpg?v=1791120733&width=1800&height=945&quality=75&crop=5472%2C2873%2C0%2C387',
-    imageCredit: 'Alonso Sepang'
+    headline: 'Haas F1 signs rookie Camara to multi-year contract from 2027',
+    source: 'Racer',
+    url: 'https://racer.com/2026/10/15/haas-f1-signs-rookie-camara-to-multi-year-contract-from-2027',
+    publishedAt: '2026-10-15T14:00:45.000Z',
+    excerpt: 'TGR Haas F1 Team has announced Formula 2 title contender Rafael Camara will join the team as one of its race drivers on a multi-year contract starting in 2027.',
+    imageUrl: '',
+    imageCredit: ''
   },
   {
     id: 'a3',
     series: 'f1',
-    headline: 'George Russell reveals when he plans to take another F1 engine penalty',
-    source: 'Crash.net',
-    url: 'https://www.crash.net/f1/news/1107560/1/george-russell-reveals-when-he-plans-take-another-f1-engine-penalty',
-    publishedAt: '2026-10-14T09:10:46.000Z',
-    excerpt: 'George Russell has revealed when he plans to take more F1 penalty pain.',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-10/xpb_1444301_hires.jpg?width=1600&aspect_ratio=16:9',
-    imageCredit: ''
+    headline: 'Breaking: Haas sign Ferrari protégé to Formula 1 race seat for 2027',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/breaking-haas-sign-ferrari-protege-to-f1-race-seat',
+    publishedAt: '2026-10-15T14:00:00.000Z',
+    excerpt: 'Haas has announced that Ferrari protégé Rafael Camara is to join the team in a race seat for the 2027 F1 season.',
+    imageUrl: 'https://cdn.racingnews365.com/XPB_1433646_HiRes.jpg?v=1790086324&width=1800&height=945&quality=75&crop=3780%2C1985%2C0%2C267',
+    imageCredit: 'XPB 1433646 Hi Res'
   },
   {
     id: 'a4',
     series: 'nascar',
-    headline: 'Suarez stays with Spire for 2027 Cup Series',
-    source: 'Racer',
-    url: 'https://racer.com/2026/10/14/suarez-stays-with-spire-for-2027-cup-series',
-    publishedAt: '2026-10-14T15:12:41.000Z',
-    excerpt: 'Spire Motorsports announced Tuesday that it has signed Daniel Suarez to a contract extension through the 2027 season. Although it is a one-year extension, there is an option to continue the relationship beyond that.',
-    imageUrl: '',
+    headline: 'Spire, Chris Gabehart reject Joe Gibbs Racing premise on deleted texts',
+    source: 'Motorsport.com NASCAR',
+    url: 'https://www.motorsport.com/nascar-cup/news/spire-chris-gabehart-reject-joe-gibbs-racing-premise-on-deleted-texts/10865274/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-15T02:12:45.000Z',
+    excerpt: 'In addition to wanting the Western District of North Carolina to allow for contempt of court hearings to proceed against Spire and Chris Gabehart, Joe Gibbs Racing is also seeking sanctions against the latter for text messages deleted that contained a conversation with Jeff…',
+    imageUrl: 'https://cdn-7.motorsport.com/images/amp/0JXRqARY/s6/gabehart-text.jpg',
     imageCredit: ''
   },
   {
     id: 'a5',
     series: 'nascar',
-    headline: 'Tom Cruise interested in racing ARCA car, per NASCAR CEO Steve O\'Donnell',
+    headline: 'Ricky Stenhouse explains his side of Michael McDowell conflict',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/tom-cruise-expressed-interest-in-racing-arca-per-nascar-ceo-steve-odonnell/10865056/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-10-14T02:00:24.000Z',
-    excerpt: 'In an interview with Front Office Sports on Tuesday, NASCAR CEO Steve O\'Donnell covered several topics, including the highly anticipated Days of Thunder sequel, starring Tom Cruise as fictional NASCAR driver Cole Trickle. Anne Hathaway will star alongside Cruise with the film…',
-    imageUrl: 'https://cdn-6.motorsport.com/images/amp/0o5AovDY/s6/tom-cruise-speaks-with-nascar-.jpg',
+    url: 'https://www.motorsport.com/nascar-cup/news/ricky-stenhouse-jr-explains-his-side-of-michael-mcdowell-conflict-/10865267/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-14T22:17:12.000Z',
+    excerpt: 'Whatever tension existed between Ricky Stenhouse Jr. and Michael McDowell ended as quickly as it began on Sunday at Charlotte Motor Speedway.After the race, Stenhouse drove up to McDowell during the cool down lap to trade paint before coming down to pit road. McDowell gave it…',
+    imageUrl: 'https://cdn-3.motorsport.com/images/amp/0LdeKKN0/s6/85ad77e4c34cda06978d2793dcd9e1.jpg',
     imageCredit: ''
   },
   {
     id: 'a6',
     series: 'nascar',
-    headline: 'Gibbs, Spire and Gabehart argue over contempt and injunction',
+    headline: 'Why NASCAR is not penalizing Stenhouse, McDowell for post-race theatrics',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/gibbs-spire-and-gabehart-argue-over-contempt-and-injunction/10865043/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-10-13T23:11:56.000Z',
-    excerpt: 'All parties involved in the Joe Gibbs Racing v Chris Gabehart and Spire Motorsports legal matter met in the Western District of North Carolina court on Tuesday for a hearing on two different matters.1. A motion to determine if the judge should proceed with contempt of court…',
-    imageUrl: 'https://cdn-2.motorsport.com/images/amp/0mXyoKa6/s6/1-20230519-151056-scaled.jpg',
+    url: 'https://www.motorsport.com/nascar-cup/news/why-nascar-is-not-penalizing-stenhouse-mcdowell-for-post-race-theatrics/10865259/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-14T20:09:08.000Z',
+    excerpt: 'NASCAR typically issues penalties reports by the end of business day on Tuesday but no later than Wednesday.There has been nothing issued thus far and nothing is coming.In other words, there were no technical infractions to deal with following the race weekend at Charlotte Motor…',
+    imageUrl: 'https://cdn-1.motorsport.com/images/amp/YP74qqG2/s6/gettyimages-2299745549-e179199.jpg',
     imageCredit: ''
   },
   {
     id: 'a7',
     series: 'wec',
-    headline: 'What to expect from WEC\'s Barcelona debut',
-    source: 'Autosport',
-    url: 'https://www.autosport.com/wec/news/what-to-expect-from-wecs-barcelona-debut/10865201/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
-    publishedAt: '2026-10-14T15:12:12.000Z',
-    excerpt: 'For the first time in three years, the World Endurance Championship will visit an all-new venue, with Barcelona hosting the penultimate round of the 2026 season.The Spanish venue will make its WEC debut this weekend with a conventional six-hour race, replacing the cancelled…',
-    imageUrl: 'https://cdn-5.motorsport.com/images/amp/Y9lLXeb2/s6/circuit-de-barcelona-catalunya.jpg',
+    headline: 'Cadillac signs Ricky Taylor, Antonio Felix da Costa in refreshed 2027 WEC line-up',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/wec/news/cadillac-signs-ricky-taylor-antonio-felix-da-costa-in-refreshed-2027-wec-line-up/10865392/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-15T13:17:31.000Z',
+    excerpt: 'Cadillac has announced that Ricky Taylor and Antonio Felix da Costa will join its factory Jota team in the World Endurance Championship in 2027.The pair will replace Sebastien Bourdais and Alex Lynn, both of whom will leave the American manufacturer at the end of next month’s…',
+    imageUrl: 'https://cdn-5.motorsport.com/images/amp/6x7Lly7Y/s6/12-cadillac-hertz-team-jota-ca.jpg',
     imageCredit: ''
   },
   {
     id: 'a8',
     series: 'wec',
-    headline: 'Into the unknown: What to expect from WEC\'s Barcelona debut',
-    source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/wec/news/into-the-unknown-what-to-expect-from-wecs-barcelona-debut/10864975/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-10-14T14:10:56.000Z',
-    excerpt: 'For the first time in three years, the World Endurance Championship will visit an all-new venue, with Barcelona hosting the penultimate round of the 2026 season.The Spanish venue will make its WEC debut this weekend with a conventional six-hour race, replacing the cancelled…',
-    imageUrl: 'https://cdn-7.motorsport.com/images/amp/Y9lLXeb2/s6/circuit-de-barcelona-catalunya.jpg',
+    headline: 'Alex Lynn Signs With McLaren',
+    source: 'DailySportsCar',
+    url: 'https://www.dailysportscar.com/2026/10/15/alex-lynn-signs-with-mclaren.html?utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=alex-lynn-signs-with-mclaren',
+    publishedAt: '2026-10-15T13:01:24.000Z',
+    excerpt: 'McLaren Racing has announced Alex Lynn as its third FIA WEC Hypercar driver ahead of its debut campaign with the MCL-HY LMDh in 2027. The 33-year-old will join Mikkel Jensen and Laurens Vanthoor in the Woking brand&#8217;s stable, after finishing the 2026 season with Cadillac…',
+    imageUrl: 'https://www.dailysportscar.com/wp-content/uploads/2030/01/PMW-2026-Expo-Banner.png',
     imageCredit: ''
   }
-];
+]
 
 // HOMEPAGE_ALTERNATES — daily aggregator (Session 5) proposes 4 alternates
 // alongside the 8 primary articles in HOMEPAGE_ARTICLES. Reviewer can swap
@@ -137,48 +137,48 @@ const HOMEPAGE_ALTERNATES = [
   {
     id: 'a101',
     series: 'f1',
-    headline: 'Russell plans to take grid penalty at Las Vegas GP',
-    source: 'Sky Sports F1',
-    url: 'https://www.skysports.com/f1/news/12433/13598097/george-russell-mercedes-driver-planning-to-take-another-grid-penalty-for-upgraded-power-unit-element-at-las-vegas-grand-prix',
-    publishedAt: '2026-10-14T05:00:00.000Z',
-    excerpt: 'Mercedes\' George Russell is set to take another grid penalty in November\'s Las Vegas Grand Prix.',
-    imageUrl: 'https://e0.365dm.com/26/10/1600x900/skysports-f1-george-russell_7374947.jpg?20261012112424',
+    headline: 'Every Record Kimi Antonelli breaks if he wins the F1 title in Austin',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/f1/news/every-record-kimi-antonelli-breaks-if-he-wins-f1-title-in-austin/10865385/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-15T12:44:03.000Z',
+    excerpt: 'If Kimi Antonelli becomes Formula 1 world champion at the United States Grand Prix later this month, he will break Sebastian Vettel\'s record of being the youngest F1 world champion ever to be crowned. He will also end a 73-year drought of Italian champions. Both of these records…',
+    imageUrl: 'https://cdn-5.motorsport.com/images/amp/YN7vqAa6/s6/untitled-design-28-2.jpg',
     imageCredit: ''
   },
   {
     id: 'a102',
     series: 'f1',
-    headline: 'Mekies extends contract as Red Bull\'s F1 team boss',
-    source: 'Autosport',
-    url: 'https://www.autosport.com/f1/news/laurent-mekies-extends-contract-as-red-bulls-f1-team-boss/10865235/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
-    publishedAt: '2026-10-14T16:36:46.000Z',
-    excerpt: 'Laurent Mekies has extended his contract as team principal of the Red Bull Formula 1 outfit with a new deal that takes him through until the end of 2031.That will see the Frenchman spend at least six seasons leading the Austrian outfit after joining in July 2025 to end Christian…',
-    imageUrl: 'https://cdn-4.motorsport.com/images/amp/YMXbOEv2/s6/laurent-mekies-red-bull-racing-2.jpg',
+    headline: 'George Russell targets US race for looming Mercedes engine grid penalty',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/f1/news/george-russell-targets-las-vegas-gp-for-looming-mercedes-engine-grid-penalty/10865295/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-15T08:29:43.000Z',
+    excerpt: 'At this point in the 2026 season, George Russell is practically on a first-name basis with the FIA stewards. After eating a staggering 60-place grid drop at the Singapore Grand Prix to replace an entire pharmacy of power unit components, you would think the British driver would…',
+    imageUrl: 'https://cdn-9.motorsport.com/images/amp/6DGgomOY/s6/untitled-design-23-3.jpg',
     imageCredit: ''
   },
   {
     id: 'a103',
     series: 'f1',
-    headline: 'Laurent Mekies extends contract as Red Bull\'s F1 team boss',
+    headline: 'George Russell forced to race with used Mercedes parts after Singapore GP crash',
     source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/f1/news/laurent-mekies-extends-contract-as-red-bulls-f1-team-boss/10865232/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-10-14T16:35:01.000Z',
-    excerpt: 'Laurent Mekies has extended his contract as team principal of the Red Bull Formula 1 outfit with a new deal that takes him through until the end of 2031.That will see the Frenchman spend at least six seasons leading the Austrian outfit after joining in July 2025 to end Christian…',
-    imageUrl: 'https://cdn-5.motorsport.com/images/amp/24QGdxeY/s6/laurent-mekies-red-bull-racing.jpg',
+    url: 'https://www.motorsport.com/f1/news/george-russells-singapore-sprint-crash-forced-mercedes-to-use-second-hand-parts/10865313/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-15T10:05:02.000Z',
+    excerpt: 'George Russell’s 2026 Singapore Grand Prix was already a certified nightmare on paper. We already knew he had to swallow a massive 60-place engine penalty, fought a brake pedal that decided to go squishy, and spent two hours baking in the cockpit while a ruptured drink bottle…',
+    imageUrl: 'https://cdn-3.motorsport.com/images/amp/0R7BqAO2/s6/untitled-design-25-3.jpg',
     imageCredit: ''
   },
   {
     id: 'a104',
     series: 'f1',
-    headline: 'Red Bull extend team boss Mekies\' contract',
-    source: 'Sky Sports F1',
-    url: 'https://www.skysports.com/f1/news/12433/13599324/laurent-mekies-red-bull-team-principal-signs-contract-extension-to-2031-and-vows-recent-wins-only-the-beginning',
-    publishedAt: '2026-10-14T16:17:00.000Z',
-    excerpt: 'Laurent Mekies has signed a five-year contract extension to continue as Red Bull team principal and chief executive until 2031.',
-    imageUrl: 'https://e0.365dm.com/26/10/1600x900/skysports-laurent-mekies-red-bull_7376996.jpg?20261014174721',
+    headline: 'Camara to make F1 debut as Ocon\'s replacement at Haas in 2027',
+    source: 'Autosport',
+    url: 'https://www.autosport.com/f1/news/camara-to-make-f1-debut-at-haas-replacing-ocon/10865325/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
+    publishedAt: '2026-10-15T14:01:00.000Z',
+    excerpt: 'Formula 2 championship leader Rafael Camara will make his Formula 1 debut for Haas in 2027 and is expected to line up alongside Oliver Bearman.The 21-year-old Brazilian is replacing Esteban Ocon who will leave the American outfit at the end of 2026 after two disappointing…',
+    imageUrl: 'https://cdn-6.motorsport.com/images/amp/01WVnzmY/s6/f3-drivers-champion-and-race-w-2.jpg',
     imageCredit: ''
   }
-];
+]
 
 // N24 race-end metadata. Not present as a constant in n24.js, but the
 // 16–17 May 2026 date is stated in that file's header comment (verified).
@@ -408,7 +408,7 @@ function renderHomeChampionships(){
       <div class="home-champ-series" style="color:#37bedd;">INDYCAR</div>
       <div class="home-champ-name" style="color:${indyEngineColor(iDrv.engine)};">${iL.driver}</div>
       <div class="home-champ-team">${iDrv.team||'—'}</div>
-      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  +${iGap}</span></div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  ${indyCarSeasonComplete()?'🏆 CHAMPION':'+'+iGap}</span></div>
     </div>
     <div class="home-champ-card" onclick="openHomeChampionship('motogp')">
       <div class="home-champ-series" style="color:var(--orange);">MOTOGP</div>
@@ -426,7 +426,7 @@ function renderHomeChampionships(){
       <div class="home-champ-series" style="color:#b0b0b0;">WRC</div>
       <div class="home-champ-name" style="color:${wrcTeamColor(rDrv.team)};">${rL.driver}</div>
       <div class="home-champ-team">${rDrv.team||'—'}</div>
-      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  +${rGap}</span></div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  ${wrcSeasonComplete()?'🏆 CHAMPION':'+'+rGap}</span></div>
     </div>
   </div>`;
 }
