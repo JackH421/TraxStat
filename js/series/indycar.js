@@ -72,6 +72,10 @@ const INDYCAR_DRIVERS={
 
 // 2026 calendar (18 rounds) — verified 2026-06-12 from
 // https://en.wikipedia.org/wiki/2026_IndyCar_Series
+// Updated 2026-10-14 (season complete): R12 date → 07-20 (rain postponement)
+// and R18 title sponsor (Mission Foods) per the Wikipedia season page +
+// indycar.com race reports; R10–R18 lap counts from indycar.com race reports
+// / Wikipedia race pages (cited above INDYCAR_RESULTS).
 // laps: only rounds whose lap counts were individually verified on race pages;
 // null = not yet verified (cardinal rule — no guessed lap counts).
 const INDYCAR_SCHEDULE=[
@@ -84,15 +88,15 @@ const INDYCAR_SCHEDULE=[
   {round:7, race:'110th Indianapolis 500',                 track:'Indianapolis Motor Speedway',     country:'🇺🇸', date:'2026-05-24', laps:null, type:'O'},
   {round:8, race:'Chevrolet Detroit Grand Prix',           track:'Streets of Detroit',              country:'🇺🇸', date:'2026-05-31', laps:100,  type:'S'},
   {round:9, race:'Bommarito Automotive Group 500',         track:'World Wide Technology Raceway',   country:'🇺🇸', date:'2026-06-07', laps:260,  type:'O'},
-  {round:10,race:'XPEL Grand Prix at Road America',        track:'Road America',                    country:'🇺🇸', date:'2026-06-21', laps:null, type:'R'},
-  {round:11,race:'Honda Indy 200 at Mid-Ohio',             track:'Mid-Ohio Sports Car Course',      country:'🇺🇸', date:'2026-07-05', laps:null, type:'R'},
-  {round:12,race:'Borchetta Bourbon Music City Grand Prix',track:'Nashville Superspeedway',         country:'🇺🇸', date:'2026-07-19', laps:null, type:'O'},
-  {round:13,race:'OnlyBulls Grand Prix of Portland',       track:'Portland International Raceway',  country:'🇺🇸', date:'2026-08-09', laps:null, type:'R'},
-  {round:14,race:'Ontario Honda Dealers Indy at Markham',  track:'Streets of Markham',              country:'🇨🇦', date:'2026-08-16', laps:null, type:'S'},
-  {round:15,race:'Freedom 250 GP of Washington, D.C.',     track:'Streets of Washington',           country:'🇺🇸', date:'2026-08-23', laps:null, type:'S'},
-  {round:16,race:'Snap-on Makers and Fixers 250',          track:'Milwaukee Mile',                  country:'🇺🇸', date:'2026-08-29', laps:null, type:'O'},
-  {round:17,race:'Snap-on Milwaukee Mile 250',             track:'Milwaukee Mile',                  country:'🇺🇸', date:'2026-08-30', laps:null, type:'O'},
-  {round:18,race:'IndyCar Grand Prix of Monterey',         track:'WeatherTech Raceway Laguna Seca', country:'🇺🇸', date:'2026-09-06', laps:null, type:'R'},
+  {round:10,race:'XPEL Grand Prix at Road America',        track:'Road America',                    country:'🇺🇸', date:'2026-06-21', laps:55,   type:'R'},
+  {round:11,race:'Honda Indy 200 at Mid-Ohio',             track:'Mid-Ohio Sports Car Course',      country:'🇺🇸', date:'2026-07-05', laps:90,   type:'R'},
+  {round:12,race:'Borchetta Bourbon Music City Grand Prix',track:'Nashville Superspeedway',         country:'🇺🇸', date:'2026-07-20', laps:225,  type:'O'}, // postponed from 07-19 (rain); cut from 300 laps (heat)
+  {round:13,race:'OnlyBulls Grand Prix of Portland',       track:'Portland International Raceway',  country:'🇺🇸', date:'2026-08-09', laps:110,  type:'R'},
+  {round:14,race:'Ontario Honda Dealers Indy at Markham',  track:'Streets of Markham',              country:'🇨🇦', date:'2026-08-16', laps:90,   type:'S'},
+  {round:15,race:'Freedom 250 GP of Washington, D.C.',     track:'Streets of Washington',           country:'🇺🇸', date:'2026-08-23', laps:147,  type:'S'},
+  {round:16,race:'Snap-on Makers and Fixers 250',          track:'Milwaukee Mile',                  country:'🇺🇸', date:'2026-08-29', laps:250,  type:'O'}, // red-flagged after 90 laps (rain); completed 08-30
+  {round:17,race:'Snap-on Milwaukee Mile 250',             track:'Milwaukee Mile',                  country:'🇺🇸', date:'2026-08-30', laps:250,  type:'O'},
+  {round:18,race:'Mission Foods Grand Prix of Monterey',   track:'WeatherTech Raceway Laguna Seca', country:'🇺🇸', date:'2026-09-06', laps:95,   type:'R'},
 ];
 
 // Completed rounds 1–9 — winners cross-checked Wikipedia season page vs
@@ -107,6 +111,24 @@ const INDYCAR_SCHEDULE=[
 //   R7 .../2026_Indianapolis_500
 //   R8 .../2026_Chevrolet_Detroit_Grand_Prix
 //   R9 .../2026_Bommarito_Automotive_Group_500
+// Rounds 10–18 added 2026-10-14. Winners + poles from the Wikipedia season
+// page results table, podiums cross-checked against indycar.com race reports:
+//   R10 https://www.indycar.com/news/2026/06/06-21-nics-race-ra
+//       + https://en.wikipedia.org/wiki/2026_XPEL_Grand_Prix_at_Road_America
+//   R11 https://www.indycar.com/news/2026/07/07-05-mo-race
+//       + https://en.wikipedia.org/wiki/2026_Honda_Indy_200
+//   R12 https://www.indycar.com/news/2026/07/07-20-nics-nashville-race
+//       + https://en.wikipedia.org/wiki/2026_Borchetta_Bourbon_Music_City_Grand_Prix
+//   R13 https://www.indycar.com/news/2026/08/08-09-nics-portland-race
+//       + https://en.wikipedia.org/wiki/2026_OnlyBulls_Grand_Prix_of_Portland
+//   R14 https://www.indycar.com/news/2026/08/08-16-markham-race
+//   R15 https://www.indycar.com/news/2026/08/08-23-nics-dc-race
+//       (pole: https://www.indycar.com/news/2026/08/08-22-nics-dc-quals)
+//   R16 https://indycar-fd.ims.com/news/2026/08/08-30-nics-milwaukee-race2
+//   R17 https://www.indycar.com/news/2026/08/08-30-nics-milwaukee-race1
+//   R18 https://www.indycar.com/news/2026/09/09-06-nics-laguna-race
+// R16 pole = fastest qualifier (McLaughlin) per Wikipedia; he started 10th on
+// an engine penalty and O'Ward started first (indycar.com).
 const INDYCAR_RESULTS={
   1:{winner:'Palou',      p2:'McLaughlin', p3:'Lundgaard', pole:'McLaughlin', note:'Palou led 59 laps and won by ~12.5s over polesitter McLaughlin. Dixon retired after losing a right-rear wheel on lap 39; Kirkwood set the fastest lap.'},
   2:{winner:'Newgarden',  p2:'Kirkwood',   p3:'Malukas',   pole:'Malukas',    note:"Newgarden's 33rd career win — passed Kirkwood on fresh tires with two laps to go. Record-high 565 passes for an IndyCar race at Phoenix."},
@@ -117,55 +139,68 @@ const INDYCAR_RESULTS={
   7:{winner:'Rosenqvist', p2:'Malukas',    p3:'Armstrong', pole:'Palou',      note:'Rosenqvist beat Malukas to the line by 0.0233s — the closest finish in Indy 500 history — in a race with a record 70 lead changes.'},
   8:{winner:'Palou',      p2:'Kirkwood',   p3:'Rahal',     pole:'Palou',      note:'Palou swept the Detroit weekend — pole and a wire-to-wire win over 100 laps.'},
   9:{winner:'Newgarden',  p2:'Ericsson',   p3:'Rasmussen', pole:'Palou',      note:'Newgarden won the 260-lap Gateway oval race; Penske teammate Malukas qualified second.'},
+  10:{winner:'Lundgaard', p2:'Malukas',    p3:'Power',     pole:'Palou',      note:'Lundgaard fell to last after Lap 1 contact, then took the lead on Lap 52 when leader Armstrong lost power. Polesitter Palou recovered from a pit-speeding penalty to finish P5.'},
+  11:{winner:"O'Ward",    p2:'Lundgaard',  p3:'Kirkwood',  pole:'Lundgaard',  note:"O'Ward passed polesitter Lundgaard on Lap 42 and won by 0.9877s — Arrow McLaren's first-ever IndyCar 1-2 and O'Ward's first podium of 2026."},
+  12:{winner:'Palou',     p2:'Newgarden',  p3:'Malukas',   pole:'Kirkwood',   note:'Postponed to Monday by rain, then shortened from 300 to 225 laps due to extreme heat. Palou won by 0.8731s; Malukas charged from 25th to P3.'},
+  13:{winner:'Palou',     p2:'Rosenqvist', p3:'Power',     pole:'Rosenqvist', note:'Palou beat polesitter Rosenqvist by 4.1167s over 110 laps to stretch his championship lead to 110 points.'},
+  14:{winner:'Ericsson',  p2:'Grosjean',   p3:'Power',     pole:'Foster',     note:'Inaugural Markham street race. Ericsson ended a 63-race drought; polesitter Foster led the first 32 laps before crashing on Lap 43. Grosjean led 28 laps for Dale Coyne.'},
+  15:{winner:'Kirkwood',  p2:'Lundgaard',  p3:'Power',     pole:'Palou',      note:"Inaugural Washington, D.C. street race. Kirkwood won by 3.0906s; polesitter Palou finished P20 after a penalty, slow stop and crash, cutting his lead to 91."},
+  16:{winner:"O'Ward",    p2:'Malukas',    p3:'VeeKay',    pole:'McLaughlin', note:"Red-flagged by rain after 90 laps on Saturday and completed Sunday evening. McLaughlin was fastest in qualifying but took an engine grid penalty; O'Ward started first. Palou's P10 clinched his fifth title (fourth straight)."},
+  17:{winner:"O'Ward",    p2:'McLaughlin', p3:'Lundgaard', pole:'Palou',      note:"Run Sunday afternoon before the Saturday race resumed. O'Ward won by 0.7916s to begin his Milwaukee sweep."},
+  18:{winner:'McLaughlin',p2:'Kirkwood',   p3:'Rossi',     pole:'McLaughlin', note:'Season finale. McLaughlin led 87 of 95 laps from pole to end a 36-race winless run. Champion Palou finished P8 and took the title by 86 points; Hauger clinched Rookie of the Year.'},
 };
 
-// Drivers' championship after R9 Gateway (2026-06-07) — verified 2026-06-12
-// from https://www.indycar.com/standings (primary). Wikipedia cross-check
-// agreed on P1–P25; Wikipedia's P26/P27 values (8/10) disagreed with
-// indycar.com (24/20) — primary wins, discrepancy logged in session report.
+// FINAL drivers' championship after R18 Laguna Seca (2026-09-06) — verified
+// 2026-10-14 from https://www.indycar.com/standings (primary; its 'Behind'
+// column matches every gap below). Palou champion (5th title, 4th straight),
+// clinched at R16 Milwaukee. Wikipedia cross-check agreed on P1–P25 except
+// McLaughlin 483 (Wikipedia) vs 482 (indycar.com) — primary wins, flagged.
+// Grosjean/Siegel tied on 259 — order as published by indycar.com.
 // gap = points − leader points.
 const INDYCAR_STANDINGS=[
-  {pos:1, driver:'Palou',       points:342, gap:0},
-  {pos:2, driver:'Kirkwood',    points:293, gap:-49},
-  {pos:3, driver:'Malukas',     points:274, gap:-68},
-  {pos:4, driver:'Lundgaard',   points:246, gap:-96},
-  {pos:5, driver:"O'Ward",      points:239, gap:-103},
-  {pos:6, driver:'Newgarden',   points:238, gap:-104},
-  {pos:7, driver:'McLaughlin',  points:222, gap:-120},
-  {pos:8, driver:'Rosenqvist',  points:221, gap:-121},
-  {pos:9, driver:'Ericsson',    points:196, gap:-146},
-  {pos:10,driver:'Armstrong',   points:196, gap:-146},
-  {pos:11,driver:'Rahal',       points:193, gap:-149},
-  {pos:12,driver:'Dixon',       points:192, gap:-150},
-  {pos:13,driver:'VeeKay',      points:175, gap:-167},
-  {pos:14,driver:'Rossi',       points:152, gap:-190},
-  {pos:15,driver:'Simpson',     points:147, gap:-195},
-  {pos:16,driver:'Ferrucci',    points:146, gap:-196},
-  {pos:17,driver:'Power',       points:145, gap:-197},
-  {pos:18,driver:'Hauger',      points:133, gap:-209},
-  {pos:19,driver:'Foster',      points:131, gap:-211},
-  {pos:20,driver:'Grosjean',    points:117, gap:-225},
-  {pos:21,driver:'Siegel',      points:116, gap:-226},
-  {pos:22,driver:'Rasmussen',   points:112, gap:-230},
-  {pos:23,driver:'Collet',      points:99,  gap:-243},
-  {pos:24,driver:'Robb',        points:89,  gap:-253},
-  {pos:25,driver:'Schumacher',  points:89,  gap:-253},
-  {pos:26,driver:'Daly',        points:24,  gap:-318},
-  {pos:27,driver:'Sato',        points:20,  gap:-322},
-  {pos:28,driver:'Harvey',      points:8,   gap:-334},
-  {pos:29,driver:'Abel',        points:6,   gap:-336},
-  {pos:30,driver:'Castroneves', points:5,   gap:-337},
-  {pos:31,driver:'Carpenter',   points:5,   gap:-337},
-  {pos:32,driver:'Hunter-Reay', points:5,   gap:-337},
-  {pos:33,driver:'Legge',       points:5,   gap:-337},
+  {pos:1,  driver:'Palou',       points:631, gap:0},
+  {pos:2,  driver:'Kirkwood',    points:545, gap:-86},
+  {pos:3,  driver:'Lundgaard',   points:535, gap:-96},
+  {pos:4,  driver:"O'Ward",      points:522, gap:-109},
+  {pos:5,  driver:'Malukas',     points:514, gap:-117},
+  {pos:6,  driver:'McLaughlin',  points:482, gap:-149},
+  {pos:7,  driver:'Ericsson',    points:429, gap:-202},
+  {pos:8,  driver:'Newgarden',   points:423, gap:-208},
+  {pos:9,  driver:'Rosenqvist',  points:412, gap:-219},
+  {pos:10, driver:'VeeKay',      points:378, gap:-253},
+  {pos:11, driver:'Power',       points:368, gap:-263},
+  {pos:12, driver:'Dixon',       points:331, gap:-300},
+  {pos:13, driver:'Simpson',     points:327, gap:-304},
+  {pos:14, driver:'Armstrong',   points:320, gap:-311},
+  {pos:15, driver:'Rossi',       points:307, gap:-324},
+  {pos:16, driver:'Rahal',       points:302, gap:-329},
+  {pos:17, driver:'Ferrucci',    points:280, gap:-351},
+  {pos:18, driver:'Foster',      points:267, gap:-364},
+  {pos:19, driver:'Grosjean',    points:259, gap:-372},
+  {pos:20, driver:'Siegel',      points:259, gap:-372},
+  {pos:21, driver:'Rasmussen',   points:245, gap:-386},
+  {pos:22, driver:'Hauger',      points:228, gap:-403},
+  {pos:23, driver:'Schumacher',  points:213, gap:-418},
+  {pos:24, driver:'Collet',      points:203, gap:-428},
+  {pos:25, driver:'Robb',        points:182, gap:-449},
+  {pos:26, driver:'Daly',        points:24,  gap:-607},
+  {pos:27, driver:'Sato',        points:20,  gap:-611},
+  {pos:28, driver:'Harvey',      points:8,   gap:-623},
+  {pos:29, driver:'Abel',        points:6,   gap:-625},
+  {pos:30, driver:'Castroneves', points:5,   gap:-626},
+  {pos:31, driver:'Carpenter',   points:5,   gap:-626},
+  {pos:32, driver:'Hunter-Reay', points:5,   gap:-626},
+  {pos:33, driver:'Legge',       points:5,   gap:-626},
 ];
 
-// Engine wins after R9 — derived from INDYCAR_RESULTS winners (cross-checked
-// by verify-indycar.js). Honda: Palou ×4, Kirkwood, Rosenqvist. Chevrolet:
-// Newgarden ×2, Lundgaard.
+// Final engine wins after R18 — derived from INDYCAR_RESULTS winners
+// (cross-checked by verify-indycar.js). Honda: Palou ×6, Kirkwood ×2,
+// Rosenqvist, Ericsson. Chevrolet: O'Ward ×3, Newgarden ×2, Lundgaard ×2,
+// McLaughlin. (Honda clinched the 2026 manufacturers' title at Milwaukee —
+// indycar-fd.ims.com/news/2026/08/08-30-nics-milwaukee-race2.)
 const INDYCAR_ENGINE_WINS=[
-  {pos:1, engine:'Honda',     wins:6, drivers:['Palou (4)','Kirkwood','Rosenqvist']},
-  {pos:2, engine:'Chevrolet', wins:3, drivers:['Newgarden (2)','Lundgaard']},
+  {pos:1, engine:'Honda',     wins:10, drivers:['Palou (6)','Kirkwood (2)','Rosenqvist','Ericsson']},
+  {pos:2, engine:'Chevrolet', wins:8,  drivers:["O'Ward (3)",'Newgarden (2)','Lundgaard (2)','McLaughlin']},
 ];
 
 // Per-round official highlight videos from the INDYCAR YouTube channel
@@ -304,7 +339,7 @@ function selectIndyCarRace(round){
 function renderIndyCarStandings(){
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('indycar','standings')+renderBackToSeriesHome('indycar');
-  const hdr=`<div class="section-title"><span>IndyCar Drivers · 2026 · After R9 Gateway</span><span>${INDYCAR_STANDINGS.length} drivers</span></div>`;
+  const hdr=`<div class="section-title"><span>IndyCar Drivers · 2026 · Final · After R18 Laguna Seca</span><span>${INDYCAR_STANDINGS.length} drivers</span></div>`;
   const rows=INDYCAR_STANDINGS.map(d=>{
     const info=indyDrv(d.driver);
     const isSelected=selectedIndyCarDriver===d.driver;
@@ -326,7 +361,7 @@ function renderIndyCarStandings(){
     </div>`;
   }).join('');
   // Engine wins block
-  const engHdr=`<div class="section-title"><span>Engine Manufacturers · Wins</span><span>After R9</span></div>`;
+  const engHdr=`<div class="section-title"><span>Engine Manufacturers · Wins</span><span>Final · After R18</span></div>`;
   const engRows=INDYCAR_ENGINE_WINS.map(e=>`<div class="champ-row">
       <div class="champ-pos" style="color:${e.pos===1?'var(--yellow)':'#c0c0c0'}">${e.pos}</div>
       <div class="flag-cell" style="color:${indyEngineColor(e.engine)};font-size:18px;">●</div>
@@ -338,7 +373,7 @@ function renderIndyCarStandings(){
       <div class="champ-gap">WINS</div>
     </div>`).join('');
   content.innerHTML=top+hdr+rows+engHdr+engRows;
-  setStats(`${INDYCAR_STANDINGS[0].points} pts`,INDYCAR_STANDINGS[0].driver,'DRIVERS','R9/18');
+  setStats(`${INDYCAR_STANDINGS[0].points} pts`,INDYCAR_STANDINGS[0].driver,'DRIVERS','R18/18');
 }
 
 function renderIndyCarDriverBreakdown(name,info,points,pos){
