@@ -31,6 +31,20 @@
 //   https://www.wrc.com/en/news/evans-wins-in-japan-as-toyota-seals-home-podium-sweep
 //     (search-snippet corroboration: Evans 151 / Katsuta 131 after R7, Japan
 //      podium + 12.8s margin; wrc.com + fia.com standings pages return 403/404)
+// Catch-up 2026-10-14 (R8–R13, season complete): Wikipedia season page +
+//   2026_Acropolis_Rally, 2026_Rally_Estonia, 2026_Rally_Finland,
+//   2026_Rally_del_Paraguay, 2026_Rally_Chile, 2026_Rally_Italia_Sardegna
+//   (Rally1 classification incl. per-driver Sunday/Power Stage points,
+//   special-stage winners). wrc.com news (search snippets — pages are
+//   JS-rendered) corroborates every winner + margin, Saudi's removal, and
+//   the final Evans 243 / Solberg 238 / Pajari 237 / Ogier 189 / Fourmaux 183:
+//   https://www.wrc.com/en/news/ogier-wins-in-greece-after-dramatic-acropolis-finale
+//   https://www.wrc.com/en/news/pajari-wins-delfi-rally-estonia
+//   https://www.wrc.com/en/news/pajari-powers-to-dream-home-victory-in-finland
+//   https://www.wrc.com/en/news/pajari-completes-wrc-hat-trick-with-paraguay-victory
+//   https://www.wrc.com/en/news/solberg-wins-rally-chile-as-toyota-clinches-manufacturers-crown
+//   https://www.wrc.com/en/news/evans-crowned-2026-wrc-champion-in-sardinia-thriller
+//   https://www.wrc.com/en/news/fia-and-wrc-promoter-confirm-final-round-of-the-2026-wrc-season
 // Cardinal rule: unverified values are null/'—' with a comment, never guessed.
 
 let currentWRCTab='standings';
@@ -42,9 +56,11 @@ const WRC_TEAM_COLOR={'Toyota Gazoo Racing WRT':'#EB0A1E','Toyota Gazoo Racing W
 function wrcTeamColor(t){return WRC_TEAM_COLOR[t]||WRC_TEAM_COLOR['default'];}
 
 // Rally1 regulars: full details from the Wikipedia 2026 entry list. Armstrong
-// and Sordo's car models were only inferable from their teams, so '—' per the
-// cardinal rule. The remaining rows are WRC2-entered crews who score overall
-// points — their entrant/car details weren't on the fetched pages → '—'.
+// and Sordo's cars + Sesks's Rally1 entry (M-Sport, co-driver Francis) added
+// 2026-10-14 from the Rally1 classification tables on the Acropolis/Estonia
+// Wikipedia pages. The remaining rows are WRC2-entered crews who score overall
+// points — their entrant/car details weren't on the fetched pages → '—'
+// (Latvala, Galanti, Gill added 2026-10-14; nationality from season-page flags).
 const WRC_DRIVERS={
   'Evans':         {first:'Elfyn',     codriver:'Scott Martin',      team:'Toyota Gazoo Racing WRT',  car:'Toyota GR Yaris Rally1', nat:'British'},
   'Katsuta':       {first:'Takamoto',  codriver:'Aaron Johnston',    team:'Toyota Gazoo Racing WRT',  car:'Toyota GR Yaris Rally1', nat:'Japanese'},
@@ -55,9 +71,9 @@ const WRC_DRIVERS={
   'Fourmaux':      {first:'Adrien',    codriver:'Alexandre Coria',   team:'Hyundai Shell Mobis WRT',  car:'Hyundai i20 N Rally1',   nat:'French'},
   'Paddon':        {first:'Hayden',    codriver:'John Kennard',      team:'Hyundai Shell Mobis WRT',  car:'Hyundai i20 N Rally1',   nat:'New Zealander'},
   'Lappi':         {first:'Esapekka',  codriver:'Enni Mälkönen',     team:'Hyundai Shell Mobis WRT',  car:'Hyundai i20 N Rally1',   nat:'Finnish'},
-  'Sordo':         {first:'Dani',      codriver:'Cándido Carrera',   team:'Hyundai Shell Mobis WRT',  car:'—',                      nat:'Spanish'},
+  'Sordo':         {first:'Dani',      codriver:'Cándido Carrera',   team:'Hyundai Shell Mobis WRT',  car:'Hyundai i20 N Rally1',   nat:'Spanish'},
   'McErlean':      {first:'Josh',      codriver:'Eoin Treacy',       team:'M-Sport Ford WRT',         car:'Ford Puma Rally1',       nat:'Irish'},
-  'Armstrong':     {first:'Jon',       codriver:'Shane Byrne',       team:'M-Sport Ford WRT',         car:'—',                      nat:'Irish'},
+  'Armstrong':     {first:'Jon',       codriver:'Shane Byrne',       team:'M-Sport Ford WRT',         car:'Ford Puma Rally1',       nat:'Irish'},
   // WRC2-entered overall point scorers — entrant/car not on fetched pages
   'Y. Rossel':     {first:'Yohan',     codriver:'Arnaud Dunand',     team:'—', car:'—', nat:'French'},
   'L. Rossel':     {first:'Léo',       codriver:'—',                 team:'—', car:'—', nat:'French'},
@@ -71,15 +87,21 @@ const WRC_DRIVERS={
   'Mikkelsen':     {first:'Andreas',   codriver:'—',                 team:'—', car:'—', nat:'Norwegian'},
   'Domínguez Jr.': {first:'Diego',     codriver:'—',                 team:'—', car:'—', nat:'Paraguayan'},
   'Pelamourgues':  {first:'Arthur',    codriver:'—',                 team:'—', car:'—', nat:'French'},
-  'Sesks':         {first:'Mārtiņš',   codriver:'—',                 team:'—', car:'—', nat:'Latvian'},
+  'Sesks':         {first:'Mārtiņš',   codriver:'Renārs Francis',    team:'M-Sport Ford WRT',         car:'Ford Puma Rally1',       nat:'Latvian'},
   'Fontana':       {first:'Matteo',    codriver:'—',                 team:'—', car:'—', nat:'Italian'},
   'Suninen':       {first:'Teemu',     codriver:'—',                 team:'—', car:'—', nat:'Finnish'},
   'Camilli':       {first:'Eric',      codriver:'—',                 team:'—', car:'—', nat:'French'},
   'Lindholm':      {first:'Emil',      codriver:'—',                 team:'—', car:'—', nat:'Finnish'},
+  'Latvala':       {first:'Jari-Matti',codriver:'—',                 team:'—', car:'—', nat:'Finnish'},
+  'Galanti':       {first:'Alejandro', codriver:'—',                 team:'—', car:'—', nat:'Paraguayan'},
+  'Gill':          {first:'Taylor',    codriver:'—',                 team:'—', car:'—', nat:'Australian'},
 };
 
-// 2026 calendar (14 rounds) — verified 2026-06-12, Wikipedia season page.
-// date = final day (Sunday).
+// 2026 calendar — verified 2026-06-12, Wikipedia season page.
+// date = final day (Sunday). Rally Saudi Arabia (was R14, 2026-11-14) was
+// removed from the WRC calendar ("ongoing regional developments"), making
+// Sardegna the 13th and final round — wrc.com/fia.com "FIA and WRC Promoter
+// confirm final round of the 2026 WRC season" + Wikipedia season page.
 const WRC_SCHEDULE=[
   {round:1, rally:'Rallye Automobile Monte Carlo', country:'🇲🇨', date:'2026-01-25', surface:'mixed'},
   {round:2, rally:'Rally Sweden',                  country:'🇸🇪', date:'2026-02-15', surface:'snow'},
@@ -94,10 +116,9 @@ const WRC_SCHEDULE=[
   {round:11,rally:'Rally del Paraguay',            country:'🇵🇾', date:'2026-08-30', surface:'gravel'},
   {round:12,rally:'Rally Chile',                   country:'🇨🇱', date:'2026-09-13', surface:'gravel'},
   {round:13,rally:'Rally Italia Sardegna',         country:'🇮🇹', date:'2026-10-04', surface:'gravel'},
-  {round:14,rally:'Rally Saudi Arabia',            country:'🇸🇦', date:'2026-11-14', surface:'gravel'},
 ];
 
-// Completed rounds 1–7 — podiums/gaps/stage wins/power stage from individual
+// Completed rounds 1–13 — podiums/gaps/stage wins/power stage from individual
 // Wikipedia rally pages; winners re-confirmed on the season page this session;
 // R7 corroborated by wrc.com news. powerStage.top5 is null where only the
 // winner is published (R3, R4, R7) — cardinal rule, no guessed orders.
@@ -130,52 +151,84 @@ const WRC_RESULTS={
      stageWins:{'Solberg':7,'Evans':5,'Pajari':4,'Ogier':3,'Katsuta':1},
      powerStage:{winner:'Solberg',top5:null},
      note:'Evans/Martin took their second win of 2026 in Japan, beating Ogier by 12.8s as Toyota swept the top four; Solberg won the SS20 Power Stage.'},
+  // R8–R13: top5 = the drivers awarded 5-4-3-2-1 Power Stage points in the
+  // published Rally1 classification (all 15 pts accounted for each round).
+  // Stages with a shared fastest time credit both crews (R8 SS15, R10 SS10).
+  8:{winner:'Ogier',   p2:'Neuville',p3:'Katsuta',time:'3:36:40.7', p2Gap:'+58.3',  p3Gap:'+3:04.8',
+     stageWins:{'Ogier':8,'Fourmaux':5,'Neuville':4,'Armstrong':1},
+     powerStage:{winner:'Ogier',top5:['Ogier','Pajari','Neuville','Katsuta','Evans']},
+     note:'Ogier/Landais took his 69th WRC win and a perfect Sunday (rally, Super Sunday, Power Stage) after long-time leader Neuville suffered two rear punctures on the penultimate stage; Neuville finished 58.3s back.'},
+  9:{winner:'Pajari',  p2:'Solberg', p3:'Fourmaux',time:'2:31:16.5', p2Gap:'+19.5', p3Gap:'+53.8',
+     stageWins:{'Pajari':12,'Solberg':5,'Neuville':1},
+     powerStage:{winner:'Solberg',top5:['Solberg','Neuville','Evans','Ogier','Katsuta']},
+     note:'Pajari/Salminen led Rally Estonia from start to finish for their maiden WRC win, taking 12 of 18 stages and beating Solberg by 19.5s; Solberg won the SS18 Power Stage.'},
+  10:{winner:'Pajari', p2:'Solberg', p3:'Evans',  time:'2:27:58.0', p2Gap:'+26.7',  p3Gap:'+1:19.5',
+     stageWins:{'Pajari':6,'Ogier':5,'Evans':4,'Fourmaux':2,'Solberg':2,'Neuville':1,'Katsuta':1},
+     powerStage:{winner:'Evans',top5:['Evans','Solberg','Fourmaux','Neuville','Pajari']},
+     note:'Pajari won his home Rally Finland after leader Ogier crashed out on Saturday; Evans recovered from a roll to third and won the SS20 Power Stage by 0.025s from Solberg.'},
+  11:{winner:'Pajari', p2:'Paddon',  p3:'Fourmaux',time:'3:13:28.5', p2Gap:'+25.8', p3Gap:'+40.0',
+     stageWins:{'Fourmaux':9,'Solberg':5,'Ogier':3,'Paddon':1,'Pajari':1,'Evans':1,'Katsuta':1},
+     powerStage:{winner:'Solberg',top5:['Solberg','Ogier','Fourmaux','Evans','Neuville']},
+     note:'Pajari/Salminen completed a hat-trick in Paraguay — the first crew to take their first three top-flight wins at consecutive rallies. Paddon was second on his first top-level gravel start since 2018; SS21 was cancelled and Solberg won the SS22 Power Stage.'},
+  12:{winner:'Solberg',p2:'Ogier',   p3:'Fourmaux',time:'2:57:08.2', p2Gap:'+16.6', p3Gap:'+33.3',
+     stageWins:{'Solberg':6,'Ogier':6,'Evans':2,'Neuville':1,'Pajari':1},
+     powerStage:{winner:'Solberg',top5:['Solberg','Evans','Pajari','Katsuta','Ogier']},
+     note:'Solberg/Edmondson won Rally Chile by 16.6s from Ogier as Toyota clinched a sixth straight manufacturers\' title (its 10th overall, level with Lancia). Evans lost over two minutes to a puncture and finished fifth.'},
+  13:{winner:'Solberg',p2:'Ogier',   p3:'Pajari', time:'3:24:57.0', p2Gap:'+57.6',  p3Gap:'+1:37.4',
+     stageWins:{'Neuville':6,'Solberg':5,'Ogier':3,'Fourmaux':2,'Pajari':1},
+     powerStage:{winner:'Neuville',top5:['Neuville','Pajari','Evans','Katsuta','Fourmaux']},
+     note:'Season finale: Solberg won Sardinia but slid off late in the Power Stage, scoring no stage points, so Evans/Martin (fifth overall, third on the stage) clinched the 2026 world title by five points — the first British drivers\' champion since Richard Burns in 2001. Neuville won the SS17 Power Stage.'},
 };
 
-// Drivers' championship after R7 Japan (2026-05-31) — verified 2026-06-12,
-// Wikipedia season page (re-confirmed directly this session); wrc.com news
-// corroborates Evans 151 / Katsuta 131. Totals as published (include Sunday +
-// Power Stage bonus points), never recomputed. gap = points − leader points.
+// FINAL drivers' championship after R13 Sardegna (2026-10-04) — season
+// complete, Evans/Martin champions. Verified 2026-10-14, Wikipedia season
+// page (each rally page's post-event table agrees); wrc.com corroborates the
+// top five (243 / 238 / 237 / 189 / 183). P6 onward is single-source
+// Wikipedia. Totals as published (include Sunday + Power Stage bonus
+// points), never recomputed. gap = points − leader points.
 const WRC_STANDINGS=[
-  {pos:1, driver:'Evans',         points:151, gap:0},
-  {pos:2, driver:'Katsuta',       points:131, gap:-20},
-  {pos:3, driver:'Solberg',       points:102, gap:-49},
-  {pos:4, driver:'Pajari',        points:96,  gap:-55},
-  {pos:5, driver:'Ogier',         points:90,  gap:-61},
-  {pos:6, driver:'Fourmaux',      points:89,  gap:-62},
-  {pos:7, driver:'Neuville',      points:73,  gap:-78},
-  {pos:8, driver:'Paddon',        points:21,  gap:-130},
-  {pos:9, driver:'Lappi',         points:21,  gap:-130},
-  {pos:10,driver:'Y. Rossel',     points:20,  gap:-131},
-  {pos:11,driver:'L. Rossel',     points:18,  gap:-133},
-  {pos:12,driver:'Armstrong',     points:14,  gap:-137},
-  {pos:13,driver:'Virves',        points:10,  gap:-141},
-  {pos:14,driver:'Gryazin',       points:10,  gap:-141},
-  {pos:15,driver:'Sordo',         points:10,  gap:-141},
-  {pos:16,driver:'Greensmith',    points:8,   gap:-143},
-  {pos:17,driver:'Cachón',        points:7,   gap:-144},
-  {pos:18,driver:'McErlean',      points:7,   gap:-144},
-  {pos:19,driver:'Zaldivar',      points:6,   gap:-145},
-  {pos:20,driver:'Daprà',         points:6,   gap:-145},
-  {pos:21,driver:'Korhonen',      points:5,   gap:-146},
-  {pos:22,driver:'Mikkelsen',     points:4,   gap:-147},
-  {pos:23,driver:'Domínguez Jr.', points:2,   gap:-149},
-  {pos:24,driver:'Pelamourgues',  points:2,   gap:-149},
-  {pos:25,driver:'Sesks',         points:2,   gap:-149},
-  {pos:26,driver:'Fontana',       points:2,   gap:-149},
-  {pos:27,driver:'Suninen',       points:1,   gap:-150},
-  {pos:28,driver:'Camilli',       points:1,   gap:-150},
-  {pos:29,driver:'Lindholm',      points:1,   gap:-150},
+  {pos:1, driver:'Evans',         points:243, gap:0},
+  {pos:2, driver:'Solberg',       points:238, gap:-5},
+  {pos:3, driver:'Pajari',        points:237, gap:-6},
+  {pos:4, driver:'Ogier',         points:189, gap:-54},
+  {pos:5, driver:'Fourmaux',      points:183, gap:-60},
+  {pos:6, driver:'Katsuta',       points:175, gap:-68},
+  {pos:7, driver:'Neuville',      points:134, gap:-109},
+  {pos:8, driver:'Paddon',        points:38,  gap:-205},
+  {pos:9, driver:'McErlean',      points:35,  gap:-208},
+  {pos:10,driver:'Lappi',         points:33,  gap:-210},
+  {pos:11,driver:'Y. Rossel',     points:24,  gap:-219},
+  {pos:12,driver:'Armstrong',     points:22,  gap:-221},
+  {pos:13,driver:'Virves',        points:19,  gap:-224},
+  {pos:14,driver:'L. Rossel',     points:18,  gap:-225},
+  {pos:15,driver:'Greensmith',    points:14,  gap:-229},
+  {pos:16,driver:'Sesks',         points:12,  gap:-231},
+  {pos:17,driver:'Gryazin',       points:10,  gap:-233},
+  {pos:18,driver:'Sordo',         points:10,  gap:-233},
+  {pos:19,driver:'Korhonen',      points:9,   gap:-234},
+  {pos:20,driver:'Domínguez Jr.', points:8,   gap:-235},
+  {pos:21,driver:'Cachón',        points:7,   gap:-236},
+  {pos:22,driver:'Zaldivar',      points:6,   gap:-237},
+  {pos:23,driver:'Daprà',         points:6,   gap:-237},
+  {pos:24,driver:'Mikkelsen',     points:5,   gap:-238},
+  {pos:25,driver:'Latvala',       points:4,   gap:-239},
+  {pos:26,driver:'Pelamourgues',  points:2,   gap:-241},
+  {pos:27,driver:'Galanti',       points:2,   gap:-241},
+  {pos:28,driver:'Suninen',       points:2,   gap:-241},
+  {pos:29,driver:'Fontana',       points:2,   gap:-241},
+  {pos:30,driver:'Gill',          points:1,   gap:-242},
+  {pos:31,driver:'Camilli',       points:1,   gap:-242},
+  {pos:32,driver:'Lindholm',      points:1,   gap:-242},
 ];
 
-// Manufacturers' championship after R7 — Wikipedia season page (re-confirmed
-// this session); wrc.com/FIA pages were unreachable (403/404), so this table
-// is single-source — flagged in the session report.
+// FINAL manufacturers' championship after R13 — Wikipedia season page.
+// Still single-source: wrc.com/FIA tables unreachable; wrc.com news only
+// confirms Toyota clinched the title in Chile (R12). Flagged in the report.
 const WRC_MFR_STANDINGS=[
-  {pos:1, mfr:'Toyota Gazoo Racing WRT',  points:370, gap:0},
-  {pos:2, mfr:'Hyundai Shell Mobis WRT',  points:243, gap:-127},
-  {pos:3, mfr:'Toyota Gazoo Racing WRT2', points:106, gap:-264},
-  {pos:4, mfr:'M-Sport Ford WRT',         points:85,  gap:-285},
+  {pos:1, mfr:'Toyota Gazoo Racing WRT',  points:662, gap:0},
+  {pos:2, mfr:'Hyundai Shell Mobis WRT',  points:440, gap:-222},
+  {pos:3, mfr:'Toyota Gazoo Racing WRT2', points:251, gap:-411},
+  {pos:4, mfr:'M-Sport Ford WRT',         points:168, gap:-494},
 ];
 
 // Per-rally official "Final Day Highlights" from the WRC YouTube channel
@@ -330,11 +383,16 @@ function selectWRCRally(round){
   renderWRCRaces();
 }
 
+// Season is decided once every scheduled rally has a verified result — P1 is
+// then shown as CHAMPION instead of LEADER (standings + home card).
+function wrcSeasonComplete(){return WRC_SCHEDULE.every(r=>WRC_RESULTS[r.round]);}
+
 // ── WRC STANDINGS (drivers + manufacturers stacked) ───────────────────────────
 function renderWRCStandings(){
+  const p1Label=wrcSeasonComplete()?'🏆 CHAMPION':'LEADER';
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('wrc','standings')+renderBackToSeriesHome('wrc');
-  const hdr=`<div class="section-title"><span>WRC Drivers · 2026 · After R7 Japan</span><span>Incl. Sunday + Power Stage pts</span></div>`;
+  const hdr=`<div class="section-title"><span>WRC Drivers · 2026 · Final · After R13 Sardegna</span><span>Incl. Sunday + Power Stage pts</span></div>`;
   const rows=WRC_STANDINGS.map(d=>{
     const info=wrcDrv(d.driver);
     const isSelected=selectedWRCDriver===d.driver;
@@ -349,21 +407,21 @@ function renderWRCStandings(){
           <div class="champ-team-sm" style="color:${wrcTeamColor(info.team)}">${info.team}</div>
         </div>
         <div class="champ-pts">${d.points}</div>
-        <div class="champ-gap" style="color:${d.pos===1?'var(--yellow)':'var(--muted)'}">${d.pos===1?'LEADER':d.gap}</div>
+        <div class="champ-gap" style="color:${d.pos===1?'var(--yellow)':'var(--muted)'}">${d.pos===1?p1Label:d.gap}</div>
       </div>
       ${breakdown}
     </div>`;
   }).join('');
-  const mfrHdr=`<div class="section-title"><span>Manufacturers</span><span>After R7</span></div>`;
+  const mfrHdr=`<div class="section-title"><span>Manufacturers</span><span>Final · After R13</span></div>`;
   const mfrRows=WRC_MFR_STANDINGS.map(m=>`<div class="champ-row">
       <div class="champ-pos" style="color:${m.pos===1?'var(--yellow)':m.pos<=3?'var(--green)':'var(--text)'}">${m.pos}</div>
       <div class="flag-cell" style="color:${wrcTeamColor(m.mfr)};font-size:18px;">●</div>
       <div><div class="champ-name" style="color:${wrcTeamColor(m.mfr)};">${m.mfr}</div></div>
       <div class="champ-pts">${m.points}</div>
-      <div class="champ-gap" style="color:${m.pos===1?'var(--yellow)':'var(--muted)'}">${m.pos===1?'LEADER':m.gap}</div>
+      <div class="champ-gap" style="color:${m.pos===1?'var(--yellow)':'var(--muted)'}">${m.pos===1?p1Label:m.gap}</div>
     </div>`).join('');
   content.innerHTML=top+hdr+rows+mfrHdr+mfrRows;
-  setStats(`${WRC_STANDINGS[0].points} pts`,WRC_STANDINGS[0].driver,'DRIVERS','R7/14');
+  setStats(`${WRC_STANDINGS[0].points} pts`,WRC_STANDINGS[0].driver,'DRIVERS','R13/13');
 }
 
 function renderWRCDriverBreakdown(name,info,points,pos){

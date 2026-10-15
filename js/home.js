@@ -41,92 +41,92 @@ const HOMEPAGE_ARTICLES = [
   {
     id: 'a1',
     series: 'f1',
-    headline: 'Williams F1 facing delayed fix as James Vowles outlines upgrade plan',
-    source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/f1/news/williams-f1-facing-delayed-fix-as-james-vowles-outlines-upgrade-plan/10832356/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-22T22:24:23.000Z',
-    excerpt: 'Following a difficult Barcelona-Catalunya Grand Prix, Williams Formula 1 team principal James Vowles has confirmed that the weaknesses plaguing the Grove outfit\'s challenger will not be fixed in the immediate future. However, he remains optimistic, insisting that there is still…',
-    imageUrl: 'https://cdn-1.motorsport.com/images/amp/6O79EvO6/s6/james-vowles-williams.jpg',
+    headline: 'Laurent Mekies signs new long-term Red Bull F1 contract extension',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/f1/news/1107570/1/laurent-mekies-signs-new-long-term-red-bull-f1-contract-extension',
+    publishedAt: '2026-10-14T16:19:02.000Z',
+    excerpt: 'Red Bull team principal Laurent Mekies has signed a new long-term deal.',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-08/xpb_1429927_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
     id: 'a2',
     series: 'f1',
-    headline: 'When will Ferrari introduce its hotly-anticipated F1 ADUO engine upgrade?',
-    source: 'Crash.net',
-    url: 'https://www.crash.net/f1/news/1099238/1/when-will-ferrari-introduce-its-hotly-anticipated-f1-aduo-engine-upgrade',
-    publishedAt: '2026-06-22T11:13:18.000Z',
-    excerpt: 'Ferrari is rumoured to be bringing its first ADUO engine upgrade to the next F1 race.',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-06/xpb_1417502_hires.jpg?width=1600&aspect_ratio=16:9',
+    headline: 'Why Christian Horner banned Mercedes\' name as Red Bull built its own F1 engine',
+    source: 'Motorsport.com',
+    url: 'https://www.motorsport.com/f1/news/why-horner-banned-mercedes-name-as-red-bull-built-its-own-f1-engine/10864996/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-14T18:00:02.000Z',
+    excerpt: 'Former Red Bull CEO and team principal Christian Horner has revealed why he banned employees of the squad\'s powertrains division from using the name of bitter Formula 1 rivals Mercedes.The Milton Keynes-based outfit had enjoyed a flourishing partnership with Honda following a…',
+    imageUrl: 'https://cdn-6.motorsport.com/images/amp/6zQpajeY/s6/christian-horner-team-principa.jpg',
     imageCredit: ''
   },
   {
     id: 'a3',
     series: 'f1',
-    headline: 'Norris: Ferrari would \'embarrass\' everyone with better engine',
-    source: 'Sky Sports F1',
-    url: 'https://www.skysports.com/f1/news/12433/13554290/lando-norris-mclaren-driver-says-ferrari-would-embarrass-everyone-with-better-f1-engine-after-barcelona-win',
-    publishedAt: '2026-06-22T14:00:00.000Z',
-    excerpt: 'Lando Norris believes Ferrari would "embarrass" the rest of the Formula 1 field if they had a better engine.',
-    imageUrl: 'https://e0.365dm.com/26/06/1600x900/skysports-f1-charles-leclerc_7274092.jpg?20260615122902',
+    headline: 'Honda pledge F1 investigation into mysterious Fernando Alonso problem',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/honda-pledge-f1-investigation-into-mysterious-fernando-alonso-problem',
+    publishedAt: '2026-10-14T12:45:00.000Z',
+    excerpt: 'Honda has promised to get to the bottom of what\'s going on with Fernando Alonso\'s engine.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Alonso/XPB_1440317_HiRes.jpg?v=1791120733&width=1800&height=945&quality=75&crop=5472%2C2873%2C0%2C387',
     imageCredit: ''
   },
   {
     id: 'a4',
     series: 'nascar',
-    headline: 'Winners and losers from a riveting NASCAR Cup race in San Diego',
+    headline: 'Ricky Stenhouse explains his side of Michael McDowell conflict',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/winners-and-losers-from-a-riveting-nascar-cup-race-in-san-diego/10832302/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-22T19:38:16.000Z',
-    excerpt: 'What an amazing day of racing at Naval Base Coronado! The iconic backdrop for a brand-new street course race delivered in every form, from both the spectacle and the on-track action.The place was sold out, and the racing was fierce from green flag to checkered flag. All three…',
-    imageUrl: 'https://cdn-8.motorsport.com/images/amp/6b8jazv2/s6/corey-heim-23xi-racing.jpg',
+    url: 'https://www.motorsport.com/nascar-cup/news/ricky-stenhouse-jr-explains-his-side-of-michael-mcdowell-conflict-/10865267/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-14T22:17:12.000Z',
+    excerpt: 'Whatever tension existed between Ricky Stenhouse Jr. and Michael McDowell ended as quickly as it began on Sunday at Charlotte Motor Speedway.After the race, Stenhouse drove up to McDowell during the cool down lap to trade paint before coming down to pit road. McDowell gave it…',
+    imageUrl: 'https://cdn-8.motorsport.com/images/amp/0LdeKKN0/s6/85ad77e4c34cda06978d2793dcd9e1.jpg',
     imageCredit: ''
   },
   {
     id: 'a5',
     series: 'nascar',
-    headline: 'Naval Base Corando a historic win for Corey Heim and NASCAR',
+    headline: 'Why NASCAR is not penalizing Stenhouse, McDowell for post-race theatrics',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/naval-base-corando-a-historic-win-for-corey-heim-and-nascar/10832513/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-22T17:55:41.000Z',
-    excerpt: 'Sunday at Naval Base Corando was about history.The inaugural, and maybe only Anduril Race the Base 250 was about the history made by the event, its eventual winner and the history that is still to come.Corey Heim outdueled 23XI Racing teammate Tyler Reddick to earn his first…',
-    imageUrl: 'https://cdn-8.motorsport.com/images/amp/6grBa5nY/s6/corey-heim-no-67-23xi-racing-t.jpg',
+    url: 'https://www.motorsport.com/nascar-cup/news/why-nascar-is-not-penalizing-stenhouse-mcdowell-for-post-race-theatrics/10865259/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-14T20:09:08.000Z',
+    excerpt: 'NASCAR typically issues penalties reports by the end of business day on Tuesday but no later than Wednesday.There has been nothing issued thus far and nothing is coming.In other words, there were no technical infractions to deal with following the race weekend at Charlotte Motor…',
+    imageUrl: 'https://cdn-6.motorsport.com/images/amp/YP74qqG2/s6/gettyimages-2299745549-e179199.jpg',
     imageCredit: ''
   },
   {
     id: 'a6',
     series: 'nascar',
-    headline: 'Tyler Reddick explains what went wrong in teammate battle for the win',
+    headline: 'Dale Jr. explains why he doesn\'t use \'Earnhardt\' in his signature',
     source: 'Motorsport.com NASCAR',
-    url: 'https://www.motorsport.com/nascar-cup/news/tyler-reddick-explains-why-he-lifted-in-battle-for-the-win-against-heim/10832488/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-22T16:31:36.000Z',
-    excerpt: 'Tyler Reddick lost 43 points in the final five laps of the NASCAR Cup race at San Diego, and now moves on to Sonoma with just an eight-point advantage over Denny Hamlin in the championship.20 of those points went away once he lost the lead to 23XI Racing teammate Corey Heim, but…',
-    imageUrl: 'https://cdn-8.motorsport.com/images/amp/2y7AXwm6/s6/tyler-reddick-23xi-racing.jpg',
+    url: 'https://www.motorsport.com/nascar-cup/news/dale-jr-explains-why-he-doesnt-use-earnhardt-in-his-signature/10865249/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-14T18:42:50.000Z',
+    excerpt: 'Dale Earnhardt Jr. remains one of the most popular figures in NASCAR today, and the two-time Daytona 500 winner can\'t go anywhere without fans wanting an autograph or a picture. He won the Most Popular Driver award every year between 2002 and his final season in 2017, and was…',
+    imageUrl: 'https://cdn-4.motorsport.com/images/amp/0o5AooDY/s6/dale-earnhardt-jr-signs-autogr.jpg',
     imageCredit: ''
   },
   {
     id: 'a7',
-    series: 'motogp',
-    headline: 'Pirelli\'s Brno test ends with Aprilia on top and minor crash for Marc Marquez',
+    series: 'indycar',
+    headline: 'Barnes: Why IndyCar’s updated licensing system fails its own integrity test',
     source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/motogp/news/pirellis-test-in-brno-ends-with-aprilia-on-top-and-marquez-suffering-a-minor-crash/10832537/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-06-22T20:50:49.000Z',
-    excerpt: 'The first MotoGP test with 850cc bikes and Pirelli tyres for contracted race riders concluded this Monday at the Brno Autodrom, with Aprilia topping the times and Marc Marquez suffering a small crash.Next season, Italian manufacturer Pirelli will become the sole tyre supplier…',
-    imageUrl: 'https://cdn-9.motorsport.com/images/amp/2y7AXGm6/s6/marc-marquez-ducati-team.jpg',
+    url: 'https://www.motorsport.com/indycar/news/barnes-why-indycars-updated-licensing-system-fails-its-own-integrity-test/10865264/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
+    publishedAt: '2026-10-14T21:11:18.000Z',
+    excerpt: 'When IndyCar announced its updated driver licensing requirements for 2027 – raising the bar for feeder series entrants and putting a tighter leash on pure "pay drivers" – there was a sense of gratification that the sport was pushing toward a higher level of integrity. For years,…',
+    imageUrl: 'https://cdn-2.motorsport.com/images/amp/YWKANNxY/s6/gettyimages-2280127006-2.jpg',
     imageCredit: ''
   },
   {
     id: 'a8',
-    series: 'motogp',
-    headline: 'MotoGP makes ride height device ban immediate after crashes',
-    source: 'The Race',
-    url: 'https://www.the-race.com/motogp/motogp-makes-ride-height-device-ban-immediate-after-crashes/',
-    publishedAt: '2026-06-22T16:21:38.000Z',
-    excerpt: 'MotoGP\'s governing body the Grand Prix Commission has moved to ban front ride height devices effectively immediately',
-    imageUrl: 'https://storage.ghost.io/c/dd/af/ddafbd99-2ccd-468c-b622-4b3cccf80b49/content/images/size/w1200/2026/06/GnG_1316275_HiRes.jpg',
+    series: 'wec',
+    headline: 'What to expect from WEC\'s Barcelona debut',
+    source: 'Autosport',
+    url: 'https://www.autosport.com/wec/news/what-to-expect-from-wecs-barcelona-debut/10865201/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
+    publishedAt: '2026-10-14T15:12:12.000Z',
+    excerpt: 'For the first time in three years, the World Endurance Championship will visit an all-new venue, with Barcelona hosting the penultimate round of the 2026 season.The Spanish venue will make its WEC debut this weekend with a conventional six-hour race, replacing the cancelled…',
+    imageUrl: 'https://cdn-5.motorsport.com/images/amp/Y9lLXeb2/s6/circuit-de-barcelona-catalunya.jpg',
     imageCredit: ''
   }
-];
+]
 
 // HOMEPAGE_ALTERNATES — daily aggregator (Session 5) proposes 4 alternates
 // alongside the 8 primary articles in HOMEPAGE_ARTICLES. Reviewer can swap
@@ -136,49 +136,49 @@ const HOMEPAGE_ARTICLES = [
 const HOMEPAGE_ALTERNATES = [
   {
     id: 'a101',
-    series: 'motogp',
-    headline: 'Ai Ogura pushes Marquez for MotoGP victory but “we found another weak point”',
+    series: 'f1',
+    headline: 'George Russell reveals when he plans to take another F1 engine penalty',
     source: 'Crash.net',
-    url: 'https://www.crash.net/motogp/news/1099244/1/ai-ogura-pushes-marquez-motogp-victory-we-found-another-weak-point',
-    publishedAt: '2026-06-22T14:34:59.000Z',
-    excerpt: 'Ai Ogura identifies next MotoGP weakness after breakthrough Brno weekend.',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-06/gng_1327835_hires_1600x900.jpg?width=1600&aspect_ratio=16:9',
+    url: 'https://www.crash.net/f1/news/1107560/1/george-russell-reveals-when-he-plans-take-another-f1-engine-penalty',
+    publishedAt: '2026-10-14T09:10:46.000Z',
+    excerpt: 'George Russell has revealed when he plans to take more F1 penalty pain.',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-10/xpb_1444301_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
     id: 'a102',
-    series: 'other',
-    headline: 'Teenage spectator dies following crash at Donegal rally event',
-    source: 'Crash.net',
-    url: 'https://www.crash.net/wrc/news/1099239/1/teenage-spectator-dies-following-crash-donegal-rally-event',
-    publishedAt: '2026-06-22T11:15:00.000Z',
-    excerpt: 'A young spectator who tragically died in a crash at the Donegal International Rally has been named',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-06/727286046_1442865797887399_896700894469095197_n.jpg?width=1600&aspect_ratio=16:9',
+    series: 'f1',
+    headline: 'Red Bull make huge F1 announcement as Christian Horner reiterates Ferrari stance - RacingNews365 Review',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/red-bull-make-huge-f1-announcement-as-christian-horner-reiterates-ferrari-stance---racingnews365-review',
+    publishedAt: '2026-10-14T20:00:00.000Z',
+    excerpt: 'Check out all the biggest stories of the day with the latest edition of the RacingNews365 Review!',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Verstappen/SI202610110350.jpg?v=1791726376&width=1800&height=945&quality=75&crop=3840%2C2016%2C0%2C272',
     imageCredit: ''
   },
   {
     id: 'a103',
-    series: 'other',
-    headline: 'Oliver Rowland takes full responsibility after surprise Formula E crash',
-    source: 'RacingNews365',
-    url: 'https://racingnews365.com/oliver-rowland-takes-full-responsibility-after-surprise-formula-e-crash',
-    publishedAt: '2026-06-22T15:13:00.000Z',
-    excerpt: 'Oliver Rowland crashed out of Formula E\'s Sanya E-Prix, in what was an incident-packed race.',
-    imageUrl: 'https://cdn.racingnews365.com/2026/Formula-E/Rowland-Sanya.jpg?v=1782140521&width=1200&height=630&quality=75&crop=2048%2C1076%2C0%2C144',
-    imageCredit: 'Rowland Sanya'
+    series: 'f1',
+    headline: 'Russell plans to take grid penalty at Las Vegas GP',
+    source: 'Sky Sports F1',
+    url: 'https://www.skysports.com/f1/news/12433/13598097/george-russell-mercedes-driver-planning-to-take-another-grid-penalty-for-upgraded-power-unit-element-at-las-vegas-grand-prix',
+    publishedAt: '2026-10-14T05:00:00.000Z',
+    excerpt: 'Mercedes\' George Russell is set to take another grid penalty in November\'s Las Vegas Grand Prix.',
+    imageUrl: 'https://e0.365dm.com/26/10/1600x900/skysports-f1-george-russell_7374947.jpg?20261012112424',
+    imageCredit: ''
   },
   {
     id: 'a104',
-    series: 'motogp',
-    headline: '“Demanding” Pirelli test sees MotoGP stars make 850cc debut at Brno',
-    source: 'Crash.net',
-    url: 'https://www.crash.net/motogp/news/1099251/1/demanding-pirelli-test-sees-motogp-stars-make-850cc-debut-brno',
-    publishedAt: '2026-06-22T17:24:59.000Z',
-    excerpt: 'MotoGP\'s 2027 era took another step forward at Brno with Marc Marquez, Marco Bezzecchi and Pedro Acosta among those to sample Pirelli tyres and 850cc machinery for the first time.',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-06/marc-marquez-pirelli_1600x900_0.jpg?width=1600&aspect_ratio=16:9',
+    series: 'f1',
+    headline: 'Mekies extends contract as Red Bull\'s F1 team boss',
+    source: 'Autosport',
+    url: 'https://www.autosport.com/f1/news/laurent-mekies-extends-contract-as-red-bulls-f1-team-boss/10865235/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
+    publishedAt: '2026-10-14T16:36:46.000Z',
+    excerpt: 'Laurent Mekies has extended his contract as team principal of the Red Bull Formula 1 outfit with a new deal that takes him through until the end of 2031.That will see the Frenchman spend at least six seasons leading the Austrian outfit after joining in July 2025 to end Christian…',
+    imageUrl: 'https://cdn-4.motorsport.com/images/amp/YMXbOEv2/s6/laurent-mekies-red-bull-racing-2.jpg',
     imageCredit: ''
   }
-];
+]
 
 // N24 race-end metadata. Not present as a constant in n24.js, but the
 // 16–17 May 2026 date is stated in that file's header comment (verified).
@@ -408,7 +408,7 @@ function renderHomeChampionships(){
       <div class="home-champ-series" style="color:#37bedd;">INDYCAR</div>
       <div class="home-champ-name" style="color:${indyEngineColor(iDrv.engine)};">${iL.driver}</div>
       <div class="home-champ-team">${iDrv.team||'—'}</div>
-      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  +${iGap}</span></div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${iL.points} PTS</span><span style="color:var(--muted);">  ·  ${indyCarSeasonComplete()?'🏆 CHAMPION':'+'+iGap}</span></div>
     </div>
     <div class="home-champ-card" onclick="openHomeChampionship('motogp')">
       <div class="home-champ-series" style="color:var(--orange);">MOTOGP</div>
@@ -426,7 +426,7 @@ function renderHomeChampionships(){
       <div class="home-champ-series" style="color:#b0b0b0;">WRC</div>
       <div class="home-champ-name" style="color:${wrcTeamColor(rDrv.team)};">${rL.driver}</div>
       <div class="home-champ-team">${rDrv.team||'—'}</div>
-      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  +${rGap}</span></div>
+      <div class="home-champ-pts"><span style="color:var(--yellow);">${rL.points} PTS</span><span style="color:var(--muted);">  ·  ${wrcSeasonComplete()?'🏆 CHAMPION':'+'+rGap}</span></div>
     </div>
   </div>`;
 }

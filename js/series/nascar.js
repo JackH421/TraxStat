@@ -1,10 +1,12 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // ── NASCAR MODULE ─────────────────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════════
-// Cup Series fully populated with real verified 2026 data through R15 FireKeepers Casino 400.
+// Cup Series fully populated with real verified 2026 data through R32 Bank of America 400 (Charlotte).
 // Xfinity (O'Reilly Auto Parts Series) and Trucks (Craftsman) scaffolded only.
 // Sources: Wikipedia 2026 NASCAR Cup Series, NASCAR.com winners gallery,
 // beyondtheflag.com / motorsport.com points after Michigan, race recaps.
+// R18–R32 (added 2026-10-14): official NASCAR.com results/points feed
+// (cf.nascar.com/cacher/2026/1/…) cross-checked vs Wikipedia race pages.
 
 let currentNascarTab='live';
 let currentNascarSeries='cup';
@@ -53,9 +55,16 @@ const NASCAR_CUP_DRIVERS={
   'Bowman':        {first:'Alex',      team:'Hendrick Motorsports', mfr:'Chevrolet', num:48},
   'Custer':        {first:'Cole',      team:'Haas Factory Team',    mfr:'Chevrolet', num:41},
   'Ware':          {first:'Cody',      team:'Rick Ware Racing',     mfr:'Chevrolet', num:51},
+  'Heim':          {first:'Corey',     team:'23XI Racing',          mfr:'Toyota',    num:67},
+  // Part-time sub: drove the No. 35 at R26 Daytona (driver change, P12, 0 pts) —
+  // official NASCAR.com R26 results feed. Listed only for the R26 Results table.
+  'Burton':        {first:'Harrison',  team:'23XI Racing',          mfr:'Toyota',    num:35},
 };
 
-// 2026 Cup Series schedule (R1-R36) — verified against Wikipedia
+// 2026 Cup Series schedule (R1-R36) — verified against Wikipedia.
+// 2026-10-14: R17 laps 80→75, R19 name TBA→eero 400, R25 name Mobil 1 301→
+// Dollar Tree 301, R32 laps 400→267 (oval, not the Roval) — per the official
+// NASCAR.com race list feed + Wikipedia race pages.
 const NASCAR_CUP_SCHEDULE=[
   {round:1, race:'Daytona 500',                track:'Daytona International Speedway',     country:'🇺🇸', date:'2026-02-15', laps:200},
   {round:2, race:'Autotrader 400',             track:'EchoPark Speedway (Atlanta)',        country:'🇺🇸', date:'2026-02-22', laps:260},
@@ -73,29 +82,29 @@ const NASCAR_CUP_SCHEDULE=[
   {round:14,race:'Cracker Barrel 400',         track:'Nashville Superspeedway',            country:'🇺🇸', date:'2026-05-31', laps:300},
   {round:15,race:'FireKeepers Casino 400',     track:'Michigan International Speedway',    country:'🇺🇸', date:'2026-06-07', laps:200},
   {round:16,race:'The Great American Getaway 400',track:'Pocono Raceway',                  country:'🇺🇸', date:'2026-06-14', laps:160},
-  {round:17,race:'Anduril 250',                track:'Coronado Street Course',             country:'🇺🇸', date:'2026-06-21', laps:80,  type:'S'},
+  {round:17,race:'Anduril 250',                track:'Coronado Street Course',             country:'🇺🇸', date:'2026-06-21', laps:75,  type:'S'},
   {round:18,race:'Toyota/Save Mart 350',       track:'Sonoma Raceway',                     country:'🇺🇸', date:'2026-06-28', laps:110, type:'R'},
-  {round:19,race:'TBA',                        track:'Chicagoland Speedway',               country:'🇺🇸', date:'2026-07-05', laps:267},
+  {round:19,race:'eero 400',                   track:'Chicagoland Speedway',               country:'🇺🇸', date:'2026-07-05', laps:267},
   {round:20,race:'Quaker State 400',           track:'EchoPark Speedway (Atlanta)',        country:'🇺🇸', date:'2026-07-12', laps:260},
   {round:21,race:'Window World 450',           track:'North Wilkesboro Speedway',          country:'🇺🇸', date:'2026-07-19', laps:450},
   {round:22,race:'Brickyard 400',              track:'Indianapolis Motor Speedway',        country:'🇺🇸', date:'2026-07-26', laps:160},
   {round:23,race:'Iowa Corn 350',              track:'Iowa Speedway',                      country:'🇺🇸', date:'2026-08-09', laps:350},
   {round:24,race:'Cook Out 400',               track:'Richmond Raceway',                   country:'🇺🇸', date:'2026-08-15', laps:400},
-  {round:25,race:'Mobil 1 301',                track:'New Hampshire Motor Speedway',       country:'🇺🇸', date:'2026-08-23', laps:301},
+  {round:25,race:'Dollar Tree 301',            track:'New Hampshire Motor Speedway',       country:'🇺🇸', date:'2026-08-23', laps:301},
   {round:26,race:'Coke Zero Sugar 400',        track:'Daytona International Speedway',     country:'🇺🇸', date:'2026-08-29', laps:160},
   {round:27,race:'Cook Out Southern 500',      track:'Darlington Raceway',                 country:'🇺🇸', date:'2026-09-06', laps:367, chase:true},
   {round:28,race:'Enjoy Illinois 300',         track:'World Wide Technology Raceway',      country:'🇺🇸', date:'2026-09-13', laps:240, chase:true},
   {round:29,race:'Bass Pro Shops Night Race',  track:'Bristol Motor Speedway',             country:'🇺🇸', date:'2026-09-19', laps:500, chase:true},
   {round:30,race:'Hollywood Casino 400',       track:'Kansas Speedway',                    country:'🇺🇸', date:'2026-09-27', laps:267, chase:true},
   {round:31,race:'South Point 400',            track:'Las Vegas Motor Speedway',           country:'🇺🇸', date:'2026-10-04', laps:267, chase:true},
-  {round:32,race:'Bank of America 400',        track:'Charlotte Motor Speedway',           country:'🇺🇸', date:'2026-10-11', laps:400, chase:true},
+  {round:32,race:'Bank of America 400',        track:'Charlotte Motor Speedway',           country:'🇺🇸', date:'2026-10-11', laps:267, chase:true},
   {round:33,race:'Freeway Insurance 500',      track:'Phoenix Raceway',                    country:'🇺🇸', date:'2026-10-18', laps:312, chase:true},
   {round:34,race:'YellaWood 500',              track:'Talladega Superspeedway',            country:'🇺🇸', date:'2026-10-25', laps:188, chase:true},
   {round:35,race:'Xfinity 500',                track:'Martinsville Speedway',              country:'🇺🇸', date:'2026-11-01', laps:500, chase:true},
   {round:36,race:'Straight Talk Wireless 400', track:'Homestead-Miami Speedway',           country:'🇺🇸', date:'2026-11-08', laps:267, chase:true},
 ];
 
-// Completed race results — winners verified from NASCAR.com gallery + race recaps
+// Completed race results through R32 — winners verified from NASCAR.com gallery + race recaps
 // Where podium/stage data is verified, included. Otherwise just winner.
 const NASCAR_CUP_RESULTS={
   1:  {winner:'Reddick',    p2:'Elliott', p3:null,        polePos:'Busch',     stage1:'Smith',    stage2:'Wallace',  note:'68th Daytona 500 — Reddick passes Elliott exiting Turn 4 after restart with 5 to go. Hamlin tap triggers 20-car "Big One" in stage 2.'},
@@ -156,57 +165,395 @@ const NASCAR_CUP_RESULTS={
        ]},
   14: {winner:'Hamlin',     p2:'Bell',    p3:'Briscoe',   polePos:'Hamlin',    stage1:'Allmendinger',stage2:'Suarez',  note:"Hamlin's 2nd win of 2026, his first at Nashville and 62nd career Cup win. Qualifying was rained out and Hamlin took pole on the competition formula; he jumped the initial start and was sent to the rear of the 38-car field, then charged back over 300 green-flag laps to the checkered. Bell P2, Briscoe P3. Stage wins: Allmendinger (1), Suarez (2)."},
   15: {winner:'Hamlin',     p2:'Jones',   p3:'Wallace',   polePos:'Hamlin',    stage1:'Reddick',  stage2:'Elliott',  note:"Hamlin completes the Nashville–Michigan double — 3rd win of 2026 and 63rd career Cup win, tying the late Kyle Busch for 9th on the all-time wins list. He qualified on pole (36.901s) but started from the rear for unapproved adjustments after underbody damage. Points leader Reddick crashed on lap 82 and finished 35th — his first DNF of 2026 — cutting his championship lead over Hamlin to 51. Local driver Erik Jones P2, Wallace P3."},
+  16: {winner:'Hamlin',     p2:'Reddick', p3:'Byron',     polePos:'Hamlin',    stage1:'Hamlin',   stage2:'Gilliland',note:"Hamlin completes the Nashville–Michigan–Pocono triple — 64th career Cup win, record 8th at Pocono. Passes Bell with 5 laps to go and wins by 1.678s over Reddick. Nemechek led the most laps (42). 5 cautions."},
+  17: {winner:'Heim',       p2:'Wallace', p3:'Larson',    polePos:'van Gisbergen',stage1:'Blaney', stage2:'Preece',   note:"Inaugural NASCAR Cup race at Naval Base Coronado (Anduril 250 street race) — Corey Heim takes lead from Reddick with 3 laps to go after Reddick suffers late flat tyre. First career Cup win for Heim in 13th start (23XI Racing, No. 67 Toyota). Reddick's points lead over Hamlin slashed to 8. Race commemorated U.S. Navy's 250th birthday."},
+  18: {winner:'van Gisbergen', p2:'Briscoe', p3:'Gibbs', polePos:'Gibbs', stage1:'Gibbs', stage2:'Gibbs',
+       note:'SVG holds off Briscoe by 0.357s for his 8th career Cup win, leading 74 of 110 laps. Ty Gibbs took pole and swept both stages but finished P3. Hamlin takes the championship lead from Reddick (719–718) — the first change of points leader all season.',
+       totalLaps:110,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'97', driver:'van Gisbergen',pts:63,ledLaps:74, status:'Running',time:'Winner'},
+         {pos:2, car:'19', driver:'Briscoe',      pts:37,ledLaps:0,  status:'Running',time:'+0.357'},
+         {pos:3, car:'54', driver:'Gibbs',        pts:54,ledLaps:31, status:'Running'},
+         {pos:4, car:'5',  driver:'Larson',       pts:35,ledLaps:2,  status:'Running'},
+         {pos:5, car:'20', driver:'Bell',         pts:50,ledLaps:0,  status:'Running'},
+         {pos:6, car:'12', driver:'Blaney',       pts:32,ledLaps:1,  status:'Running'},
+         {pos:7, car:'88', driver:'Zilisch',      pts:33,ledLaps:0,  status:'Running'},
+         {pos:8, car:'60', driver:'Preece',       pts:35,ledLaps:0,  status:'Running'},
+         {pos:9, car:'71', driver:'McDowell',     pts:36,ledLaps:0,  status:'Running'},
+         {pos:10,car:'48', driver:'Bowman',       pts:32,ledLaps:0,  status:'Running'},
+         {pos:11,car:'77', driver:'Hocevar',      pts:33,ledLaps:0,  status:'Running'},
+         {pos:12,car:'24', driver:'Byron',        pts:25,ledLaps:1,  status:'Running'},
+         {pos:13,car:'2',  driver:'Cindric',      pts:31,ledLaps:0,  status:'Running'},
+         {pos:14,car:'1',  driver:'Chastain',     pts:29,ledLaps:1,  status:'Running'},
+         {pos:15,car:'6',  driver:'Keselowski',   pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  19: {winner:'Briscoe', p2:'Bell', p3:'Hamlin', polePos:'Hamlin', stage1:'Byron', stage2:'Byron',
+       note:'Cup returns to Chicagoland for the first time since 2019. Byron swept both stages and led a race-high 94 laps, but Briscoe took control in the final pit cycle and beat Bell by 0.276s for his 6th career win — a JGR 1-2-3 with Hamlin P3.',
+       totalLaps:267,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'19', driver:'Briscoe',      pts:70,ledLaps:51, status:'Running',time:'Winner'},
+         {pos:2, car:'20', driver:'Bell',         pts:40,ledLaps:1,  status:'Running',time:'+0.276'},
+         {pos:3, car:'11', driver:'Hamlin',       pts:45,ledLaps:30, status:'Running'},
+         {pos:4, car:'24', driver:'Byron',        pts:53,ledLaps:94, status:'Running'},
+         {pos:5, car:'48', driver:'Bowman',       pts:35,ledLaps:0,  status:'Running'},
+         {pos:6, car:'23', driver:'Wallace',      pts:40,ledLaps:35, status:'Running'},
+         {pos:7, car:'12', driver:'Blaney',       pts:36,ledLaps:8,  status:'Running'},
+         {pos:8, car:'54', driver:'Gibbs',        pts:38,ledLaps:0,  status:'Running'},
+         {pos:9, car:'67', driver:'Heim',         pts:0,ledLaps:1,  status:'Running'},
+         {pos:10,car:'35', driver:'Herbst',       pts:31,ledLaps:0,  status:'Running'},
+         {pos:11,car:'9',  driver:'Elliott',      pts:30,ledLaps:0,  status:'Running'},
+         {pos:12,car:'22', driver:'Logano',       pts:25,ledLaps:1,  status:'Running'},
+         {pos:13,car:'2',  driver:'Cindric',      pts:33,ledLaps:18, status:'Running'},
+         {pos:14,car:'7',  driver:'Suarez',       pts:23,ledLaps:0,  status:'Running'},
+         {pos:15,car:'43', driver:'Jones',        pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  20: {winner:'Blaney', p2:'Bell', p3:'Hocevar', polePos:'Blaney', stage1:'Blaney', stage2:'Blaney',
+       note:'Red-flagged on lap 108 for lightning; resumed after about three hours. Blaney won the pole, swept both stages and led 171 laps — the most on a drafting track since Richard Petty in the 1964 Daytona 500 — then won in overtime by 0.068s over Bell for his 19th career win. Hamlin and Reddick clinched Chase spots.',
+       totalLaps:263,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'12', driver:'Blaney',       pts:75,ledLaps:171,status:'Running',time:'Winner'},
+         {pos:2, car:'20', driver:'Bell',         pts:39,ledLaps:5,  status:'Running',time:'+0.068'},
+         {pos:3, car:'77', driver:'Hocevar',      pts:39,ledLaps:25, status:'Running'},
+         {pos:4, car:'54', driver:'Gibbs',        pts:38,ledLaps:32, status:'Running'},
+         {pos:5, car:'43', driver:'Jones',        pts:35,ledLaps:0,  status:'Running'},
+         {pos:6, car:'97', driver:'van Gisbergen',pts:32,ledLaps:0,  status:'Running'},
+         {pos:7, car:'3',  driver:'Dillon',       pts:34,ledLaps:0,  status:'Running'},
+         {pos:8, car:'45', driver:'Reddick',      pts:47,ledLaps:8,  status:'Running'},
+         {pos:9, car:'22', driver:'Logano',       pts:43,ledLaps:0,  status:'Running'},
+         {pos:10,car:'17', driver:'Buescher',     pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'1',  driver:'Chastain',     pts:26,ledLaps:0,  status:'Running'},
+         {pos:12,car:'11', driver:'Hamlin',       pts:27,ledLaps:0,  status:'Running'},
+         {pos:13,car:'9',  driver:'Elliott',      pts:26,ledLaps:5,  status:'Running'},
+         {pos:14,car:'2',  driver:'Cindric',      pts:36,ledLaps:0,  status:'Running'},
+         {pos:15,car:'71', driver:'McDowell',     pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  21: {winner:'Logano', p2:'Hamlin', p3:'Briscoe', polePos:'Blaney', stage1:'Gibbs', stage2:'Logano',
+       note:'North Wilkesboro\'s first Cup points race since 1996. Qualifying was rained out — Blaney took pole on the competition formula. Logano led 323 of 450 laps and held off Hamlin by 0.859s for his first win since the 2025 Würth 400 (38th career). Blaney clinched a Chase spot.',
+       totalLaps:450,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'22', driver:'Logano',       pts:73,ledLaps:323,status:'Running',time:'Winner'},
+         {pos:2, car:'11', driver:'Hamlin',       pts:51,ledLaps:9,  status:'Running',time:'+0.859'},
+         {pos:3, car:'19', driver:'Briscoe',      pts:45,ledLaps:5,  status:'Running'},
+         {pos:4, car:'54', driver:'Gibbs',        pts:43,ledLaps:47, status:'Running'},
+         {pos:5, car:'97', driver:'van Gisbergen',pts:47,ledLaps:49, status:'Running'},
+         {pos:6, car:'23', driver:'Wallace',      pts:38,ledLaps:8,  status:'Running'},
+         {pos:7, car:'6',  driver:'Keselowski',   pts:34,ledLaps:7,  status:'Running'},
+         {pos:8, car:'34', driver:'Gilliland',    pts:31,ledLaps:0,  status:'Running'},
+         {pos:9, car:'7',  driver:'Suarez',       pts:29,ledLaps:1,  status:'Running'},
+         {pos:10,car:'60', driver:'Preece',       pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'12', driver:'Blaney',       pts:29,ledLaps:1,  status:'Running'},
+         {pos:12,car:'24', driver:'Byron',        pts:26,ledLaps:0,  status:'Running'},
+         {pos:13,car:'77', driver:'Hocevar',      pts:35,ledLaps:0,  status:'Running'},
+         {pos:14,car:'2',  driver:'Cindric',      pts:25,ledLaps:0,  status:'Running'},
+         {pos:15,car:'5',  driver:'Larson',       pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  22: {winner:'Heim', p2:'Bell', p3:'Logano', polePos:'Hocevar', stage1:'Gibbs', stage2:'Chastain',
+       note:'Corey Heim (part-time No. 67, 23XI) led 58 laps and beat Bell by 0.287s — the first part-time car to win a crown jewel since Trevor Bayne\'s 2011 Daytona 500, and his 2nd Cup win. Hocevar took pole. Heim is not a Cup points-eligible driver (0 pts).',
+       totalLaps:160,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'67', driver:'Heim',         pts:0,ledLaps:58, status:'Running',time:'Winner'},
+         {pos:2, car:'20', driver:'Bell',         pts:35,ledLaps:0,  status:'Running',time:'+0.287'},
+         {pos:3, car:'22', driver:'Logano',       pts:34,ledLaps:0,  status:'Running'},
+         {pos:4, car:'19', driver:'Briscoe',      pts:36,ledLaps:1,  status:'Running'},
+         {pos:5, car:'11', driver:'Hamlin',       pts:44,ledLaps:14, status:'Running'},
+         {pos:6, car:'6',  driver:'Keselowski',   pts:31,ledLaps:0,  status:'Running'},
+         {pos:7, car:'21', driver:'Berry',        pts:30,ledLaps:1,  status:'Running'},
+         {pos:8, car:'60', driver:'Preece',       pts:33,ledLaps:1,  status:'Running'},
+         {pos:9, car:'77', driver:'Hocevar',      pts:40,ledLaps:31, status:'Running'},
+         {pos:10,car:'45', driver:'Reddick',      pts:28,ledLaps:1,  status:'Running'},
+         {pos:11,car:'17', driver:'Buescher',     pts:28,ledLaps:0,  status:'Running'},
+         {pos:12,car:'54', driver:'Gibbs',        pts:43,ledLaps:46, status:'Running'},
+         {pos:13,car:'41', driver:'Custer',       pts:24,ledLaps:0,  status:'Running'},
+         {pos:14,car:'2',  driver:'Cindric',      pts:23,ledLaps:0,  status:'Running'},
+         {pos:15,car:'38', driver:'Smith',        pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  23: {winner:'Gibbs', p2:'Bell', p3:'Blaney', polePos:'Blaney', stage1:'Blaney', stage2:'Bell',
+       note:'Ty Gibbs wins his 2nd career Cup race, 0.253s ahead of JGR teammate Bell. Polesitter Blaney led a race-high 129 laps and finished P3.',
+       totalLaps:350,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'54', driver:'Gibbs',        pts:69,ledLaps:20, status:'Running',time:'Winner'},
+         {pos:2, car:'20', driver:'Bell',         pts:50,ledLaps:108,status:'Running',time:'+0.253'},
+         {pos:3, car:'12', driver:'Blaney',       pts:47,ledLaps:129,status:'Running'},
+         {pos:4, car:'21', driver:'Berry',        pts:33,ledLaps:0,  status:'Running'},
+         {pos:5, car:'11', driver:'Hamlin',       pts:37,ledLaps:0,  status:'Running'},
+         {pos:6, car:'19', driver:'Briscoe',      pts:40,ledLaps:0,  status:'Running'},
+         {pos:7, car:'1',  driver:'Chastain',     pts:43,ledLaps:40, status:'Running'},
+         {pos:8, car:'16', driver:'Allmendinger', pts:29,ledLaps:0,  status:'Running'},
+         {pos:9, car:'24', driver:'Byron',        pts:32,ledLaps:0,  status:'Running'},
+         {pos:10,car:'3',  driver:'Dillon',       pts:33,ledLaps:0,  status:'Running'},
+         {pos:11,car:'88', driver:'Zilisch',      pts:29,ledLaps:0,  status:'Running'},
+         {pos:12,car:'23', driver:'Wallace',      pts:25,ledLaps:35, status:'Running'},
+         {pos:13,car:'17', driver:'Buescher',     pts:24,ledLaps:0,  status:'Running'},
+         {pos:14,car:'22', driver:'Logano',       pts:41,ledLaps:0,  status:'Running'},
+         {pos:15,car:'9',  driver:'Elliott',      pts:22,ledLaps:18, status:'Running'},
+       ]},
+  24: {winner:'Logano', p2:'Briscoe', p3:'Cindric', polePos:'Blaney', stage1:'Blaney', stage2:'Logano',
+       note:'Logano\'s 39th career win and first at Richmond since 2017 — he held off Briscoe (who led a race-high 171 laps) by 0.392s after the final pit cycle. Cindric P3 for a Penske 1-3.',
+       totalLaps:400,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'22', driver:'Logano',       pts:73,ledLaps:95, status:'Running',time:'Winner'},
+         {pos:2, car:'19', driver:'Briscoe',      pts:52,ledLaps:171,status:'Running',time:'+0.392'},
+         {pos:3, car:'2',  driver:'Cindric',      pts:48,ledLaps:0,  status:'Running'},
+         {pos:4, car:'11', driver:'Hamlin',       pts:46,ledLaps:3,  status:'Running'},
+         {pos:5, car:'9',  driver:'Elliott',      pts:38,ledLaps:0,  status:'Running'},
+         {pos:6, car:'5',  driver:'Larson',       pts:31,ledLaps:2,  status:'Running'},
+         {pos:7, car:'20', driver:'Bell',         pts:36,ledLaps:29, status:'Running'},
+         {pos:8, car:'21', driver:'Berry',        pts:40,ledLaps:1,  status:'Running'},
+         {pos:9, car:'24', driver:'Byron',        pts:30,ledLaps:0,  status:'Running'},
+         {pos:10,car:'48', driver:'Bowman',       pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'45', driver:'Reddick',      pts:28,ledLaps:7,  status:'Running'},
+         {pos:12,car:'1',  driver:'Chastain',     pts:25,ledLaps:0,  status:'Running'},
+         {pos:13,car:'12', driver:'Blaney',       pts:41,ledLaps:88, status:'Running'},
+         {pos:14,car:'97', driver:'van Gisbergen',pts:23,ledLaps:0,  status:'Running'},
+         {pos:15,car:'54', driver:'Gibbs',        pts:22,ledLaps:1,  status:'Running'},
+       ]},
+  25: {winner:'Blaney', p2:'Wallace', p3:'Berry', polePos:'Reddick', stage1:'Larson', stage2:'Blaney',
+       note:'Start moved up an hour for rain; the race began on wet-weather tyres until a competition caution on lap 40. Blaney led 115 laps and beat Wallace by 0.586s — his 20th career win and 2nd straight at New Hampshire. Hamlin clinched the No. 1 seed for the Chase.',
+       totalLaps:301,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'12', driver:'Blaney',       pts:70,ledLaps:115,status:'Running',time:'Winner'},
+         {pos:2, car:'23', driver:'Wallace',      pts:43,ledLaps:22, status:'Running',time:'+0.586'},
+         {pos:3, car:'21', driver:'Berry',        pts:49,ledLaps:73, status:'Running'},
+         {pos:4, car:'20', driver:'Bell',         pts:43,ledLaps:0,  status:'Running'},
+         {pos:5, car:'5',  driver:'Larson',       pts:48,ledLaps:18, status:'Running'},
+         {pos:6, car:'54', driver:'Gibbs',        pts:38,ledLaps:0,  status:'Running'},
+         {pos:7, car:'11', driver:'Hamlin',       pts:32,ledLaps:0,  status:'Running'},
+         {pos:8, car:'45', driver:'Reddick',      pts:29,ledLaps:0,  status:'Running'},
+         {pos:9, car:'60', driver:'Preece',       pts:38,ledLaps:17, status:'Running'},
+         {pos:10,car:'4',  driver:'Gragson',      pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'6',  driver:'Keselowski',   pts:31,ledLaps:0,  status:'Running'},
+         {pos:12,car:'2',  driver:'Cindric',      pts:25,ledLaps:0,  status:'Running'},
+         {pos:13,car:'38', driver:'Smith',        pts:24,ledLaps:0,  status:'Running'},
+         {pos:14,car:'22', driver:'Logano',       pts:23,ledLaps:0,  status:'Running'},
+         {pos:15,car:'48', driver:'Bowman',       pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  26: {winner:'Preece', p2:'Suarez', p3:'Reddick', polePos:'Chastain', stage1:'van Gisbergen', stage2:'Blaney',
+       note:'Regular-season finale. Ryan Preece takes his first career Cup win, declared the winner when the caution flew on the last lap of overtime (166 laps). Suárez P2, Reddick P3. 41 lead changes among 22 drivers. Preece, Wallace and Cindric claimed the final three Chase spots.',
+       totalLaps:166,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'60', driver:'Preece',       pts:67,ledLaps:5,  status:'Running',time:'Winner'},
+         {pos:2, car:'7',  driver:'Suarez',       pts:38,ledLaps:0,  status:'Running'},
+         {pos:3, car:'45', driver:'Reddick',      pts:34,ledLaps:5,  status:'Running'},
+         {pos:4, car:'71', driver:'McDowell',     pts:33,ledLaps:0,  status:'Running'},
+         {pos:5, car:'47', driver:'Stenhouse Jr', pts:32,ledLaps:1,  status:'Running'},
+         {pos:6, car:'2',  driver:'Cindric',      pts:32,ledLaps:6,  status:'Running'},
+         {pos:7, car:'3',  driver:'Dillon',       pts:30,ledLaps:0,  status:'Running'},
+         {pos:8, car:'48', driver:'Bowman',       pts:29,ledLaps:0,  status:'Running'},
+         {pos:9, car:'21', driver:'Berry',        pts:28,ledLaps:1,  status:'Running'},
+         {pos:10,car:'41', driver:'Custer',       pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'11', driver:'Hamlin',       pts:26,ledLaps:0,  status:'Running'},
+         {pos:12,car:'35', driver:'Burton',       pts:0,ledLaps:0,  status:'Running'},
+         {pos:13,car:'19', driver:'Briscoe',      pts:34,ledLaps:10, status:'Running'},
+         {pos:14,car:'6',  driver:'Keselowski',   pts:23,ledLaps:10, status:'Running'},
+         {pos:15,car:'42', driver:'Nemechek',     pts:24,ledLaps:2,  status:'Running'},
+       ]},
+  27: {winner:'Bell', p2:'Gibbs', p3:'Reddick', polePos:'Reddick', stage1:'Reddick', stage2:'Bell',
+       note:'Chase opener. Reddick took pole after the rest of qualifying was cancelled by lightning. Bell beat JGR teammate Gibbs by 1.038s for his 14th career win, snapping a 33-race winless streak. Larson led a race-high 99 laps.',
+       totalLaps:367,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'20', driver:'Bell',         pts:73,ledLaps:46, status:'Running',time:'Winner'},
+         {pos:2, car:'54', driver:'Gibbs',        pts:36,ledLaps:0,  status:'Running',time:'+1.038'},
+         {pos:3, car:'45', driver:'Reddick',      pts:46,ledLaps:74, status:'Running'},
+         {pos:4, car:'12', driver:'Blaney',       pts:44,ledLaps:1,  status:'Running'},
+         {pos:5, car:'5',  driver:'Larson',       pts:41,ledLaps:99, status:'Running'},
+         {pos:6, car:'19', driver:'Briscoe',      pts:43,ledLaps:30, status:'Running'},
+         {pos:7, car:'21', driver:'Berry',        pts:34,ledLaps:0,  status:'Running'},
+         {pos:8, car:'23', driver:'Wallace',      pts:44,ledLaps:38, status:'Running'},
+         {pos:9, car:'22', driver:'Logano',       pts:28,ledLaps:0,  status:'Running'},
+         {pos:10,car:'60', driver:'Preece',       pts:31,ledLaps:0,  status:'Running'},
+         {pos:11,car:'77', driver:'Hocevar',      pts:26,ledLaps:2,  status:'Running'},
+         {pos:12,car:'48', driver:'Bowman',       pts:25,ledLaps:0,  status:'Running'},
+         {pos:13,car:'2',  driver:'Cindric',      pts:28,ledLaps:0,  status:'Running'},
+         {pos:14,car:'9',  driver:'Elliott',      pts:23,ledLaps:1,  status:'Running'},
+         {pos:15,car:'43', driver:'Jones',        pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  28: {winner:'Larson', p2:'Bowman', p3:'Logano', polePos:'Logano', stage1:'Logano', stage2:'Larson',
+       note:'18 cautions and a double overtime (247 of 240 scheduled laps). Larson wins by 0.333s over Hendrick teammate Bowman for his 33rd career win, ending a 51-race winless streak. Polesitter Logano led 96 laps and finished P3.',
+       totalLaps:247,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'5',  driver:'Larson',       pts:73,ledLaps:80, status:'Running',time:'Winner'},
+         {pos:2, car:'48', driver:'Bowman',       pts:38,ledLaps:0,  status:'Running',time:'+0.333'},
+         {pos:3, car:'22', driver:'Logano',       pts:54,ledLaps:96, status:'Running'},
+         {pos:4, car:'24', driver:'Byron',        pts:33,ledLaps:0,  status:'Running'},
+         {pos:5, car:'1',  driver:'Chastain',     pts:32,ledLaps:15, status:'Running'},
+         {pos:6, car:'3',  driver:'Dillon',       pts:31,ledLaps:0,  status:'Running'},
+         {pos:7, car:'88', driver:'Zilisch',      pts:30,ledLaps:0,  status:'Running'},
+         {pos:8, car:'77', driver:'Hocevar',      pts:34,ledLaps:0,  status:'Running'},
+         {pos:9, car:'11', driver:'Hamlin',       pts:33,ledLaps:0,  status:'Running'},
+         {pos:10,car:'2',  driver:'Cindric',      pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'41', driver:'Custer',       pts:26,ledLaps:0,  status:'Running'},
+         {pos:12,car:'6',  driver:'Keselowski',   pts:34,ledLaps:55, status:'Running'},
+         {pos:13,car:'43', driver:'Jones',        pts:24,ledLaps:0,  status:'Running'},
+         {pos:14,car:'23', driver:'Wallace',      pts:24,ledLaps:0,  status:'Running'},
+         {pos:15,car:'42', driver:'Nemechek',     pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  29: {winner:'Logano', p2:'Larson', p3:'Hocevar', polePos:'Larson', stage1:'Logano', stage2:'Blaney',
+       note:'Rain cancelled qualifying (Larson pole on the competition formula). Logano wins by 1.248s for his 40th career win; Larson P2 takes the points lead from Hamlin by one point. Blaney led a race-high 202 laps but crashed out in 33rd and had a post-race altercation with Hocevar over a lap-457 incident.',
+       totalLaps:500,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'22', driver:'Logano',       pts:73,ledLaps:93, status:'Running',time:'Winner'},
+         {pos:2, car:'5',  driver:'Larson',       pts:47,ledLaps:45, status:'Running',time:'+1.248'},
+         {pos:3, car:'77', driver:'Hocevar',      pts:41,ledLaps:39, status:'Running'},
+         {pos:4, car:'20', driver:'Bell',         pts:39,ledLaps:1,  status:'Running'},
+         {pos:5, car:'54', driver:'Gibbs',        pts:47,ledLaps:120,status:'Running'},
+         {pos:6, car:'21', driver:'Berry',        pts:38,ledLaps:0,  status:'Running'},
+         {pos:7, car:'23', driver:'Wallace',      pts:36,ledLaps:0,  status:'Running'},
+         {pos:8, car:'11', driver:'Hamlin',       pts:37,ledLaps:0,  status:'Running'},
+         {pos:9, car:'24', driver:'Byron',        pts:31,ledLaps:0,  status:'Running'},
+         {pos:10,car:'60', driver:'Preece',       pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'2',  driver:'Cindric',      pts:30,ledLaps:0,  status:'Running'},
+         {pos:12,car:'1',  driver:'Chastain',     pts:32,ledLaps:0,  status:'Running'},
+         {pos:13,car:'17', driver:'Buescher',     pts:25,ledLaps:0,  status:'Running'},
+         {pos:14,car:'7',  driver:'Suarez',       pts:23,ledLaps:0,  status:'Running'},
+         {pos:15,car:'6',  driver:'Keselowski',   pts:24,ledLaps:0,  status:'Running'},
+       ]},
+  30: {winner:'Larson', p2:'Cindric', p3:'Hamlin', polePos:'Logano', stage1:'Larson', stage2:'Larson',
+       note:'Rain cancelled qualifying (Logano pole on the competition formula). Larson swept both stages and led 235 of 267 laps for his 34th career win, 0.565s ahead of Cindric. Hamlin P3.',
+       totalLaps:267,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'5',  driver:'Larson',       pts:76,ledLaps:235,status:'Running',time:'Winner'},
+         {pos:2, car:'2',  driver:'Cindric',      pts:52,ledLaps:1,  status:'Running',time:'+0.565'},
+         {pos:3, car:'11', driver:'Hamlin',       pts:51,ledLaps:2,  status:'Running'},
+         {pos:4, car:'19', driver:'Briscoe',      pts:40,ledLaps:23, status:'Running'},
+         {pos:5, car:'12', driver:'Blaney',       pts:37,ledLaps:4,  status:'Running'},
+         {pos:6, car:'20', driver:'Bell',         pts:43,ledLaps:0,  status:'Running'},
+         {pos:7, car:'24', driver:'Byron',        pts:39,ledLaps:0,  status:'Running'},
+         {pos:8, car:'9',  driver:'Elliott',      pts:32,ledLaps:0,  status:'Running'},
+         {pos:9, car:'23', driver:'Wallace',      pts:28,ledLaps:0,  status:'Running'},
+         {pos:10,car:'60', driver:'Preece',       pts:27,ledLaps:0,  status:'Running'},
+         {pos:11,car:'45', driver:'Reddick',      pts:26,ledLaps:0,  status:'Running'},
+         {pos:12,car:'6',  driver:'Keselowski',   pts:26,ledLaps:0,  status:'Running'},
+         {pos:13,car:'42', driver:'Nemechek',     pts:24,ledLaps:0,  status:'Running'},
+         {pos:14,car:'7',  driver:'Suarez',       pts:23,ledLaps:0,  status:'Running'},
+         {pos:15,car:'1',  driver:'Chastain',     pts:22,ledLaps:1,  status:'Running'},
+       ]},
+  31: {winner:'Briscoe', p2:'Larson', p3:'Reddick', polePos:'Hamlin', stage1:'Briscoe', stage2:'Briscoe',
+       note:'Hamlin led a JGR 1-2-3-4 in qualifying. Briscoe swept both stages, led 175 laps and beat Larson by 1.376s for his 7th career win.',
+       totalLaps:267,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'19', driver:'Briscoe',      pts:75,ledLaps:175,status:'Running',time:'Winner'},
+         {pos:2, car:'5',  driver:'Larson',       pts:36,ledLaps:0,  status:'Running',time:'+1.376'},
+         {pos:3, car:'45', driver:'Reddick',      pts:41,ledLaps:1,  status:'Running'},
+         {pos:4, car:'2',  driver:'Cindric',      pts:48,ledLaps:33, status:'Running'},
+         {pos:5, car:'12', driver:'Blaney',       pts:47,ledLaps:10, status:'Running'},
+         {pos:6, car:'24', driver:'Byron',        pts:34,ledLaps:0,  status:'Running'},
+         {pos:7, car:'9',  driver:'Elliott',      pts:34,ledLaps:0,  status:'Running'},
+         {pos:8, car:'23', driver:'Wallace',      pts:39,ledLaps:1,  status:'Running'},
+         {pos:9, car:'97', driver:'van Gisbergen',pts:28,ledLaps:0,  status:'Running'},
+         {pos:10,car:'22', driver:'Logano',       pts:32,ledLaps:0,  status:'Running'},
+         {pos:11,car:'48', driver:'Bowman',       pts:28,ledLaps:0,  status:'Running'},
+         {pos:12,car:'77', driver:'Hocevar',      pts:28,ledLaps:0,  status:'Running'},
+         {pos:13,car:'17', driver:'Buescher',     pts:26,ledLaps:0,  status:'Running'},
+         {pos:14,car:'7',  driver:'Suarez',       pts:28,ledLaps:0,  status:'Running'},
+         {pos:15,car:'16', driver:'Allmendinger', pts:22,ledLaps:0,  status:'Running'},
+       ]},
+  32: {winner:'Briscoe', p2:'Bell', p3:'Blaney', polePos:'Larson', stage1:'Larson', stage2:'Bell',
+       note:'First fall Charlotte race on the oval after eight years on the Roval. Rain cancelled qualifying (Larson pole on the competition formula). Briscoe beat JGR teammate Bell by 0.029s in a photo finish — back-to-back Chase wins and his 8th career victory. Larson P6 but extends his points lead over Hamlin to 49.',
+       totalLaps:267,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com cacher weekend-feed); pts = total race points.
+       Results:[
+         {pos:1, car:'19', driver:'Briscoe',      pts:68,ledLaps:62, status:'Running',time:'Winner'},
+         {pos:2, car:'20', driver:'Bell',         pts:53,ledLaps:93, status:'Running',time:'+0.029'},
+         {pos:3, car:'12', driver:'Blaney',       pts:44,ledLaps:4,  status:'Running'},
+         {pos:4, car:'21', driver:'Berry',        pts:36,ledLaps:0,  status:'Running'},
+         {pos:5, car:'11', driver:'Hamlin',       pts:40,ledLaps:0,  status:'Running'},
+         {pos:6, car:'5',  driver:'Larson',       pts:49,ledLaps:97, status:'Running'},
+         {pos:7, car:'97', driver:'van Gisbergen',pts:30,ledLaps:0,  status:'Running'},
+         {pos:8, car:'45', driver:'Reddick',      pts:41,ledLaps:0,  status:'Running'},
+         {pos:9, car:'22', driver:'Logano',       pts:28,ledLaps:0,  status:'Running'},
+         {pos:10,car:'17', driver:'Buescher',     pts:29,ledLaps:0,  status:'Running'},
+         {pos:11,car:'67', driver:'Heim',         pts:0,ledLaps:0,  status:'Running'},
+         {pos:12,car:'9',  driver:'Elliott',      pts:27,ledLaps:0,  status:'Running'},
+         {pos:13,car:'7',  driver:'Suarez',       pts:29,ledLaps:0,  status:'Running'},
+         {pos:14,car:'77', driver:'Hocevar',      pts:27,ledLaps:0,  status:'Running'},
+         {pos:15,car:'60', driver:'Preece',       pts:22,ledLaps:0,  status:'Running'},
+       ]},
 };
 
-// 2026 Cup driver standings after FireKeepers Casino 400 (R15 of 36) —
-// verified beyondtheflag.com (full 35-driver table), cross-checked vs the
-// post-Michigan recap (Reddick 669, Hamlin 618, 51-point gap).
-// Kyle Busch removed: official standings list 35 drivers and omit him
-// (he is honored as "the late Kyle Busch" in R13/R15 coverage). He remains in
-// NASCAR_CUP_DRIVERS because R1–R12 results still reference him.
+// 2026 Cup driver standings after Bank of America 400 (R32 of 36, Chase race 6
+// of 10) — official NASCAR.com points feed (cf.nascar.com/cacher/2026/1/
+// racinginsights-points-feed.json), cross-checked vs Wikipedia season table
+// (exact match P1–P35). 2026 Chase format: top 16 after R26 qualified with
+// staggered starting points (no win-and-in, no playoff points, no round
+// resets); P1–P16 therefore carry Chase totals (2,1xx–2,3xx) while P17+ keep
+// raw season points — the large P16→P17 drop is official, not a data error.
+// Wallace/Elliott tied on 2182; official order (Wallace P11) kept.
+// Official table lists 40 drivers; P36–P40 are part-timers outside
+// NASCAR_CUP_DRIVERS and are omitted as before. Kyle Busch remains omitted
+// (deceased) but stays in NASCAR_CUP_DRIVERS for R1–R12 results.
 const NASCAR_CUP_STANDINGS=[
-  {pos:1, driver:'Reddick',       points:669, gap:0},
-  {pos:2, driver:'Hamlin',        points:618, gap:-51},
-  {pos:3, driver:'Blaney',        points:512, gap:-157},
-  {pos:4, driver:'Elliott',       points:482, gap:-187},
-  {pos:5, driver:'Gibbs',         points:470, gap:-199},
-  {pos:6, driver:'Larson',        points:453, gap:-216},
-  {pos:7, driver:'Hocevar',       points:428, gap:-241},
-  {pos:8, driver:'Buescher',      points:424, gap:-245},
-  {pos:9, driver:'Suarez',        points:418, gap:-251},
-  {pos:10,driver:'Bell',          points:410, gap:-259},
-  {pos:11,driver:'Wallace',       points:378, gap:-291},
-  {pos:12,driver:'Byron',         points:377, gap:-292},
-  {pos:13,driver:'Briscoe',       points:370, gap:-299},
-  {pos:14,driver:'van Gisbergen', points:355, gap:-314},
-  {pos:15,driver:'Keselowski',    points:350, gap:-319},
-  {pos:16,driver:'Cindric',       points:332, gap:-337, cutline:true},
-  {pos:17,driver:'Logano',        points:329, gap:-340},
-  {pos:18,driver:'Jones',         points:314, gap:-355},
-  {pos:19,driver:'Preece',        points:313, gap:-356},
-  {pos:20,driver:'Allmendinger',  points:286, gap:-383},
-  {pos:21,driver:'McDowell',      points:286, gap:-383},
-  {pos:22,driver:'Smith',         points:282, gap:-387},
-  {pos:23,driver:'Stenhouse Jr',  points:271, gap:-398},
-  {pos:24,driver:'Chastain',      points:260, gap:-409},
-  {pos:25,driver:'Gilliland',     points:255, gap:-414},
-  {pos:26,driver:'Herbst',        points:250, gap:-419},
-  {pos:27,driver:'Dillon',        points:245, gap:-424},
-  {pos:28,driver:'Nemechek',      points:236, gap:-433},
-  {pos:29,driver:'Gragson',       points:212, gap:-457},
-  {pos:30,driver:'Berry',         points:196, gap:-473},
-  {pos:31,driver:'Ty Dillon',     points:190, gap:-479},
-  {pos:32,driver:'Bowman',        points:178, gap:-491},
-  {pos:33,driver:'Custer',        points:175, gap:-494},
-  {pos:34,driver:'Zilisch',       points:148, gap:-521},
-  {pos:35,driver:'Ware',          points:131, gap:-538},
+  {pos:1, driver:'Larson',        points:2367, gap:0},
+  {pos:2, driver:'Hamlin',        points:2318, gap:-49},
+  {pos:3, driver:'Bell',          points:2316, gap:-51},
+  {pos:4, driver:'Briscoe',       points:2302, gap:-65},
+  {pos:5, driver:'Blaney',        points:2282, gap:-85},
+  {pos:6, driver:'Logano',        points:2275, gap:-92},
+  {pos:7, driver:'Reddick',       points:2253, gap:-114},
+  {pos:8, driver:'Cindric',       points:2222, gap:-145},
+  {pos:9, driver:'Gibbs',         points:2211, gap:-156},
+  {pos:10,driver:'Hocevar',       points:2187, gap:-180},
+  {pos:11,driver:'Wallace',       points:2182, gap:-185},
+  {pos:12,driver:'Elliott',       points:2182, gap:-185},
+  {pos:13,driver:'Byron',         points:2159, gap:-208},
+  {pos:14,driver:'Suarez',        points:2152, gap:-215},
+  {pos:15,driver:'Buescher',      points:2151, gap:-216},
+  {pos:16,driver:'Preece',        points:2140, gap:-227, cutline:true},
+  {pos:17,driver:'van Gisbergen', points:718, gap:-1649},
+  {pos:18,driver:'Keselowski',    points:662, gap:-1705},
+  {pos:19,driver:'Chastain',      points:642, gap:-1725},
+  {pos:20,driver:'McDowell',      points:615, gap:-1752},
+  {pos:21,driver:'Jones',         points:595, gap:-1772},
+  {pos:22,driver:'Allmendinger',  points:560, gap:-1807},
+  {pos:23,driver:'Gilliland',     points:557, gap:-1810},
+  {pos:24,driver:'Berry',         points:550, gap:-1817},
+  {pos:25,driver:'Dillon',        points:539, gap:-1828},
+  {pos:26,driver:'Bowman',        points:504, gap:-1863},
+  {pos:27,driver:'Smith',         points:501, gap:-1866},
+  {pos:28,driver:'Nemechek',      points:499, gap:-1868},
+  {pos:29,driver:'Stenhouse Jr',  points:474, gap:-1893},
+  {pos:30,driver:'Herbst',        points:465, gap:-1902},
+  {pos:31,driver:'Gragson',       points:406, gap:-1961},
+  {pos:32,driver:'Custer',        points:397, gap:-1970},
+  {pos:33,driver:'Ty Dillon',     points:346, gap:-2021},
+  {pos:34,driver:'Zilisch',       points:343, gap:-2024},
+  {pos:35,driver:'Ware',          points:235, gap:-2132},
 ];
 
-// Manufacturer wins after R15 — verified by counting NASCAR.com winners gallery
+// Manufacturer wins after R32 — counted from race winners; matches the
+// Wikipedia manufacturers' table (Toyota 17 / Chevrolet 8 / Ford 7).
 const NASCAR_CUP_MFRS=[
-  {pos:1, mfr:'Toyota',    wins:9, drivers:['Reddick (5)','Hamlin (3)','Gibbs']},
-  {pos:2, mfr:'Chevrolet', wins:5, drivers:['Elliott (2)','Hocevar','van Gisbergen','Suarez']},
-  {pos:3, mfr:'Ford',      wins:1, drivers:['Blaney']},
+  {pos:1, mfr:'Toyota',    wins:17, drivers:['Reddick (5)','Hamlin (4)','Briscoe (3)','Gibbs (2)','Heim (2)','Bell']},
+  {pos:2, mfr:'Chevrolet', wins:8,  drivers:['Elliott (2)','van Gisbergen (2)','Larson (2)','Hocevar','Suarez']},
+  {pos:3, mfr:'Ford',      wins:7,  drivers:['Blaney (3)','Logano (3)','Preece']},
 ];
 
 // ── NASCAR HELPERS ────────────────────────────────────────────────────────────
@@ -414,7 +761,7 @@ function renderNascarDrivers(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityDrivers();
   if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  const hdr=`<div class="section-title"><span>Cup Drivers · 2026 · After R15 Michigan</span><span>Top 16 = Chase</span></div>`;
+  const hdr=`<div class="section-title"><span>Cup Drivers · 2026 · After R32 Charlotte</span><span>Top 16 = Chase</span></div>`;
   const rows=NASCAR_CUP_STANDINGS.map(d=>{
     const info=nascarDrv(d.driver);
     const isCutline=d.cutline;
@@ -441,7 +788,7 @@ function renderNascarDrivers(){
     </div>`;
   }).join('');
   content.innerHTML=hdr+rows;
-  setStats(`${NASCAR_CUP_STANDINGS[0].points} pts`,NASCAR_CUP_STANDINGS[0].driver,'DRIVERS','R15/36');
+  setStats(`${NASCAR_CUP_STANDINGS[0].points} pts`,NASCAR_CUP_STANDINGS[0].driver,'DRIVERS','R32/36');
 }
 
 function renderNascarDriverBreakdown(name,info,points,pos){
@@ -487,7 +834,7 @@ function renderNascarMfrs(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityMfrs();
   if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  const hdr=`<div class="section-title"><span>Cup Manufacturers · 2026 · After R15</span><span>Wins through Michigan</span></div>`;
+  const hdr=`<div class="section-title"><span>Cup Manufacturers · 2026 · After R32</span><span>Wins through Charlotte</span></div>`;
   const note=`<div style="padding:12px 16px;background:#1a1a05;border-bottom:1px solid var(--border);font-family:'Barlow',sans-serif;font-size:11px;color:var(--yellow);line-height:1.5;">
     ℹ️ NASCAR no longer publicly publishes official manufacturer points after each race. Wins shown below are verified from NASCAR.com.
   </div>`;
@@ -509,7 +856,7 @@ function renderNascarMfrs(){
     </div>`;
   }).join('');
   content.innerHTML=hdr+note+rows;
-  setStats(`${NASCAR_CUP_MFRS[0].wins} wins`,NASCAR_CUP_MFRS[0].mfr,'MFRS','R15/36');
+  setStats(`${NASCAR_CUP_MFRS[0].wins} wins`,NASCAR_CUP_MFRS[0].mfr,'MFRS','R32/36');
 }
 
 function renderNascarMfrBreakdown(m){

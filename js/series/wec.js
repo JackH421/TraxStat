@@ -30,11 +30,19 @@
 //   https://en.wikipedia.org/wiki/2026_6_Hours_of_Imola
 //   https://en.wikipedia.org/wiki/2026_6_Hours_of_Spa-Francorchamps
 //   https://www.fiawec.com/en/race/lone-star-le-mans-2026 (R5 date)
-//   https://www.fiawec.com/en/race/qatar-1812km-2026 (R7 date)
+//   https://www.fiawec.com/en/race/qatar-1812km-2026 (R7 date, superseded)
+// Catch-up 2026-10-14 (R3–R6), fiawec.com standings page + Wikipedia
+// season/race pages re-fetched; all Hypercar drivers' + manufacturers'
+// totals identical across both, LMGT3 teams see note on that table:
+//   https://en.wikipedia.org/wiki/2026_24_Hours_of_Le_Mans
+//   https://en.wikipedia.org/wiki/2026_6_Hours_of_S%C3%A3o_Paulo
+//   https://en.wikipedia.org/wiki/2026_Lone_Star_Le_Mans
+//   https://en.wikipedia.org/wiki/2026_6_Hours_of_Fuji
 // Cardinal rule: unverified values are null with a comment, never guessed.
-// 2026 notes: season opened at Imola (Qatar 1812 km postponed to 24 Oct);
-// Porsche withdrew its factory Hypercar programme after 2025; Genesis is a
-// new 2026 Hypercar entrant. Le Mans (R3) runs 2026-06-13/14 — not yet raced.
+// 2026 notes: season opened at Imola (Qatar 1812 km postponed to 24 Oct,
+// then cancelled in July 2026 along with Bahrain — replaced by Barcelona and
+// Monza); Porsche withdrew its factory Hypercar programme after 2025;
+// Genesis is a new 2026 Hypercar entrant.
 
 let currentWECTab='standings';
 let selectedWECRace=null;
@@ -44,22 +52,26 @@ const WEC_MFR_COLOR={'BMW':'#1C69D4','Toyota':'#EB0A1E','Ferrari':'#E8002D','Ast
 function wecMfrColor(m){return WEC_MFR_COLOR[m]||WEC_MFR_COLOR['default'];}
 
 // 2026 calendar (8 rounds) — verified 2026-06-12, fiawec.com nav calendar +
-// Wikipedia calendar table (identical). hours: null where no fetched page
-// states the 2026 race duration (R5 Lone Star Le Mans; R7 Qatar 1812 km is a
-// distance race). R6 Fuji's duration is carried by its official race name.
+// Wikipedia calendar table (identical). Revised 2026-10-14: Qatar 1812 km
+// (24 Oct) and 8 Hours of Bahrain (7 Nov) were cancelled in July 2026 and
+// replaced by the 6 Hours of Barcelona (18 Oct) and 6 Hours of Monza (8 Nov)
+// — fiawec.com nav calendar (ESP 18 Oct, ITA 8 Nov) + Wikipedia calendar and
+// cancelled-races table agree. R5 hours: 6 per the Wikipedia race page ("ran
+// for six hours"). R6–R8 durations are carried by their official race names.
 const WEC_SCHEDULE=[
   {round:1, race:'6 Hours of Imola',                        circuit:'Autodromo Enzo e Dino Ferrari',  country:'🇮🇹', date:'2026-04-19', hours:6},
   {round:2, race:'TotalEnergies 6 Hours of Spa-Francorchamps',circuit:'Circuit de Spa-Francorchamps', country:'🇧🇪', date:'2026-05-09', hours:6},
   {round:3, race:'24 Hours of Le Mans',                     circuit:'Circuit de la Sarthe',           country:'🇫🇷', date:'2026-06-13', hours:24},
   {round:4, race:'6 Hours of São Paulo',                    circuit:'Interlagos Circuit',             country:'🇧🇷', date:'2026-07-12', hours:6},
-  {round:5, race:'Lone Star Le Mans',                       circuit:'Circuit of the Americas',        country:'🇺🇸', date:'2026-09-06', hours:null},
+  {round:5, race:'Lone Star Le Mans',                       circuit:'Circuit of the Americas',        country:'🇺🇸', date:'2026-09-06', hours:6},
   {round:6, race:'6 Hours of Fuji',                         circuit:'Fuji Speedway',                  country:'🇯🇵', date:'2026-09-27', hours:6},
-  {round:7, race:'Qatar 1812 km',                           circuit:'Losail International Circuit',   country:'🇶🇦', date:'2026-10-24', hours:null},
-  {round:8, race:'8 Hours of Bahrain',                      circuit:'Bahrain International Circuit',  country:'🇧🇭', date:'2026-11-07', hours:8},
+  {round:7, race:'6 Hours of Barcelona',                    circuit:'Circuit de Barcelona-Catalunya', country:'🇪🇸', date:'2026-10-18', hours:6},
+  {round:8, race:'6 Hours of Monza',                        circuit:'Monza Circuit',                  country:'🇮🇹', date:'2026-11-08', hours:6},
 ];
 
-// Completed rounds 1–2 — class winners verified Wikipedia race pages +
-// season results table, corroborated by fiawec.com 25-pt race scores.
+// Completed rounds 1–6 — class winners verified Wikipedia race pages +
+// season results table, corroborated by fiawec.com per-round race scores
+// (25 pts for a 6h win, 50 for Le Mans; +1 pole bonus shown separately).
 const WEC_RESULTS={
   1:{
     hypercar:{car:'8', team:'Toyota Racing',  mfr:'Toyota', model:'Toyota TR010 Hybrid', drivers:['Sébastien Buemi','Brendon Hartley','Ryō Hirakawa']},
@@ -71,56 +83,105 @@ const WEC_RESULTS={
     lmgt3:   {car:'10',team:'Garage 59',      mfr:'McLaren',model:'McLaren 720S GT3 Evo',drivers:['Antares Au','Tom Fleming','Marvin Kirchhöfer']},
     note:'The #20 BMW won from the sister #15 BMW over 152 laps; the #94 Peugeot of Duval/Jakobsen/Pourchaire took pole (2:00.653). The #51 Ferrari, second at Imola, retired. Garage 59 took its first LMGT3 win as McLaren\'s new partner team.',
   },
+  3:{
+    hypercar:{car:'7', team:'Toyota Racing',  mfr:'Toyota', model:'Toyota TR010 Hybrid', drivers:['Mike Conway','Kamui Kobayashi','Nyck de Vries']},
+    lmgt3:   {car:'33',team:'TF Sport',       mfr:'Corvette',model:'Chevrolet Corvette Z06 GT3.R',drivers:['Nicky Catsburg','Jonny Edgar','Ben Keating']},
+    note:'The #7 Toyota won the 94th 24 Hours of Le Mans over 381 laps (24:03:01.030) — Toyota\'s sixth overall Le Mans win and first since 2022, ending Ferrari\'s three-year run. The #20 BMW was second and the #8 Toyota third; the #15 BMW (Vanthoor, 3:22.564) took pole. TF Sport\'s #33 Corvette won LMGT3.',
+  },
+  4:{
+    hypercar:{car:'15',team:'BMW M Team WRT', mfr:'BMW',    model:'BMW M Hybrid V8',     drivers:['Kevin Magnussen','Raffaele Marciello','Dries Vanthoor']},
+    lmgt3:   {car:'34',team:'Racing Team Turkey by TF',mfr:'Corvette',model:'Chevrolet Corvette Z06 GT3.R',drivers:['Peter Dempsey','Charlie Eastwood','Salih Yoluç']},
+    note:'The #15 BMW won over 242 laps, 2.254s ahead of the #51 Ferrari; the #12 Cadillac (Nato, 1:23.041) took pole. The #12 ran with two drivers after Alex Lynn\'s neck injury. Racing Team Turkey by TF took the LMGT3 win.',
+  },
+  5:{
+    hypercar:{car:'50',team:'Ferrari AF Corse',mfr:'Ferrari',model:'Ferrari 499P',        drivers:['Antonio Fuoco','Miguel Molina','Nicklas Nielsen']},
+    lmgt3:   {car:'27',team:'Heart of Racing Team',mfr:'Aston Martin',model:'Aston Martin Vantage AMR GT3 Evo',drivers:['Mattia Drudi','Ian James','Zacharie Robichon']},
+    note:'The #50 Ferrari won over 167 laps at COTA, 4.471s ahead of the #38 Cadillac with the #35 Alpine third; the sister #51 Ferrari took pole (1:52.445). The #27 Heart of Racing Aston Martin won LMGT3.',
+  },
+  6:{
+    hypercar:{car:'8', team:'Toyota Racing',  mfr:'Toyota', model:'Toyota TR010 Hybrid', drivers:['Sébastien Buemi','Brendon Hartley','Ryō Hirakawa']},
+    lmgt3:   {car:'32',team:'Team WRT',       mfr:'BMW',    model:'BMW M4 GT3 Evo',      drivers:['Augusto Farfus','Sean Gelael','Darren Leung']},
+    note:'The #8 Toyota won at Toyota\'s home track over 203 laps, just 0.591s ahead of the #36 Alpine. Qualifying was cancelled for adverse weather, so the grid was set from practice times (#36 Alpine on pole). Team WRT\'s #32 BMW won LMGT3.',
+  },
 };
 
-// Hypercar World Endurance Drivers' Championship after R2 Spa — verified
-// 2026-06-12 from fiawec.com (primary), cross-checked Wikipedia (identical).
+// Hypercar World Endurance Drivers' Championship after R6 Fuji — verified
+// 2026-10-14 from fiawec.com/en/page/manufacturers-classification (primary),
+// cross-checked Wikipedia season page (identical totals for every row).
 // Crews share points per car; part-season drivers appear separately exactly
-// as published (van der Linde and D. Vanthoor missed Imola).
+// as published (round ranges from the Wikipedia entry list).
+// R. Taylor: fiawec.com labels his row "#101", but he drove the #12 Cadillac
+// at R5 per the Wikipedia entry list + race classification (his 2 pts equal
+// the #12's R5 score) — car '12' used here; flagged in the session report.
 // gap = points − leader points.
 const WEC_HYPERCAR_STANDINGS=[
-  {pos:1, crew:'Rast / Frijns',                    team:'BMW M Team WRT',       car:'20', points:35, gap:0},
-  {pos:2, crew:'Buemi / Hartley / Hirakawa',       team:'Toyota Racing',        car:'8',  points:26, gap:-9},
-  {pos:3, crew:'S. van der Linde (from R2)',       team:'BMW M Team WRT',       car:'20', points:25, gap:-10},
-  {pos:4, crew:'Conway / Kobayashi / de Vries',    team:'Toyota Racing',        car:'7',  points:25, gap:-10},
-  {pos:5, crew:'Magnussen / Marciello',            team:'BMW M Team WRT',       car:'15', points:24, gap:-11},
-  {pos:6, crew:'Fuoco / Molina / Nielsen',         team:'Ferrari AF Corse',     car:'50', points:23, gap:-12},
-  {pos:7, crew:'Pier Guidi / Giovinazzi / Calado', team:'Ferrari AF Corse',     car:'51', points:19, gap:-16},
-  {pos:8, crew:'D. Vanthoor (from R2)',            team:'BMW M Team WRT',       car:'15', points:18, gap:-17},
-  {pos:9, crew:'Gamble / Tincknell',               team:'Aston Martin THOR Team',car:'007',points:14, gap:-21},
-  {pos:10,crew:'Félix da Costa / Habsburg / Milesi',team:'Alpine Endurance Team',car:'35', points:12, gap:-23},
-  {pos:11,crew:'Hanson / Kubica / Ye',             team:'AF Corse',             car:'83', points:9,  gap:-26},
+  {pos:1, crew:'Buemi / Hartley / Hirakawa',       team:'Toyota Racing',        car:'8',  points:89, gap:0},
+  {pos:2, crew:'Conway / Kobayashi / de Vries',    team:'Toyota Racing',        car:'7',  points:79, gap:-10},
+  {pos:3, crew:'Rast / Frijns',                    team:'BMW M Team WRT',       car:'20', points:75, gap:-14},
+  {pos:4, crew:'Magnussen / Marciello',            team:'BMW M Team WRT',       car:'15', points:69, gap:-20},
+  {pos:5, crew:'S. van der Linde (from R2)',       team:'BMW M Team WRT',       car:'20', points:65, gap:-24},
+  {pos:6, crew:'D. Vanthoor (from R2)',            team:'BMW M Team WRT',       car:'15', points:63, gap:-26},
+  {pos:7, crew:'Pier Guidi / Giovinazzi / Calado', team:'Ferrari AF Corse',     car:'51', points:59, gap:-30},
+  {pos:8, crew:'Milesi / Habsburg',                team:'Alpine Endurance Team',car:'35', points:56, gap:-33},
+  {pos:9, crew:'Fuoco / Molina / Nielsen',         team:'Ferrari AF Corse',     car:'50', points:54, gap:-35},
+  {pos:10,crew:'Nato / Stevens',                   team:'Cadillac Hertz Team Jota',car:'12',points:50, gap:-39},
+  {pos:11,crew:'Bamber / Bourdais',                team:'Cadillac Hertz Team Jota',car:'38',points:44, gap:-45},
+  {pos:12,crew:'A. Félix da Costa (R1–R5)',        team:'Alpine Endurance Team',car:'35', points:44, gap:-45},
+  {pos:13,crew:'Gamble / Tincknell',               team:'Aston Martin THOR Team',car:'007',points:42, gap:-47},
+  {pos:14,crew:'J. Aitken (from R2)',              team:'Cadillac Hertz Team Jota',car:'38',points:40, gap:-49},
+  {pos:15,crew:'Gounon / Martins',                 team:'Alpine Endurance Team',car:'36', points:32, gap:-57},
+  {pos:16,crew:'Hanson / Kubica / Ye',             team:'AF Corse',             car:'83', points:31, gap:-58},
+  {pos:17,crew:'L. Delétraz (R2–R3)',              team:'Cadillac Hertz Team Jota',car:'12',points:26, gap:-63},
+  {pos:18,crew:'F. Makowiecki (R1–R5)',            team:'Alpine Endurance Team',car:'36', points:14, gap:-75},
+  {pos:19,crew:'Duval / Jakobsen / Pourchaire',    team:'Peugeot TotalEnergies',car:'94', points:12, gap:-77},
+  {pos:20,crew:'Lotterer / Derani / Jaubert',      team:'Genesis Magma Racing', car:'17', points:10, gap:-79},
+  {pos:21,crew:'R. Gunn (R3 only)',                team:'Aston Martin THOR Team',car:'007',points:8,  gap:-81},
+  {pos:22,crew:'Cassidy / di Resta / Vandoorne',   team:'Peugeot TotalEnergies',car:'93', points:6,  gap:-83},
+  {pos:23,crew:'Riberas / Sørensen',               team:'Aston Martin THOR Team',car:'009',points:4,  gap:-85},
+  {pos:24,crew:'R. Taylor (R5 only)',              team:'Cadillac Hertz Team Jota',car:'12',points:2,  gap:-87},
+  {pos:25,crew:'Juncadella / Jaminet / Chatin',    team:'Genesis Magma Racing', car:'19', points:0,  gap:-89},
+  {pos:26,crew:'R. De Angelis (R3 only)',          team:'Aston Martin THOR Team',car:'009',points:0,  gap:-89},
 ];
 
-// Hypercar World Manufacturers' Championship after R2 — verified 2026-06-12
+// Hypercar World Manufacturers' Championship after R6 — verified 2026-10-14
 // from fiawec.com (primary), Wikipedia identical. Points go to the two
 // highest finishers per manufacturer; +1 pole bonuses included.
 const WEC_MFR_STANDINGS=[
-  {pos:1, mfr:'BMW',          points:59, gap:0},
-  {pos:2, mfr:'Toyota',       points:52, gap:-7},
-  {pos:3, mfr:'Ferrari',      points:42, gap:-17},
-  {pos:4, mfr:'Aston Martin', points:14, gap:-45},
-  {pos:5, mfr:'Alpine',       points:14, gap:-45},
-  {pos:6, mfr:'Peugeot',      points:9,  gap:-50},
-  {pos:7, mfr:'Cadillac',     points:8,  gap:-51},
-  {pos:8, mfr:'Genesis',      points:6,  gap:-53},
+  {pos:1, mfr:'Toyota',       points:169,gap:0},
+  {pos:2, mfr:'BMW',          points:146,gap:-23},
+  {pos:3, mfr:'Ferrari',      points:115,gap:-54},
+  {pos:4, mfr:'Alpine',       points:96, gap:-73},
+  {pos:5, mfr:'Cadillac',     points:96, gap:-73},
+  {pos:6, mfr:'Aston Martin', points:54, gap:-115},
+  {pos:7, mfr:'Peugeot',      points:24, gap:-145},
+  {pos:8, mfr:'Genesis',      points:12, gap:-157},
 ];
 
-// FIA Endurance Trophy for LMGT3 Teams after R2 — verified 2026-06-12 from
-// fiawec.com (primary), Wikipedia identical points. Marques from the season
-// entry list (#87 Akkodis ASP's Lexus is from entry-list section context —
-// lower confidence, flagged in the session report).
+// FIA Endurance Trophy for LMGT3 Teams after R6 — verified 2026-10-14 from
+// fiawec.com (primary). Wikipedia agrees except #78 Akkodis ASP (Wikipedia
+// 38, fiawec.com 39 — fiawec.com's per-round row includes a +1 pole bonus at
+// Spa that Wikipedia omits) and the order of the 13-pt tie; fiawec.com used.
+// Marques from the Wikipedia entry list (Akkodis ASP = Lexus RC F GT3,
+// Iron Lynx = Mercedes-AMG GT3 Evo, Proton = Ford Mustang GT3 Evo).
 const WEC_LMGT3_STANDINGS=[
-  {pos:1, car:'92', team:'The Bend Manthey',      mfr:'Porsche',      points:30, gap:0},
-  {pos:2, car:'10', team:'Garage 59',             mfr:'McLaren',      points:26, gap:-4},
-  {pos:3, car:'69', team:'Team WRT',              mfr:'BMW',          points:25, gap:-5},
-  {pos:4, car:'33', team:'TF Sport',              mfr:'Corvette',     points:22, gap:-8},
-  {pos:5, car:'21', team:'Vista AF Corse',        mfr:'Ferrari',      points:20, gap:-10},
-  {pos:6, car:'27', team:'Heart of Racing Team',  mfr:'Aston Martin', points:18, gap:-12},
-  {pos:7, car:'91', team:'Manthey DK Engineering',mfr:'Porsche',      points:18, gap:-12},
-  {pos:8, car:'58', team:'Garage 59',             mfr:'McLaren',      points:16, gap:-14},
-  {pos:9, car:'32', team:'Team WRT',              mfr:'BMW',          points:10, gap:-20},
-  {pos:10,car:'87', team:'Akkodis ASP Team',      mfr:'Lexus',        points:8,  gap:-22},
+  {pos:1, car:'33', team:'TF Sport',              mfr:'Corvette',     points:86, gap:0},
+  {pos:2, car:'27', team:'Heart of Racing Team',  mfr:'Aston Martin', points:62, gap:-24},
+  {pos:3, car:'34', team:'Racing Team Turkey by TF',mfr:'Corvette',   points:58, gap:-28},
+  {pos:4, car:'91', team:'Manthey DK Engineering',mfr:'Porsche',      points:54, gap:-32},
+  {pos:5, car:'21', team:'Vista AF Corse',        mfr:'Ferrari',      points:54, gap:-32},
+  {pos:6, car:'69', team:'Team WRT',              mfr:'BMW',          points:51, gap:-35},
+  {pos:7, car:'92', team:'The Bend Manthey',      mfr:'Porsche',      points:49, gap:-37},
+  {pos:8, car:'23', team:'Heart of Racing Team',  mfr:'Aston Martin', points:49, gap:-37},
+  {pos:9, car:'32', team:'Team WRT',              mfr:'BMW',          points:47, gap:-39},
+  {pos:10,car:'78', team:'Akkodis ASP Team',      mfr:'Lexus',        points:39, gap:-47},
+  {pos:11,car:'10', team:'Garage 59',             mfr:'McLaren',      points:38, gap:-48},
+  {pos:12,car:'87', team:'Akkodis ASP Team',      mfr:'Lexus',        points:38, gap:-48},
+  {pos:13,car:'58', team:'Garage 59',             mfr:'McLaren',      points:22, gap:-64},
+  {pos:14,car:'61', team:'Iron Lynx',             mfr:'Mercedes-AMG', points:17, gap:-69},
+  {pos:15,car:'88', team:'Proton Competition',    mfr:'Ford',         points:16, gap:-70},
+  {pos:16,car:'54', team:'Vista AF Corse',        mfr:'Ferrari',      points:13, gap:-73},
+  {pos:17,car:'77', team:'Proton Competition',    mfr:'Ford',         points:13, gap:-73},
+  {pos:18,car:'79', team:'Iron Lynx',             mfr:'Mercedes-AMG', points:6,  gap:-80},
 ];
 
 // Per-round official race highlights from the FIA WEC YouTube channel
@@ -224,7 +285,7 @@ function selectWECRace(round){
 function renderWECStandings(){
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('gt3','standings')+renderBackToSeriesHome('gt3');
-  const hcHdr=`<div class="section-title"><span>Hypercar Drivers · 2026 · After R2 Spa</span><span>Crews share points</span></div>`;
+  const hcHdr=`<div class="section-title"><span>Hypercar Drivers · 2026 · After R6 Fuji</span><span>Crews share points</span></div>`;
   const hcRows=WEC_HYPERCAR_STANDINGS.map(d=>`<div class="champ-row">
       <div class="champ-pos" style="color:${d.pos===1?'var(--yellow)':d.pos<=3?'var(--green)':'var(--text)'}">${d.pos}</div>
       <div class="flag-cell" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--muted);">#${d.car}</div>
@@ -235,7 +296,7 @@ function renderWECStandings(){
       <div class="champ-pts">${d.points}</div>
       <div class="champ-gap" style="color:${d.pos===1?'var(--yellow)':'var(--muted)'}">${d.pos===1?'LEADER':d.gap}</div>
     </div>`).join('');
-  const mfrHdr=`<div class="section-title"><span>Hypercar Manufacturers</span><span>After R2</span></div>`;
+  const mfrHdr=`<div class="section-title"><span>Hypercar Manufacturers</span><span>After R6</span></div>`;
   const mfrRows=WEC_MFR_STANDINGS.map(m=>`<div class="champ-row">
       <div class="champ-pos" style="color:${m.pos===1?'var(--yellow)':m.pos<=3?'var(--green)':'var(--text)'}">${m.pos}</div>
       <div class="flag-cell" style="color:${wecMfrColor(m.mfr)};font-size:18px;">●</div>
@@ -243,7 +304,7 @@ function renderWECStandings(){
       <div class="champ-pts">${m.points}</div>
       <div class="champ-gap" style="color:${m.pos===1?'var(--yellow)':'var(--muted)'}">${m.pos===1?'LEADER':m.gap}</div>
     </div>`).join('');
-  const gtHdr=`<div class="section-title"><span>LMGT3 Teams Trophy</span><span>After R2</span></div>`;
+  const gtHdr=`<div class="section-title"><span>LMGT3 Teams Trophy</span><span>After R6</span></div>`;
   const gtRows=WEC_LMGT3_STANDINGS.map(t=>`<div class="champ-row">
       <div class="champ-pos" style="color:${t.pos===1?'var(--yellow)':t.pos<=3?'var(--green)':'var(--text)'}">${t.pos}</div>
       <div class="flag-cell" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:${wecMfrColor(t.mfr)};">#${t.car}</div>
@@ -255,7 +316,7 @@ function renderWECStandings(){
       <div class="champ-gap" style="color:${t.pos===1?'var(--yellow)':'var(--muted)'}">${t.pos===1?'LEADER':t.gap}</div>
     </div>`).join('');
   content.innerHTML=top+hcHdr+hcRows+mfrHdr+mfrRows+gtHdr+gtRows;
-  setStats(`${WEC_HYPERCAR_STANDINGS[0].points} pts`,WEC_HYPERCAR_STANDINGS[0].crew.split(' / ')[0],'STANDINGS','R2/8');
+  setStats(`${WEC_HYPERCAR_STANDINGS[0].points} pts`,WEC_HYPERCAR_STANDINGS[0].crew.split(' / ')[0],'STANDINGS','R6/8');
 }
 
 // ── WEC SCHEDULE ──────────────────────────────────────────────────────────────
