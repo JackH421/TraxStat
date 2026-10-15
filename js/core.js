@@ -9,7 +9,7 @@ const TC={'Red Bull Racing':'#3671C6','Red Bull':'#3671C6','Mercedes':'#27F4D2',
 // Alpine: Gasly 10, Colapinto 43 · Williams: Sainz 55, Albon 23
 // Haas: Bearman 87, Ocon 31 · Audi: Hulkenberg 27, Bortoleto 5
 // Cadillac: Perez 11, Bottas 77
-const DT={1:'Red Bull',6:'Red Bull',44:'Ferrari',16:'Ferrari',4:'McLaren',81:'McLaren',63:'Mercedes',12:'Mercedes',14:'Aston Martin',18:'Aston Martin',10:'Alpine',43:'Alpine',23:'Williams',55:'Williams',87:'Haas F1 Team',31:'Haas F1 Team',27:'Audi',5:'Audi',30:'Racing Bulls',77:'Cadillac',11:'Cadillac'};
+const DT={3:'Red Bull',6:'Red Bull',44:'Ferrari',16:'Ferrari',1:'McLaren',81:'McLaren',63:'Mercedes',12:'Mercedes',14:'Aston Martin',18:'Aston Martin',10:'Alpine',43:'Alpine',23:'Williams',55:'Williams',87:'Haas F1 Team',31:'Haas F1 Team',27:'Audi',5:'Audi',30:'Racing Bulls',41:'Racing Bulls',22:'Racing Bulls',77:'Cadillac',11:'Cadillac'};
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let currentSeries='schedule',currentF1Tab='live',selectedRace=null,isLive=false;
@@ -194,9 +194,10 @@ const TX_SERIES_META={
   f1:{name:'Formula 1',label:'F1',seasonSub:()=>{
     const completed=Object.keys(HARDCODED_RACES||{}).map(Number).filter(n=>!isNaN(n));
     const max=completed.length?Math.max(...completed):0;
-    // NEXT_RACES doesn't cover the whole 22-round 2026 calendar (24 originally;
-    // Bahrain + Saudi cancelled) — only the next few — so we can't claim
-    // "Round N of 22" from data alone. Fall back.
+    // NEXT_RACES only lists the remaining rounds of the 23-round 2026
+    // calendar (formula1.com, Oct 2026 — Saudi cancelled, Bahrain GP moved to
+    // Sepang), so we can't claim "Round N of 23" from data
+    // alone. Fall back.
     return max>0?`2026 Season · After Round ${max}`:'2026 Season';
   }},
   nascar:{
