@@ -39,6 +39,14 @@ const NEXT_RACES=[
 // (or F1.com schedule); add more as the season progresses.
 const F1_RACE_TIMES_UTC={
   5:{start:'20:00',end:'22:00'},  // Canadian GP — Sun 2026-05-24
+  // R18–R23: Jolpica /2026/races race times, cross-checked vs F1.com
+  // event pages (COTA + Las Vegas) 2026-10-15. End = start + 2h.
+  18:{start:'20:00',end:'22:00'}, // United States GP — Sun 2026-10-25
+  19:{start:'20:00',end:'22:00'}, // Mexico City GP — Sun 2026-11-01
+  20:{start:'17:00',end:'19:00'}, // São Paulo GP — Sun 2026-11-08
+  21:{start:'04:00',end:'06:00'}, // Las Vegas GP — Sat 21 Nov local = 2026-11-22 UTC
+  22:{start:'16:00',end:'18:00'}, // Qatar GP — Sun 2026-11-29
+  23:{start:'13:00',end:'15:00'}, // Abu Dhabi GP — Sun 2026-12-06
 };
 
 function renderNextBanner(){
