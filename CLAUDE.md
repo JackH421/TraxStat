@@ -107,7 +107,7 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **NASCAR Trucks**: Round 21 (Charlotte, Chase race 3 of 7) complete — Honeycutt leads 2251, +17 over Riggs (7 wins). Manufacturers: Ford 10, Toyota 7, Chevrolet 4, Ram 0. Next: Phoenix, 2026-10-16.
 - **IndyCar**: Season complete (R18 Laguna Seca, McLaughlin). Palou champion (5th title, 4th straight; clinched at R16 Milwaukee) 631, +86 over Kirkwood. Engine wins: Honda 10, Chevrolet 8. Next: 2027 season.
 - **MotoGP**: Round 17 (Indonesia) complete — Martín 355, +2 over M. Márquez 353 (Bezzecchi 309). Constructors: Aprilia 503, Ducati 491. Next: Australia (Phillip Island), 2026-10-25.
-- **WEC**: Round 6 (Fuji) complete — Buemi/Hartley/Hirakawa 89, +10 over Conway/Kobayashi/de Vries; Toyota leads mfrs 169 (+23 over BMW). Qatar + Bahrain cancelled, replaced by Barcelona + Monza. Next: 6 Hours of Barcelona, 2026-10-18.
+- **WEC**: Round 7 (6 Hours of Barcelona) complete — #8 Toyota won by 0.583s over the #7 Toyota (1-2 clinched Toyota the Manufacturers' title, 212 vs BMW 154); #92 Manthey Porsche won LMGT3. Hypercar drivers: Buemi/Hartley/Hirakawa 114, +17 over Conway/Kobayashi/de Vries 97 (R7 standings single-source fiawec.com; Wikipedia R7 not yet populated). Next: 6 Hours of Monza (finale), 2026-11-08.
 - **WRC**: Season complete after R13 Sardegna (Saudi removed) — Evans champion 243, +5 over Solberg, Pajari 237; Toyota mfrs champions 662 (Hyundai 440, single-source Wikipedia). Next: 2027 season.
 
 When you update the hardcoded constants past these rounds, also update this section and the "After Rxx" labels in the renderers.
