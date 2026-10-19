@@ -5,7 +5,7 @@
 // 2026-06-12 (all-series buildout, Phase 2). Dispatch is wired at the top of
 // each renderNascar* function in nascar.js (currentNascarSeries==='trucks').
 //
-// Data current through R21 Charlotte (2026-10-09). R1–R12 sources (fetched +
+// Data current through R22 Phoenix (2026-10-16). R1–R12 sources (fetched +
 // cross-checked 2026-06-12; per-race URLs in the Phase-2 commit body):
 //   https://en.wikipedia.org/wiki/2026_NASCAR_Craftsman_Truck_Series
 //     (schedule, standings, teams, manufacturer column)
@@ -116,7 +116,7 @@ const NASCAR_TRUCKS_SCHEDULE=[
   {round:25,race:'Baptist Health 200',                   track:'Homestead-Miami Speedway',            country:'🇺🇸', date:'2026-11-06', chase:true},
 ];
 
-// Completed rounds 1–21 (R13–R21 sourcing: see header).
+// Completed rounds 1–22 (R13–R22 sourcing: see header).
 // Completed rounds 1–12. Winners multi-source for all rounds (Wikipedia race
 // pages + NASCAR.com recaps/gallery snippets and/or racingnews.co); podiums
 // for R5/R8/R10/R12 dual-source, others single-source Wikipedia race pages.
@@ -142,51 +142,53 @@ const NASCAR_TRUCKS_RESULTS={
   19:{winner:'Garcia',    p2:'Currey',    p3:'Friesen',       polePos:'Riggs',     note:"Chase opener: Jake Garcia passed Friesen with 20 laps to go for his first career Truck win in his 94th start. Riggs swept both stages and led a race-high 135 laps but finished 32nd after a loose wheel."},
   20:{winner:'Honeycutt', p2:'Eckes',     p3:'Crews',         polePos:'Sanchez',   note:'Honeycutt swept both stages and led 111 of 134 laps through a 4-hour-47-minute rain delay, taking the Chase lead by 37 points over Riggs.'},
   21:{winner:'Riggs',     p2:'Eckes',     p3:'Honeycutt',     polePos:'Mosack',    note:'Riggs passed Chase leader Honeycutt (who led a race-high 85 laps) late on after Honeycutt slapped the wall, completing a 2026 Charlotte sweep with his seventh win of the season. Honeycutt still leads by 17.'},
+  22:{winner:'Honeycutt', p2:'Eckes',     p3:'Riggs',         polePos:'Riggs',     note:'Honeycutt (Tricon, Toyota) dominates the final stage to win at Phoenix — his fourth Truck win, 53 laps led — and stretches his points lead to 39 over Riggs. Majeski sweeps stages 1 and 2 but finishes fourth. Pole: Riggs.'},
 };
 
-// Driver points after R21 Charlotte (2026-10-09) — Wikipedia season page;
-// top 10 (Chase field, points reset to 2000-base at R19) cross-checked
-// against racingnews.co R21 results-page gaps (exact match). P11–P26
-// single-source Wikipedia. Truncated at P26 (see header).
+// Driver points after R22 Phoenix (2026-10-16) — top 10 (Chase field) match
+// Wikipedia '2026 Zero Carbon Bioethanol 150' exactly; P11–P26 are
+// single-source (official NASCAR.com points feed, cf.nascar.com/cacher/2026/3/
+// racinginsights-points-feed.json). Truncated at P26 (see header). LaJoie and
+// Tyrrell tied on 315; feed order kept.
 // gap = points − leader points. Heim (P17) has 3 wins but is
 // championship-ineligible (part-time). Kyle Busch removed from official
 // standings after his death (per Wikipedia season page).
 const NASCAR_TRUCKS_STANDINGS=[
-  {pos:1, driver:'Honeycutt',    points:2251, gap:0},
-  {pos:2, driver:'Riggs',        points:2234, gap:-17},
-  {pos:3, driver:'Smith',        points:2174, gap:-77},
-  {pos:4, driver:'Eckes',        points:2163, gap:-88},
-  {pos:5, driver:'Hemric',       points:2142, gap:-109},
-  {pos:6, driver:'Ruggiero',     points:2136, gap:-115},
-  {pos:7, driver:'Majeski',      points:2135, gap:-116},
-  {pos:8, driver:'Rhodes',       points:2115, gap:-136},
-  {pos:9, driver:'Enfinger',     points:2111, gap:-140},
-  {pos:10,driver:'Ankrum',       points:2098, gap:-153},
-  {pos:11,driver:'Garcia',       points:509, gap:-1742},
-  {pos:12,driver:'Friesen',      points:467, gap:-1784},
-  {pos:13,driver:'Haley',        points:439, gap:-1812},
-  {pos:14,driver:'Gray',         points:428, gap:-1823},
-  {pos:15,driver:'Queen',        points:427, gap:-1824},
-  {pos:16,driver:'Pérez de Lara',points:417, gap:-1834},
-  {pos:17,driver:'Heim',         points:346, gap:-1905},
-  {pos:18,driver:'Sutton',       points:328, gap:-1923},
-  {pos:19,driver:'Butcher',      points:321, gap:-1930},
-  {pos:20,driver:'Tyrrell',      points:307, gap:-1944},
-  {pos:21,driver:'LaJoie',       points:295, gap:-1956},
-  {pos:22,driver:'Lewis',        points:267, gap:-1984},
-  {pos:23,driver:'Mosack',       points:243, gap:-2008},
-  {pos:24,driver:'Wright',       points:232, gap:-2019},
-  {pos:25,driver:'Muniz',        points:186, gap:-2065},
-  {pos:26,driver:'Boyd',         points:157, gap:-2094},
+  {pos:1, driver:'Honeycutt',    points:2323, gap:0},
+  {pos:2, driver:'Riggs',        points:2284, gap:-39},
+  {pos:3, driver:'Eckes',        points:2211, gap:-112},
+  {pos:4, driver:'Smith',        points:2206, gap:-117},
+  {pos:5, driver:'Majeski',      points:2188, gap:-135},
+  {pos:6, driver:'Hemric',       points:2175, gap:-148},
+  {pos:7, driver:'Ruggiero',     points:2172, gap:-151},
+  {pos:8, driver:'Enfinger',     points:2139, gap:-184},
+  {pos:9, driver:'Rhodes',       points:2135, gap:-188},
+  {pos:10, driver:'Ankrum',       points:2122, gap:-201},
+  {pos:11, driver:'Garcia',       points:548, gap:-1775},
+  {pos:12, driver:'Friesen',      points:485, gap:-1838},
+  {pos:13, driver:'Haley',        points:456, gap:-1867},
+  {pos:14, driver:'Pérez de Lara', points:442, gap:-1881},
+  {pos:15, driver:'Queen',        points:441, gap:-1882},
+  {pos:16, driver:'Gray',         points:440, gap:-1883},
+  {pos:17, driver:'Heim',         points:346, gap:-1977},
+  {pos:18, driver:'Sutton',       points:343, gap:-1980},
+  {pos:19, driver:'Butcher',      points:340, gap:-1983},
+  {pos:20, driver:'LaJoie',       points:315, gap:-2008},
+  {pos:21, driver:'Tyrrell',      points:315, gap:-2008},
+  {pos:22, driver:'Lewis',        points:298, gap:-2025},
+  {pos:23, driver:'Mosack',       points:269, gap:-2054},
+  {pos:24, driver:'Wright',       points:243, gap:-2080},
+  {pos:25, driver:'Muniz',        points:190, gap:-2133},
+  {pos:26, driver:'Boyd',         points:157, gap:-2166},
 ];
 
-// Manufacturer wins after R21 — derived from the verified winners above;
+// Manufacturer wins after R22 — derived from the verified winners above;
 // manufacturer column cross-checked on the Wikipedia season page. Ram
 // (Kaulig Racing) is new for 2026 and winless so far — included at 0 so the
 // fourth manufacturer is visible.
 const NASCAR_TRUCKS_MFRS=[
   {pos:1, mfr:'Ford',      wins:10,drivers:['Riggs (7)','Smith (2)','Garcia']},
-  {pos:2, mfr:'Toyota',    wins:7, drivers:['Heim (3)','Honeycutt (3)','Bell']},
+  {pos:2, mfr:'Toyota',    wins:8, drivers:['Honeycutt (4)','Heim (3)','Bell']},
   {pos:3, mfr:'Chevrolet', wins:4, drivers:['Busch (2)','Hocevar','Enfinger']},
   {pos:4, mfr:'Ram',       wins:0, drivers:[]},
 ];
@@ -373,7 +375,7 @@ function renderNascarTrucksStandings(){
       <div class="champ-gap">WINS</div>
     </div>`).join('');
   content.innerHTML=top+hdr+note+rows+mfrHdr+mfrRows;
-  setStats(`${NASCAR_TRUCKS_STANDINGS[0].points} pts`,NASCAR_TRUCKS_STANDINGS[0].driver,'DRIVERS',`R21/25`);
+  setStats(`${NASCAR_TRUCKS_STANDINGS[0].points} pts`,NASCAR_TRUCKS_STANDINGS[0].driver,'DRIVERS',`R22/25`);
 }
 
 // ── TRUCKS HIGHLIGHTS ─────────────────────────────────────────────────────────
