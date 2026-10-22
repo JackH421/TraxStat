@@ -89,6 +89,11 @@ const MOTOGP_RIDERS={
 // 2026 calendar (22 rounds) — verified 2026-06-12 from the Wikipedia season
 // page; motogp.com /en/calendar cross-check matched all weekend dates and the
 // 22-round count (its extracted table dropped Indonesia — see session report).
+// Re-audited 2026-10-22 (R18–R22 unchanged): Wikipedia season calendar
+// (Qatar moved to 8 Nov, Portugal 22 Nov, Valencia 29 Nov) + motogp.com
+// /en/calendar (MAL 30 Oct–1 Nov, QAT 6–8 Nov, POR 20–22 Nov, VAL 27–29 Nov;
+// its extracted table dropped Australia this time) + crash.net and the
+// promoter motogp.com.au for Australia (R18, Phillip Island, 23–25 Oct).
 const MOTOGP_SCHEDULE=[
   {round:1, gp:'PT Grand Prix of Thailand',                           circuit:'Chang International Circuit',        country:'🇹🇭', date:'2026-03-01'},
   {round:2, gp:'Estrella Galicia 0,0 Grand Prix of Brazil',           circuit:'Autódromo Internacional Ayrton Senna',country:'🇧🇷', date:'2026-03-22'},

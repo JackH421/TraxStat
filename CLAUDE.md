@@ -99,15 +99,15 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **Push at natural stopping points**, not after every commit. A working feature, a verified fix, a completed section.
 - **Never amend or force-push** commits already on GitHub. Pushed history is shared history.
 
-## Current season state (as of 2026-10-14)
+## Current season state (as of 2026-10-22)
 
 - **F1**: Round 17 (Singapore GP) complete. Standings: Antonelli 340, Russell 238, Hamilton 229, Verstappen 221 (Antonelli +102). Constructors: Mercedes 578, Ferrari 444, McLaren 339, Red Bull 332. Verstappen won R16 (Bahrain GP relocated to Sepang) and R17 Singapore (plus the Sprint) back-to-back. Hadjar missed R12–R14 (wrist) — Lawson to Red Bull, Tsunoda to Racing Bulls. R6 Monaco P3–P7 corrected to F1.com order (Hadjar, Piastri, Lawson, Lindblad, Gasly). Calendar is 23 rounds. Next: United States GP (COTA), 2026-10-25.
-- **NASCAR Cup**: Round 32 (Bank of America 400, Charlotte) complete — Briscoe won R31 Las Vegas and R32 Charlotte (by 0.029s over Bell). Chase standings (6 of 10 Chase races run; 2026 Chase = top 16 after R26 with staggered points, no resets): Larson 2367, +49 over Hamlin 2318, Bell 2316, Briscoe 2302. Manufacturers: Toyota 17, Chevrolet 8, Ford 7. Added 'Burton' (R26 sub) to `NASCAR_CUP_DRIVERS`. Next: Freeway Insurance 500 at Phoenix, 2026-10-18.
-- **NASCAR Xfinity**: Round 29 (Charlotte, Chase R5) complete — Creed leads 2294, +2 over Love (Day −7, Allgaier −15). Day won R28 Las Vegas + R29 Charlotte. Manufacturers: Chevrolet 26, Toyota 3, Ford 0. Next: Phoenix, 2026-10-17.
-- **NASCAR Trucks**: Round 21 (Charlotte, Chase race 3 of 7) complete — Honeycutt leads 2251, +17 over Riggs (7 wins). Manufacturers: Ford 10, Toyota 7, Chevrolet 4, Ram 0. Next: Phoenix, 2026-10-16.
+- **NASCAR Cup**: Round 33 (Freeway Insurance 500, Phoenix) complete — Reddick won (6th of 2026); Larson crashed out (P34) but keeps the lead. Chase standings (7 of 10 Chase races run; 2026 Chase = top 16 after R26 with staggered points, no resets): Larson 2370, +5 over Bell 2365, Briscoe 2346. Manufacturers: Toyota 18, Chevrolet 8, Ford 7. Next: YellaWood 500 at Talladega, 2026-10-25.
+- **NASCAR Xfinity**: Round 30 (Phoenix) complete — Love won from pole and leads 2367, +36 over Allgaier. Manufacturers: Chevrolet 27, Toyota 3, Ford 0. Next: TPG 250 at Talladega, 2026-10-24.
+- **NASCAR Trucks**: Round 22 (Phoenix) complete — Honeycutt won and leads 2323, +39 over Riggs. Manufacturers: Ford 10, Toyota 8, Chevrolet 4, Ram 0. Next: Love's RV Stop 225 at Talladega, 2026-10-23.
 - **IndyCar**: Season complete (R18 Laguna Seca, McLaughlin). Palou champion (5th title, 4th straight; clinched at R16 Milwaukee) 631, +86 over Kirkwood. Engine wins: Honda 10, Chevrolet 8. Next: 2027 season.
 - **MotoGP**: Round 17 (Indonesia) complete — Martín 355, +2 over M. Márquez 353 (Bezzecchi 309). Constructors: Aprilia 503, Ducati 491. Next: Australia (Phillip Island), 2026-10-25.
-- **WEC**: Round 6 (Fuji) complete — Buemi/Hartley/Hirakawa 89, +10 over Conway/Kobayashi/de Vries; Toyota leads mfrs 169 (+23 over BMW). Qatar + Bahrain cancelled, replaced by Barcelona + Monza. Next: 6 Hours of Barcelona, 2026-10-18.
+- **WEC**: Round 7 (Barcelona) complete — #8 Toyota won; Buemi/Hartley/Hirakawa 114, +17 over Conway/Kobayashi/de Vries; Toyota leads mfrs 212 (+58 over BMW, mathematically decided — not yet marked in data); LMGT3 teams: #33 TF Sport 92. Next: 6 Hours of Monza (R8 finale), 2026-11-08.
 - **WRC**: Season complete after R13 Sardegna (Saudi removed) — Evans champion 243, +5 over Solberg, Pajari 237; Toyota mfrs champions 662 (Hyundai 440, single-source Wikipedia). Next: 2027 season.
 
 When you update the hardcoded constants past these rounds, also update this section and the "After Rxx" labels in the renderers.
@@ -196,10 +196,10 @@ core.js → series/f1.js → series/nascar.js → series/nascar-xfinity.js → s
 | Home | Default landing — news feed. Featured carousel + championship snapshot (F1 + NASCAR) + 8-card article feed. See `js/home.js`. |
 | Race Schedule | Hero card for next race across all series + next 3 closest. Routing key `'schedule'`. |
 | F1 | Fully built — five sub-tabs (LIVE / QUALIFYING / RACE RESULTS / DRIVERS / CONSTRUCTORS). LIVE is adaptive — see `docs/f1.md`. |
-| NASCAR | Cup fully built. Xfinity fully built (R1–R29 results, standings, mfr wins). Trucks fully built (`js/series/nascar-trucks.js`, R1–R21, 4 manufacturers incl. Ram). See `docs/nascar.md`. |
+| NASCAR | Cup fully built. Xfinity fully built (R1–R30 results, standings, mfr wins). Trucks fully built (`js/series/nascar-trucks.js`, R1–R22, 4 manufacturers incl. Ram). See `docs/nascar.md`. |
 | N24 | Permanent post-race-only module for the 2026 Nürburgring 24. See `docs/n24.md`. |
 | IndyCar | Fully built (no LIVE — no free live API). Four sub-tabs: STANDINGS / RACE RESULTS / SCHEDULE / HIGHLIGHTS. 2026 complete (R18 Laguna Seca), verified indycar.com + Wikipedia. `js/series/indycar.js`, `verify-indycar.js`. |
-| GT3/WEC | Fully built (no LIVE). Class-based results — Hypercar + LMGT3 winner per round. 2026 through R6 Fuji (Qatar/Bahrain replaced by Barcelona/Monza), verified fiawec.com + Wikipedia. `js/series/wec.js` (routing key `'gt3'`), `verify-wec.js`. |
+| GT3/WEC | Fully built (no LIVE). Class-based results — Hypercar + LMGT3 winner per round. 2026 through R7 Barcelona (Qatar/Bahrain replaced by Barcelona/Monza), verified fiawec.com + Wikipedia. `js/series/wec.js` (routing key `'gt3'`), `verify-wec.js`. |
 | MotoGP | Fully built (no LIVE). Sprint + GP per round, MotoGP class only. 2026 through R17 Indonesia, verified Wikipedia season/GP pages + motogp.com news cross-checks. `js/series/motogp.js`, `verify-motogp.js`. |
 | WRC | Fully built (no LIVE). Rally model — podium with time gaps, stage-win tallies, Power Stage results. 2026 complete (R13 Sardegna), verified Wikipedia season/rally pages (wrc.com 403 — single-source mfr table flagged). `js/series/wrc.js`, `verify-wrc.js`. |
 
