@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // ── NASCAR MODULE ─────────────────────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════════
-// Cup Series fully populated with real verified 2026 data through R33 Freeway Insurance 500 (Phoenix).
+// Cup Series fully populated with real verified 2026 data through R34 YellaWood 500 (Talladega).
 // Xfinity (O'Reilly Auto Parts Series) and Trucks (Craftsman) scaffolded only.
 // Sources: Wikipedia 2026 NASCAR Cup Series, NASCAR.com winners gallery,
 // beyondtheflag.com / motorsport.com points after Michigan, race recaps.
-// R18–R32 (added 2026-10-14), R33 (added 2026-10-22): official NASCAR.com results/points feed
+// R18–R32 (added 2026-10-14), R33 (added 2026-10-22), R34 (added 2026-10-26): official NASCAR.com results/points feed
 // (cf.nascar.com/cacher/2026/1/…) cross-checked vs Wikipedia race pages.
 
 let currentNascarTab='live';
@@ -59,6 +59,8 @@ const NASCAR_CUP_DRIVERS={
   // Part-time sub: drove the No. 35 at R26 Daytona (driver change, P12, 0 pts) —
   // official NASCAR.com R26 results feed. Listed only for the R26 Results table.
   'Burton':        {first:'Harrison',  team:'23XI Racing',          mfr:'Toyota',    num:35},
+  // Part-time: drove the No. 33 at R34 Talladega (P14, 0 pts) — official NASCAR.com R34 results feed.
+  'Hill':          {first:'Austin',    team:'Richard Childress Racing', mfr:'Chevrolet', num:33},
 };
 
 // 2026 Cup Series schedule (R1-R36) — verified against Wikipedia.
@@ -104,7 +106,7 @@ const NASCAR_CUP_SCHEDULE=[
   {round:36,race:'Straight Talk Wireless 400', track:'Homestead-Miami Speedway',           country:'🇺🇸', date:'2026-11-08', laps:267, chase:true},
 ];
 
-// Completed race results through R33 — winners verified from NASCAR.com gallery + race recaps
+// Completed race results through R34 — winners verified from NASCAR.com gallery + race recaps
 // Where podium/stage data is verified, included. Otherwise just winner.
 const NASCAR_CUP_RESULTS={
   1:  {winner:'Reddick',    p2:'Elliott', p3:null,        polePos:'Busch',     stage1:'Smith',    stage2:'Wallace',  note:'68th Daytona 500 — Reddick passes Elliott exiting Turn 4 after restart with 5 to go. Hamlin tap triggers 20-car "Big One" in stage 2.'},
@@ -521,12 +523,36 @@ const NASCAR_CUP_RESULTS={
          {pos:14,car:'34', driver:'Gilliland',    pts:25,ledLaps:0,  status:'Running'},
          {pos:15,car:'38', driver:'Smith',        pts:22,ledLaps:0,  status:'Running'},
        ]},
+  34: {winner:'Larson', p2:'Byron', p3:'Stenhouse Jr', polePos:'Briscoe', stage1:'Buescher', stage2:'Logano',
+       note:'Larson beat Hendrick teammate Byron by 0.041s in an overtime finish for his 3rd win of 2026, his first at Talladega. Chase rivals Briscoe (33rd), Logano (34th), Bell (35th), Reddick (37th) and Blaney (38th) all had trouble, so Larson now leads Hamlin by 73 with two races left.',
+       totalLaps:189, stage1End:98, stage2End:143,
+       // Top-15 classification from the official NASCAR.com results feed
+       // (cf.nascar.com/cacher/2026/1/5631/weekend-feed.json), podium/pole/
+       // stages cross-checked vs Wikipedia '2026 YellaWood 500' and racingnews.co.
+       // pts = total race points (Hill, part-time No. 33, scores 0). Overtime finish: 189 of 188 scheduled laps.
+       Results:[
+         {pos:1, car:'5',  driver:'Larson',      pts:71,ledLaps:23, status:'Running',time:'Winner'},
+         {pos:2, car:'24', driver:'Byron',       pts:47,ledLaps:0, status:'Running',time:'+0.041'},
+         {pos:3, car:'47', driver:'Stenhouse Jr',pts:34,ledLaps:9, status:'Running'},
+         {pos:4, car:'1',  driver:'Chastain',    pts:33,ledLaps:0, status:'Running'},
+         {pos:5, car:'41', driver:'Custer',      pts:32,ledLaps:0, status:'Running'},
+         {pos:6, car:'77', driver:'Hocevar',     pts:31,ledLaps:0, status:'Running'},
+         {pos:7, car:'34', driver:'Gilliland',   pts:30,ledLaps:6, status:'Running'},
+         {pos:8, car:'11', driver:'Hamlin',      pts:29,ledLaps:0, status:'Running'},
+         {pos:9, car:'48', driver:'Bowman',      pts:28,ledLaps:0, status:'Running'},
+         {pos:10,car:'71', driver:'McDowell',    pts:27,ledLaps:0, status:'Running'},
+         {pos:11,car:'3',  driver:'Dillon',      pts:26,ledLaps:0, status:'Running'},
+         {pos:12,car:'21', driver:'Berry',       pts:25,ledLaps:8, status:'Running'},
+         {pos:13,car:'60', driver:'Preece',      pts:33,ledLaps:23, status:'Running'},
+         {pos:14,car:'33', driver:'Hill',        pts:0,ledLaps:6, status:'Running'},
+         {pos:15,car:'10', driver:'Ty Dillon',   pts:22,ledLaps:0, status:'Running'},
+       ]},
 };
 
-// 2026 Cup driver standings after Freeway Insurance 500 (R33 of 36, Chase
-// race 7 of 10) — official NASCAR.com points feed (cf.nascar.com/cacher/2026/1/
-// racinginsights-points-feed.json, fetched 2026-10-22), cross-checked vs
-// Wikipedia season table (exact match P1–P35). 2026 Chase format: top 16 after R26 qualified with
+// 2026 Cup driver standings after YellaWood 500 (R34 of 36, Chase
+// race 8 of 10) — official NASCAR.com points feed (cf.nascar.com/cacher/2026/1/
+// racinginsights-points-feed.json, fetched 2026-10-26), cross-checked vs
+// Bleacher Report (P1–P16 exact match; P17–P35 official feed only). 2026 Chase format: top 16 after R26 qualified with
 // staggered starting points (no win-and-in, no playoff points, no round
 // resets); P1–P16 therefore carry Chase totals (2,1xx–2,3xx) while P17+ keep
 // raw season points — the large P16→P17 drop is official, not a data error.
@@ -534,48 +560,48 @@ const NASCAR_CUP_RESULTS={
 // NASCAR_CUP_DRIVERS and are omitted as before. Kyle Busch remains omitted
 // (deceased) but stays in NASCAR_CUP_DRIVERS for R1–R12 results.
 const NASCAR_CUP_STANDINGS=[
-  {pos:1, driver:'Larson',        points:2370, gap:0},
-  {pos:2, driver:'Bell',          points:2365, gap:-5},
-  {pos:3, driver:'Briscoe',       points:2346, gap:-24},
-  {pos:4, driver:'Hamlin',        points:2339, gap:-31},
-  {pos:5, driver:'Blaney',        points:2330, gap:-40},
-  {pos:6, driver:'Logano',        points:2326, gap:-44},
-  {pos:7, driver:'Reddick',       points:2314, gap:-56},
-  {pos:8, driver:'Cindric',       points:2240, gap:-130},
-  {pos:9, driver:'Gibbs',         points:2238, gap:-132},
-  {pos:10,driver:'Elliott',       points:2221, gap:-149},
-  {pos:11,driver:'Hocevar',       points:2212, gap:-158},
-  {pos:12,driver:'Wallace',       points:2208, gap:-162},
-  {pos:13,driver:'Suarez',        points:2182, gap:-188},
-  {pos:14,driver:'Byron',         points:2180, gap:-190},
-  {pos:15,driver:'Buescher',      points:2166, gap:-204},
-  {pos:16,driver:'Preece',        points:2159, gap:-211, cutline:true},
-  {pos:17,driver:'van Gisbergen', points:729, gap:-1641},
-  {pos:18,driver:'Keselowski',    points:683, gap:-1687},
-  {pos:19,driver:'Chastain',      points:673, gap:-1697},
-  {pos:20,driver:'McDowell',      points:616, gap:-1754},
-  {pos:21,driver:'Jones',         points:607, gap:-1763},
-  {pos:22,driver:'Berry',         points:584, gap:-1786},
-  {pos:23,driver:'Gilliland',     points:582, gap:-1788},
-  {pos:24,driver:'Allmendinger',  points:574, gap:-1796},
-  {pos:25,driver:'Dillon',        points:540, gap:-1830},
-  {pos:26,driver:'Smith',         points:523, gap:-1847},
-  {pos:27,driver:'Bowman',        points:512, gap:-1858},
-  {pos:28,driver:'Nemechek',      points:503, gap:-1867},
-  {pos:29,driver:'Stenhouse Jr',  points:481, gap:-1889},
-  {pos:30,driver:'Herbst',        points:470, gap:-1900},
-  {pos:31,driver:'Gragson',       points:430, gap:-1940},
-  {pos:32,driver:'Custer',        points:407, gap:-1963},
-  {pos:33,driver:'Zilisch',       points:360, gap:-2010},
-  {pos:34,driver:'Ty Dillon',     points:352, gap:-2018},
-  {pos:35,driver:'Ware',          points:237, gap:-2133},
+  {pos:1, driver:'Larson',       points:2441, gap:0},
+  {pos:2, driver:'Hamlin',       points:2368, gap:-73},
+  {pos:3, driver:'Bell',         points:2367, gap:-74},
+  {pos:4, driver:'Briscoe',      points:2362, gap:-79},
+  {pos:5, driver:'Logano',       points:2341, gap:-100},
+  {pos:6, driver:'Blaney',       points:2334, gap:-107},
+  {pos:7, driver:'Reddick',      points:2315, gap:-126},
+  {pos:8, driver:'Cindric',      points:2258, gap:-183},
+  {pos:9, driver:'Gibbs',        points:2258, gap:-183},
+  {pos:10, driver:'Hocevar',      points:2243, gap:-198},
+  {pos:11, driver:'Byron',        points:2227, gap:-214},
+  {pos:12, driver:'Elliott',      points:2223, gap:-218},
+  {pos:13, driver:'Wallace',      points:2223, gap:-218},
+  {pos:14, driver:'Suarez',       points:2201, gap:-240},
+  {pos:15, driver:'Preece',       points:2192, gap:-249},
+  {pos:16, driver:'Buescher',     points:2186, gap:-255, cutline:true},
+  {pos:17, driver:'van Gisbergen',points:739, gap:-1702},
+  {pos:18, driver:'Chastain',     points:706, gap:-1735},
+  {pos:19, driver:'Keselowski',   points:704, gap:-1737},
+  {pos:20, driver:'McDowell',     points:643, gap:-1798},
+  {pos:21, driver:'Jones',        points:618, gap:-1823},
+  {pos:22, driver:'Gilliland',    points:612, gap:-1829},
+  {pos:23, driver:'Berry',        points:609, gap:-1832},
+  {pos:24, driver:'Allmendinger', points:580, gap:-1861},
+  {pos:25, driver:'Dillon',       points:566, gap:-1875},
+  {pos:26, driver:'Smith',        points:541, gap:-1900},
+  {pos:27, driver:'Bowman',       points:540, gap:-1901},
+  {pos:28, driver:'Stenhouse Jr', points:515, gap:-1926},
+  {pos:29, driver:'Nemechek',     points:504, gap:-1937},
+  {pos:30, driver:'Herbst',       points:486, gap:-1955},
+  {pos:31, driver:'Gragson',      points:447, gap:-1994},
+  {pos:32, driver:'Custer',       points:439, gap:-2002},
+  {pos:33, driver:'Ty Dillon',    points:374, gap:-2067},
+  {pos:34, driver:'Zilisch',      points:372, gap:-2069},
+  {pos:35, driver:'Ware',         points:258, gap:-2183},
 ];
 
-// Manufacturer wins after R33 — counted from race winners; matches the
-// Wikipedia manufacturers' table (Toyota 18 / Chevrolet 8 / Ford 7).
+// Manufacturer wins after R34 — counted from race winners (Toyota 18 /
+// Chevrolet 9 / Ford 7); R33 total matched the Wikipedia manufacturers' table.
 const NASCAR_CUP_MFRS=[
   {pos:1, mfr:'Toyota',    wins:18, drivers:['Reddick (6)','Hamlin (4)','Briscoe (3)','Gibbs (2)','Heim (2)','Bell']},
-  {pos:2, mfr:'Chevrolet', wins:8,  drivers:['Elliott (2)','van Gisbergen (2)','Larson (2)','Hocevar','Suarez']},
+  {pos:2, mfr:'Chevrolet', wins:9,  drivers:['Larson (3)','Elliott (2)','van Gisbergen (2)','Hocevar','Suarez']},
   {pos:3, mfr:'Ford',      wins:7,  drivers:['Blaney (3)','Logano (3)','Preece']},
 ];
 
@@ -784,7 +810,7 @@ function renderNascarDrivers(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityDrivers();
   if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  const hdr=`<div class="section-title"><span>Cup Drivers · 2026 · After R33 Phoenix</span><span>Top 16 = Chase</span></div>`;
+  const hdr=`<div class="section-title"><span>Cup Drivers · 2026 · After R34 Talladega</span><span>Top 16 = Chase</span></div>`;
   const rows=NASCAR_CUP_STANDINGS.map(d=>{
     const info=nascarDrv(d.driver);
     const isCutline=d.cutline;
@@ -811,7 +837,7 @@ function renderNascarDrivers(){
     </div>`;
   }).join('');
   content.innerHTML=hdr+rows;
-  setStats(`${NASCAR_CUP_STANDINGS[0].points} pts`,NASCAR_CUP_STANDINGS[0].driver,'DRIVERS','R33/36');
+  setStats(`${NASCAR_CUP_STANDINGS[0].points} pts`,NASCAR_CUP_STANDINGS[0].driver,'DRIVERS','R34/36');
 }
 
 function renderNascarDriverBreakdown(name,info,points,pos){
@@ -857,7 +883,7 @@ function renderNascarMfrs(){
   if(currentNascarSeries==='xfinity')return renderNascarXfinityMfrs();
   if(currentNascarSeries==='trucks')return renderNascarTrucksStandings();
   const content=document.getElementById('main-content');
-  const hdr=`<div class="section-title"><span>Cup Manufacturers · 2026 · After R33</span><span>Wins through Phoenix</span></div>`;
+  const hdr=`<div class="section-title"><span>Cup Manufacturers · 2026 · After R34</span><span>Wins through Talladega</span></div>`;
   const note=`<div style="padding:12px 16px;background:#1a1a05;border-bottom:1px solid var(--border);font-family:'Barlow',sans-serif;font-size:11px;color:var(--yellow);line-height:1.5;">
     ℹ️ NASCAR no longer publicly publishes official manufacturer points after each race. Wins shown below are verified from NASCAR.com.
   </div>`;
@@ -879,7 +905,7 @@ function renderNascarMfrs(){
     </div>`;
   }).join('');
   content.innerHTML=hdr+note+rows;
-  setStats(`${NASCAR_CUP_MFRS[0].wins} wins`,NASCAR_CUP_MFRS[0].mfr,'MFRS','R33/36');
+  setStats(`${NASCAR_CUP_MFRS[0].wins} wins`,NASCAR_CUP_MFRS[0].mfr,'MFRS','R34/36');
 }
 
 function renderNascarMfrBreakdown(m){
