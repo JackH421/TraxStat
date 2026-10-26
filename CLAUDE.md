@@ -106,7 +106,7 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **NASCAR Xfinity**: Round 30 (Phoenix) complete — Love won from pole and leads 2367, +36 over Allgaier. Manufacturers: Chevrolet 27, Toyota 3, Ford 0. Next: TPG 250 at Talladega, 2026-10-24.
 - **NASCAR Trucks**: Round 22 (Phoenix) complete — Honeycutt won and leads 2323, +39 over Riggs. Manufacturers: Ford 10, Toyota 8, Chevrolet 4, Ram 0. Next: Love's RV Stop 225 at Talladega, 2026-10-23.
 - **IndyCar**: Season complete (R18 Laguna Seca, McLaughlin). Palou champion (5th title, 4th straight; clinched at R16 Milwaukee) 631, +86 over Kirkwood. Engine wins: Honda 10, Chevrolet 8. Next: 2027 season.
-- **MotoGP**: Round 17 (Indonesia) complete — Martín 355, +2 over M. Márquez 353 (Bezzecchi 309). Constructors: Aprilia 503, Ducati 491. Next: Australia (Phillip Island), 2026-10-25.
+- **MotoGP**: Round 18 (Australia, Phillip Island) — Sunday GP CANCELLED (poor visibility grounded the medical helicopter); only the Sprint ran (M. Márquez won from pole, A. Márquez 2nd, Di Giannantonio 3rd). M. Márquez 365, +10 over Martín 355 (Martín crashed in the Sprint, unfit; Bezzecchi 315). Constructors: Aprilia 509, Ducati 503. Next: Malaysia (Sepang), 2026-11-01.
 - **WEC**: Round 7 (Barcelona) complete — #8 Toyota won; Buemi/Hartley/Hirakawa 114, +17 over Conway/Kobayashi/de Vries; Toyota leads mfrs 212 (+58 over BMW, mathematically decided — not yet marked in data); LMGT3 teams: #33 TF Sport 92. Next: 6 Hours of Monza (R8 finale), 2026-11-08.
 - **WRC**: Season complete after R13 Sardegna (Saudi removed) — Evans champion 243, +5 over Solberg, Pajari 237; Toyota mfrs champions 662 (Hyundai 440, single-source Wikipedia). Next: 2027 season.
 
@@ -200,7 +200,7 @@ core.js → series/f1.js → series/nascar.js → series/nascar-xfinity.js → s
 | N24 | Permanent post-race-only module for the 2026 Nürburgring 24. See `docs/n24.md`. |
 | IndyCar | Fully built (no LIVE — no free live API). Four sub-tabs: STANDINGS / RACE RESULTS / SCHEDULE / HIGHLIGHTS. 2026 complete (R18 Laguna Seca), verified indycar.com + Wikipedia. `js/series/indycar.js`, `verify-indycar.js`. |
 | GT3/WEC | Fully built (no LIVE). Class-based results — Hypercar + LMGT3 winner per round. 2026 through R7 Barcelona (Qatar/Bahrain replaced by Barcelona/Monza), verified fiawec.com + Wikipedia. `js/series/wec.js` (routing key `'gt3'`), `verify-wec.js`. |
-| MotoGP | Fully built (no LIVE). Sprint + GP per round, MotoGP class only. 2026 through R17 Indonesia, verified Wikipedia season/GP pages + motogp.com news cross-checks. `js/series/motogp.js`, `verify-motogp.js`. |
+| MotoGP | Fully built (no LIVE). Sprint + GP per round, MotoGP class only. 2026 through R18 Australia (GP cancelled, Sprint only), verified Wikipedia season/GP pages + motogp.com news cross-checks. `js/series/motogp.js`, `verify-motogp.js`. |
 | WRC | Fully built (no LIVE). Rally model — podium with time gaps, stage-win tallies, Power Stage results. 2026 complete (R13 Sardegna), verified Wikipedia season/rally pages (wrc.com 403 — single-source mfr table flagged). `js/series/wrc.js`, `verify-wrc.js`. |
 
 ## F1 data: hardcoded-first pattern (essentials)

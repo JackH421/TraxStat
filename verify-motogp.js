@@ -78,7 +78,7 @@ MOTOGP_SCHEDULE.forEach((row, i) => {
 });
 
 // ── Check 2: results integrity + rider references ─────────────────────────────
-// Round exists in schedule; GP winner present; every rider name referenced
+// Round exists in schedule; GP winner present (unless gpCancelled:true); every rider name referenced
 // (sprintWinner/winner/p2/p3/pole — null allowed except winner) is in the roster.
 const resultChecks = { pass: 0, fail: 0, total: 0 };
 const scheduleRounds = new Set(MOTOGP_SCHEDULE.map(r => r.round));
@@ -101,8 +101,8 @@ for (const round in MOTOGP_RESULTS) {
     resultChecks.pass++;
   }
   resultChecks.total++;
-  if (!r.winner) {
-    note('results', `Round ${round} has no GP winner — completed rounds must name a verified winner`);
+  if (!r.winner && !r.gpCancelled) {
+    note('results', `Round ${round} has no GP winner — completed rounds must name a verified winner (or set gpCancelled:true)`);
     resultChecks.fail++;
   } else {
     resultChecks.pass++;
