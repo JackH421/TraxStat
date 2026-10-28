@@ -101,8 +101,8 @@ for (const round in MOTOGP_RESULTS) {
     resultChecks.pass++;
   }
   resultChecks.total++;
-  if (!r.winner) {
-    note('results', `Round ${round} has no GP winner — completed rounds must name a verified winner`);
+  if (!r.winner && !r.gpCancelled) {
+    note('results', `Round ${round} has no GP winner — completed rounds must name a verified winner (or set gpCancelled:true)`);
     resultChecks.fail++;
   } else {
     resultChecks.pass++;
