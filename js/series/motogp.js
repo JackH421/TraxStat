@@ -7,8 +7,9 @@
 //
 //   MOTOGP_RIDERS:   lastName → {first, team, bike (manufacturer), num, nat}
 //   MOTOGP_SCHEDULE: [{round, gp, circuit, country, date}]   // date = GP Sunday
-//   MOTOGP_RESULTS:  {round: {sprintWinner, winner, p2, p3, pole, note}}
-//                    // every 2026 round runs a Saturday Sprint + Sunday GP
+//   MOTOGP_RESULTS:  {round: {sprintWinner, winner, p2, p3, pole, note, gpCancelled?}}
+//                    // every 2026 round runs a Saturday Sprint + Sunday GP;
+//                    // gpCancelled:true (winner/p2/p3 null) = Sunday GP not run
 //   MOTOGP_STANDINGS:[{pos, rider, points, gap}]  // combined sprint+GP points
 //   MOTOGP_CONSTRUCTORS: [{pos, constructor, points, gap}]   // as published
 //
@@ -40,6 +41,19 @@
 //     sprint/GP classifications, poles, notes). Season-page standings grid
 //     omits M. Marquez's AUT sprint P2 (9 pts) but its total (353) matches
 //     the official PDF; the GP page + crash.net Austria sprint report confirm.
+// Round 18 (Australia) added 2026-10-28. The Sunday GP was CANCELLED (poor
+// visibility grounded the medical helicopter) — only the Saturday Sprint
+// counted. Sources:
+//   https://resources.motogp.com/files/results/2026/AUS/MotoGP/Q2/Classification.pdf  (pole)
+//   https://resources.motogp.com/files/results/2026/AUS/MotoGP/SPR/Classification.pdf (sprint, Revised)
+//   https://resources.motogp.com/files/results/2026/AUS/MotoGP/SPR/worldstanding.pdf
+//     (riders' + constructors' standings after R18 — official, with AUS column)
+//   (AUS/MotoGP/RAC/Classification.pdf returns 404 — no GP was run.)
+//   https://en.wikipedia.org/wiki/2026_Australian_motorcycle_Grand_Prix
+//     (cross-check: sprint top 6, pole, cancellation, standings top 5 —
+//      riders 365/355/315/263/259, constructors 509/503/316/167/100 all match)
+//   Cancellation + Martin forearm fracture also reported by crash.net
+//     /motogp/news/1108385 and /1108387, the-race.com, speedcafe.com.
 // Cardinal rule: unverified values are null with a comment, never guessed.
 
 let currentMotoGPTab='standings';
@@ -112,7 +126,7 @@ const MOTOGP_SCHEDULE=[
   {round:15,gp:'Grand Prix of Austria',                               circuit:'Red Bull Ring, Spielberg',           country:'🇦🇹', date:'2026-09-20'},
   {round:16,gp:'Motul Grand Prix of Japan',                           circuit:'Mobility Resort Motegi',             country:'🇯🇵', date:'2026-10-04'},
   {round:17,gp:'Pertamina Grand Prix of Indonesia',                   circuit:'Mandalika International Street Circuit',country:'🇮🇩', date:'2026-10-11'},
-  {round:18,gp:'Grand Prix of Australia',                             circuit:'Phillip Island Grand Prix Circuit',  country:'🇦🇺', date:'2026-10-25'},
+  {round:18,gp:'Red Bull Grand Prix of Australia',                    circuit:'Phillip Island Grand Prix Circuit',  country:'🇦🇺', date:'2026-10-25'},
   {round:19,gp:'Petronas Grand Prix of Malaysia',                     circuit:'Sepang International Circuit',       country:'🇲🇾', date:'2026-11-01'},
   {round:20,gp:'Qatar Airways Grand Prix of Qatar',                   circuit:'Lusail International Circuit',       country:'🇶🇦', date:'2026-11-08'},
   {round:21,gp:'Repsol Grand Prix of Portugal',                       circuit:'Algarve International Circuit',      country:'🇵🇹', date:'2026-11-22'},
@@ -162,52 +176,59 @@ const MOTOGP_RESULTS={
      note:'M. Marquez won both races at Motegi, but polesitter Martin (3rd in the sprint, 2nd on Sunday) kept a two-point lead. Moreira was second in the sprint for Honda.'},
   17:{sprintWinner:'M. Marquez',  winner:'Bezzecchi',      p2:'R. Fernandez',p3:'Martin',         pole:'R. Fernandez',
      note:'Bezzecchi led Aprilia\'s first premier-class 1-2-3-4 (Bezzecchi, R. Fernandez, Martin, Ogura). M. Marquez\'s sprint win briefly put him top, but his P6 on Sunday left Martin two points clear; Aprilia retook the constructors\' lead.'},
+  // R18: Sunday GP cancelled (no RAC classification exists) — winner/p2/p3
+  // deliberately null, not guessed. Sprint + pole from official AUS PDFs.
+  18:{sprintWinner:'M. Marquez',  winner:null,             p2:null,         p3:null,              pole:'M. Marquez', gpCancelled:true,
+     note:'Grand Prix cancelled on Sunday: poor visibility grounded the medical helicopter, so only the sprint counted in MotoGP\'s final Phillip Island visit. Polesitter M. Marquez led an all-Ducati sprint podium (A. Marquez, Di Giannantonio) after Martin crashed out of second — fracturing his forearm — and took the championship lead by 10 points.'},
 };
 
-// Riders' championship after R17 Indonesia (2026-10-11) — official motogp.com
-// World Championship Classification PDF (INA/MotoGP/RAC/worldstanding.pdf),
-// matched by the Wikipedia season page totals. Combined sprint+GP points as
-// published; order as published (ties: Quartararo/Moreira 74, Chantra/
-// Nakagami 3 — official order kept). gap = points − leader points.
+// Riders' championship after R18 Australia (Sprint 2026-10-24; GP cancelled)
+// — official motogp.com World Championship Classification PDF
+// (AUS/MotoGP/SPR/worldstanding.pdf). Arithmetic check: every total = R17
+// total + R18 sprint points (12/9/7/6/5/4/3/2/1 to M. Marquez, A. Marquez,
+// Di Giannantonio, Bezzecchi, Acosta, Binder, Miller, Moreira, Lecuona).
+// Wikipedia GP page top 5 matches. Order as published (ties: Marini/Binder
+// 108, Chantra/Nakagami 3 — official order kept). gap = points − leader.
 // Zero-point riders (Crutchlow, Folger, Savadori, Pirro, A. Espargaro) omitted.
 const MOTOGP_STANDINGS=[
-  {pos:1,  rider:'Martin',          points:355, gap:0},
-  {pos:2,  rider:'M. Marquez',      points:353, gap:-2},
-  {pos:3,  rider:'Bezzecchi',       points:309, gap:-46},
-  {pos:4,  rider:'Ogura',           points:259, gap:-96},
-  {pos:5,  rider:'Acosta',          points:258, gap:-97},
-  {pos:6,  rider:'Di Giannantonio', points:245, gap:-110},
-  {pos:7,  rider:'R. Fernandez',    points:236, gap:-119},
-  {pos:8,  rider:'A. Marquez',      points:172, gap:-183},
-  {pos:9,  rider:'Bagnaia',         points:166, gap:-189},
-  {pos:10, rider:'Aldeguer',        points:125, gap:-230},
-  {pos:11, rider:'Bastianini',      points:122, gap:-233},
-  {pos:12, rider:'Marini',          points:108, gap:-247},
-  {pos:13, rider:'Binder',          points:104, gap:-251},
-  {pos:14, rider:'Quartararo',      points:74,  gap:-281},
-  {pos:15, rider:'Moreira',         points:74,  gap:-281},
-  {pos:16, rider:'Morbidelli',      points:59,  gap:-296},
-  {pos:17, rider:'Zarco',           points:51,  gap:-304},
-  {pos:18, rider:'Mir',             points:33,  gap:-322},
-  {pos:19, rider:'Miller',          points:28,  gap:-327},
-  {pos:20, rider:'Rins',            points:25,  gap:-330},
-  {pos:21, rider:'Razgatlioglu',    points:18,  gap:-337},
-  {pos:22, rider:'Vinales',         points:12,  gap:-343},
-  {pos:23, rider:'Lecuona',         points:9,   gap:-346},
-  {pos:24, rider:'A. Fernandez',    points:6,   gap:-349},
-  {pos:25, rider:'P. Espargaro',    points:5,   gap:-350},
-  {pos:26, rider:'Chantra',         points:3,   gap:-352},
-  {pos:27, rider:'Nakagami',        points:3,   gap:-352},
+  {pos:1,  rider:'M. Marquez',      points:365, gap:0},
+  {pos:2,  rider:'Martin',          points:355, gap:-10},
+  {pos:3,  rider:'Bezzecchi',       points:315, gap:-50},
+  {pos:4,  rider:'Acosta',          points:263, gap:-102},
+  {pos:5,  rider:'Ogura',           points:259, gap:-106},
+  {pos:6,  rider:'Di Giannantonio', points:252, gap:-113},
+  {pos:7,  rider:'R. Fernandez',    points:236, gap:-129},
+  {pos:8,  rider:'A. Marquez',      points:181, gap:-184},
+  {pos:9,  rider:'Bagnaia',         points:166, gap:-199},
+  {pos:10, rider:'Aldeguer',        points:125, gap:-240},
+  {pos:11, rider:'Bastianini',      points:122, gap:-243},
+  {pos:12, rider:'Marini',          points:108, gap:-257},
+  {pos:13, rider:'Binder',          points:108, gap:-257},
+  {pos:14, rider:'Moreira',         points:76,  gap:-289},
+  {pos:15, rider:'Quartararo',      points:74,  gap:-291},
+  {pos:16, rider:'Morbidelli',      points:59,  gap:-306},
+  {pos:17, rider:'Zarco',           points:51,  gap:-314},
+  {pos:18, rider:'Mir',             points:33,  gap:-332},
+  {pos:19, rider:'Miller',          points:31,  gap:-334},
+  {pos:20, rider:'Rins',            points:25,  gap:-340},
+  {pos:21, rider:'Razgatlioglu',    points:18,  gap:-347},
+  {pos:22, rider:'Vinales',         points:12,  gap:-353},
+  {pos:23, rider:'Lecuona',         points:10,  gap:-355},
+  {pos:24, rider:'A. Fernandez',    points:6,   gap:-359},
+  {pos:25, rider:'P. Espargaro',    points:5,   gap:-360},
+  {pos:26, rider:'Chantra',         points:3,   gap:-362},
+  {pos:27, rider:'Nakagami',        points:3,   gap:-362},
 ];
 
-// Constructors' championship after R17 — official motogp.com worldstanding
-// PDF (INA), matches Wikipedia. Not derivable from winners; taken as published.
+// Constructors' championship after R18 — official motogp.com worldstanding
+// PDF (AUS SPR), matches Wikipedia GP page (Aprilia 509, Ducati 503, KTM 316,
+// Honda 167, Yamaha 100 = R17 + best sprint finisher per make 6/12/5/2/3).
 const MOTOGP_CONSTRUCTORS=[
-  {pos:1, constructor:'Aprilia', points:503, gap:0},
-  {pos:2, constructor:'Ducati',  points:491, gap:-12},
-  {pos:3, constructor:'KTM',     points:311, gap:-192},
-  {pos:4, constructor:'Honda',   points:165, gap:-338},
-  {pos:5, constructor:'Yamaha',  points:97,  gap:-406},
+  {pos:1, constructor:'Aprilia', points:509, gap:0},
+  {pos:2, constructor:'Ducati',  points:503, gap:-6},
+  {pos:3, constructor:'KTM',     points:316, gap:-193},
+  {pos:4, constructor:'Honda',   points:167, gap:-342},
+  {pos:5, constructor:'Yamaha',  points:100, gap:-409},
 ];
 
 // Per-round official Sunday-GP recaps from the MotoGP YouTube channel
@@ -267,11 +288,14 @@ function renderMotoGPRaces(){
         <div class="race-item-date">${fmtDate(s.date)}</div>
         <span class="tx-race-highlights-link" onclick="event.stopPropagation();navigateToHighlights('motogp','${hlId}')">▶ Highlights</span>
       </div>
-      <div>
+      ${res.gpCancelled?`<div>
+        <div class="winner-name" style="color:var(--muted);">GP CANCELLED</div>
+        <div class="winner-team">Sprint: ${res.sprintWinner||'—'}</div>
+      </div>`:`<div>
         <span class="winner-flag" style="color:${motogpBikeColor(w.bike)};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;">#${w.num}</span>
         <div class="winner-name">${res.winner}</div>
         <div class="winner-team">${w.bike}</div>
-      </div>
+      </div>`}
     </div>`;
   }).join('');
   let html=top+banner+`<div class="section-title"><span>2026 MotoGP · ${completed.length} of ${MOTOGP_SCHEDULE.length} rounds</span><span>GP winner shown · Tap for sprint + podium</span></div>`+rows;
@@ -303,7 +327,9 @@ function buildMotoGPRaceDetailHTML(round){
     <span style="font-family:'Barlow',sans-serif;font-size:11px;color:var(--muted);">${sw.team}</span>
   </div>`:'';
   let podium='';
-  if(p2&&p3){
+  if(res.gpCancelled){
+    podium=`<div style="padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);letter-spacing:0.1em;">🚫 GRAND PRIX CANCELLED · SPRINT ONLY</div>`;
+  }else if(p2&&p3){
     podium=`<div class="podium-bar">
       <div class="podium-item p2-item">
         <div class="podium-pos">🥈 P2</div>
@@ -342,7 +368,7 @@ function selectMotoGPRace(round){
 function renderMotoGPStandings(){
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('motogp','standings')+renderBackToSeriesHome('motogp');
-  const hdr=`<div class="section-title"><span>MotoGP Riders · 2026 · After R17 Indonesia</span><span>Sprint + GP points</span></div>`;
+  const hdr=`<div class="section-title"><span>MotoGP Riders · 2026 · After R18 Australia</span><span>Sprint + GP points</span></div>`;
   const rows=MOTOGP_STANDINGS.map(d=>{
     const info=motogpRider(d.rider);
     const isSelected=selectedMotoGPRider===d.rider;
@@ -361,7 +387,7 @@ function renderMotoGPStandings(){
       ${breakdown}
     </div>`;
   }).join('');
-  const conHdr=`<div class="section-title"><span>Constructors</span><span>After R17</span></div>`;
+  const conHdr=`<div class="section-title"><span>Constructors</span><span>After R18</span></div>`;
   const conRows=MOTOGP_CONSTRUCTORS.map(c=>`<div class="champ-row">
       <div class="champ-pos" style="color:${c.pos===1?'var(--yellow)':c.pos<=3?'var(--green)':'var(--text)'}">${c.pos}</div>
       <div class="flag-cell" style="color:${motogpBikeColor(c.constructor)};font-size:18px;">●</div>
@@ -370,7 +396,7 @@ function renderMotoGPStandings(){
       <div class="champ-gap" style="color:${c.pos===1?'var(--yellow)':'var(--muted)'}">${c.pos===1?'LEADER':c.gap}</div>
     </div>`).join('');
   content.innerHTML=top+hdr+rows+conHdr+conRows;
-  setStats(`${MOTOGP_STANDINGS[0].points} pts`,MOTOGP_STANDINGS[0].rider,'RIDERS','R17/22');
+  setStats(`${MOTOGP_STANDINGS[0].points} pts`,MOTOGP_STANDINGS[0].rider,'RIDERS','R18/22');
 }
 
 function renderMotoGPRiderBreakdown(name,info,points,pos){
@@ -466,7 +492,7 @@ function renderMotoGPHighlights(){
     return`<div class="tx-highlights-card" id="${id}">
       <div class="tx-highlights-meta">Round ${s.round} · ${s.country} · ${fmtDate(s.date)}</div>
       <div class="tx-highlights-title">${s.gp}</div>
-      <div class="tx-highlights-winner">GP: ${res.winner} (${winInfo.bike}) · Sprint: ${res.sprintWinner||'—'}</div>
+      <div class="tx-highlights-winner">GP: ${res.gpCancelled?'Cancelled':`${res.winner} (${winInfo.bike})`} · Sprint: ${res.sprintWinner||'—'}</div>
       ${body}
     </div>`;
   }).join('');
