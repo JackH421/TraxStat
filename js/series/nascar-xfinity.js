@@ -78,6 +78,10 @@ const NASCAR_XFINITY_DRIVERS = {
   'Byron':         {first:'William',  team:'JR Motorsports',            mfr:'Chevrolet', num:88},
   'Elliott':       {first:'Chase',    team:'JR Motorsports',            mfr:'Chevrolet', num:88},
   'Pardus':        {first:'Preston',  team:'Pardus Racing Inc.',        mfr:'Chevrolet', num:50},
+  // Added 2026-10-28 — enters the top 38 after R31 Talladega (P22 finish).
+  // Team/number from the Wikipedia '2026 TPG 250' entry list + official
+  // NASCAR.com R31 results feed.
+  'Pulliam':       {first:'Lee',      team:'Peterson Racing',           mfr:'Chevrolet', num:87},
 };
 
 // 2026 schedule (R1–R33). Verified 2026-05-22 from
@@ -171,63 +175,70 @@ const NASCAR_XFINITY_RESULTS = {
   // (cf.nascar.com/cacher/2026/2/5666/weekend-feed.json) + Wikipedia season
   // page (pole + winner); podium also matches the racer.com / jayski recaps.
   30:{winner:'Love',          p2:'Mayer',    p3:'Allgaier', polePos:'Love',     note:'Jesse Love won from pole at Phoenix, sweeping both stages and leading 156 of 200 laps to beat Sam Mayer (who started at the rear after an engine change) by 0.128s. Creed finished 32nd, two laps down, and Love leaves with a 36-point lead over Allgaier.'},
+  // R31 added 2026-10-28 — official NASCAR.com results feed
+  // (cf.nascar.com/cacher/2026/2/5664/weekend-feed.json; official race name
+  // 'The Progress Group 250') + Wikipedia '2026 TPG 250' race page (pole,
+  // podium, top 10, stage winners all match).
+  31:{winner:'S. Smith',      p2:'Kvapil',   p3:'Love',     polePos:'Love',     note:'Sammy Smith passed JRM teammate Carson Kvapil on the last lap with a push from Jesse Love and won by 0.084s — his first win of 2026 and fourth career series win, a day after winning the Truck race. Kvapil won Stage 1 and led a race-high 67 laps; Allgaier won Stage 2. Love leads Allgaier by 19 with two races left.'},
 };
 
-// Driver points after R30 Phoenix (2026-10-17) — official NASCAR.com points
+// Driver points after R31 Talladega (2026-10-24) — official NASCAR.com points
 // feed (cf.nascar.com/cacher/2026/2/racinginsights-points-feed.json, fetched
-// 2026-10-22). P1–P10 cross-checked vs the Wikipedia season page points
-// table (exact match); P11–P38 single-source official NASCAR feed. P1–P12
-// are the Chase field (staggered Chase points). Truncated at P38 to match
-// the prior depth (official table continues with part-timers).
-// Nick Sanchez (P32 after R16) is still not ranked (0 pts at Phoenix too) —
-// omitted rather than guessed.
+// 2026-10-28). P1–P12 (Chase field, staggered Chase points) cross-checked vs
+// the Wikipedia '2026 TPG 250' standings table (exact match); P13–P39 totals
+// also found in the Wikipedia season-page points table. Depth extended to
+// P39 this round because Pulliam (new) and Pardus tie on 66 at the P38
+// boundary — official order (Pulliam P38) kept. Official table continues
+// with part-timers.
+// Nick Sanchez (P32 after R16) is still not ranked — omitted rather than
+// guessed.
 // gap = points − leader points.
 const NASCAR_XFINITY_STANDINGS = [
-  {pos:1, driver:'Love',      points:2367, gap:0},
-  {pos:2, driver:'Allgaier',  points:2331, gap:-36},
-  {pos:3, driver:'Day',       points:2328, gap:-39},
-  {pos:4, driver:'Creed',     points:2308, gap:-59},
-  {pos:5, driver:'Kvapil',    points:2288, gap:-79},
-  {pos:6, driver:'Mayer',     points:2281, gap:-86},
-  {pos:7, driver:'S. Smith',  points:2230, gap:-137},
-  {pos:8, driver:'T. Gray',   points:2226, gap:-141},
-  {pos:9, driver:'A. Hill',   points:2224, gap:-143},
-  {pos:10,driver:'Retzlaff',  points:2194, gap:-173},
-  {pos:11,driver:'B. Jones',  points:2184, gap:-183},
-  {pos:12,driver:'Caruth',    points:2154, gap:-213},
-  {pos:13,driver:'Crews',     points:792,  gap:-1575},
-  {pos:14,driver:'Sawalich',  points:766,  gap:-1601},
-  {pos:15,driver:'R. Sieg',   points:684,  gap:-1683},
-  {pos:16,driver:'Alfredo',   points:655,  gap:-1712},
-  {pos:17,driver:'Thompson',  points:582,  gap:-1785},
-  {pos:18,driver:'Poole',     points:564,  gap:-1803},
-  {pos:19,driver:'Clements',  points:529,  gap:-1838},
-  {pos:20,driver:'H. Burton', points:515,  gap:-1852},
-  {pos:21,driver:'J. Burton', points:477,  gap:-1890},
-  {pos:22,driver:'Perkins',   points:429,  gap:-1938},
-  {pos:23,driver:'Staropoli', points:401,  gap:-1966},
-  {pos:24,driver:'K. Sieg',   points:385,  gap:-1982},
-  {pos:25,driver:'Bilicki',   points:345,  gap:-2022},
-  {pos:26,driver:'Scott',     points:327,  gap:-2040},
-  {pos:27,driver:'Ellis',     points:309,  gap:-2058},
-  {pos:28,driver:'Green',     points:276,  gap:-2091},
-  {pos:29,driver:'Smithley',  points:230,  gap:-2137},
-  {pos:30,driver:'Gase',      points:215,  gap:-2152},
-  {pos:31,driver:'Williams',  points:203,  gap:-2164},
-  {pos:32,driver:'Maggio',    points:156,  gap:-2211},
-  {pos:33,driver:'Patterson', points:128,  gap:-2239},
-  {pos:34,driver:'Labbé',     points:93,   gap:-2274},
-  {pos:35,driver:'Yeley',     points:83,   gap:-2284},
-  {pos:36,driver:'Byrd',      points:79,   gap:-2288},
-  {pos:37,driver:'Snider',    points:73,   gap:-2294},
-  {pos:38,driver:'Pardus',    points:66,   gap:-2301},
+  {pos:1, driver:'Love',      points:2401, gap:0},
+  {pos:2, driver:'Allgaier',  points:2382, gap:-19},
+  {pos:3, driver:'Day',       points:2372, gap:-29},
+  {pos:4, driver:'Creed',     points:2351, gap:-50},
+  {pos:5, driver:'Kvapil',    points:2342, gap:-59},
+  {pos:6, driver:'Mayer',     points:2305, gap:-96},
+  {pos:7, driver:'S. Smith',  points:2293, gap:-108},
+  {pos:8, driver:'T. Gray',   points:2246, gap:-155},
+  {pos:9, driver:'A. Hill',   points:2233, gap:-168},
+  {pos:10,driver:'B. Jones',  points:2212, gap:-189},
+  {pos:11,driver:'Retzlaff',  points:2200, gap:-201},
+  {pos:12,driver:'Caruth',    points:2183, gap:-218},
+  {pos:13,driver:'Crews',     points:798,  gap:-1603},
+  {pos:14,driver:'Sawalich',  points:775,  gap:-1626},
+  {pos:15,driver:'R. Sieg',   points:707,  gap:-1694},
+  {pos:16,driver:'Alfredo',   points:684,  gap:-1717},
+  {pos:17,driver:'Thompson',  points:611,  gap:-1790},
+  {pos:18,driver:'Poole',     points:576,  gap:-1825},
+  {pos:19,driver:'Clements',  points:550,  gap:-1851},
+  {pos:20,driver:'H. Burton', points:532,  gap:-1869},
+  {pos:21,driver:'J. Burton', points:503,  gap:-1898},
+  {pos:22,driver:'Perkins',   points:459,  gap:-1942},
+  {pos:23,driver:'Staropoli', points:406,  gap:-1995},
+  {pos:24,driver:'K. Sieg',   points:394,  gap:-2007},
+  {pos:25,driver:'Bilicki',   points:366,  gap:-2035},
+  {pos:26,driver:'Scott',     points:327,  gap:-2074},
+  {pos:27,driver:'Ellis',     points:316,  gap:-2085},
+  {pos:28,driver:'Green',     points:276,  gap:-2125},
+  {pos:29,driver:'Smithley',  points:240,  gap:-2161},
+  {pos:30,driver:'Gase',      points:232,  gap:-2169},
+  {pos:31,driver:'Williams',  points:217,  gap:-2184},
+  {pos:32,driver:'Maggio',    points:181,  gap:-2220},
+  {pos:33,driver:'Patterson', points:128,  gap:-2273},
+  {pos:34,driver:'Labbé',     points:93,   gap:-2308},
+  {pos:35,driver:'Yeley',     points:83,   gap:-2318},
+  {pos:36,driver:'Byrd',      points:79,   gap:-2322},
+  {pos:37,driver:'Snider',    points:73,   gap:-2328},
+  {pos:38,driver:'Pulliam',   points:66,   gap:-2335},
+  {pos:39,driver:'Pardus',    points:66,   gap:-2335},
 ];
 
-// Manufacturer wins after R30 — derived from the verified winners above and
-// independently matched by Wikipedia's manufacturer standings table
-// (Chevrolet 27, Toyota 3, Ford 0). Cross-checked by verify-nascar.js.
+// Manufacturer wins after R31 — derived from the verified winners above
+// (Chevrolet 28, Toyota 3, Ford 0). Cross-checked by verify-nascar.js.
 const NASCAR_XFINITY_MFRS = [
-  {pos:1, mfr:'Chevrolet', wins:27, drivers:['Allgaier (6)','Day (4)','Creed (3)','Larson (2)','Zilisch (2)','A. Hill (2)','van Gisbergen (2)','Kvapil (2)','Love (2)','Chastain','R. Sieg']},
+  {pos:1, mfr:'Chevrolet', wins:28, drivers:['Allgaier (6)','Day (4)','Creed (3)','Larson (2)','Zilisch (2)','A. Hill (2)','van Gisbergen (2)','Kvapil (2)','Love (2)','Chastain','R. Sieg','S. Smith']},
   {pos:2, mfr:'Toyota',    wins:3,  drivers:['Sawalich','T. Gray','B. Jones']},
   {pos:3, mfr:'Ford',      wins:0,  drivers:[]},
 ];
