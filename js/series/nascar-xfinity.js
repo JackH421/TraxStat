@@ -180,65 +180,66 @@ const NASCAR_XFINITY_RESULTS = {
   // 'The Progress Group 250') + Wikipedia '2026 TPG 250' race page (pole,
   // podium, top 10, stage winners all match).
   31:{winner:'S. Smith',      p2:'Kvapil',   p3:'Love',     polePos:'Love',     note:'Sammy Smith passed JRM teammate Carson Kvapil on the last lap with a push from Jesse Love and won by 0.084s — his first win of 2026 and fourth career series win, a day after winning the Truck race. Kvapil won Stage 1 and led a race-high 67 laps; Allgaier won Stage 2. Love leads Allgaier by 19 with two races left.'},
+  // R32 added 2026-11-02 — winner/P2/P3 dual-sourced: Wikipedia '2026 National
+  // Debt Relief 250' + NASCAR.com recap / Yahoo Sports results (via search
+  // snippets; NASCAR.com page itself 403 to direct fetch). Pole (Kvapil, 19.855s)
+  // from Wikipedia + Yahoo recap ("won from the pole").
+  32:{winner:'Kvapil',        p2:'Allgaier', p3:'Day',      polePos:'Kvapil',   note:'Carson Kvapil won from pole at Martinsville, leading a race-high 121 of 250 laps and holding off JRM teammate Justin Allgaier by 0.434s — his third win of 2026. Jesse Love fell to 30th after a late crash and mechanical trouble, handing Allgaier the points lead; five drivers remain alive for the Homestead finale.'},
 };
 
-// Driver points after R31 Talladega (2026-10-24) — official NASCAR.com points
-// feed (cf.nascar.com/cacher/2026/2/racinginsights-points-feed.json, fetched
-// 2026-10-28). P1–P12 (Chase field, staggered Chase points) cross-checked vs
-// the Wikipedia '2026 TPG 250' standings table (exact match); P13–P39 totals
-// also found in the Wikipedia season-page points table. Depth extended to
-// P39 this round because Pulliam (new) and Pardus tie on 66 at the P38
-// boundary — official order (Pulliam P38) kept. Official table continues
-// with part-timers.
-// Nick Sanchez (P32 after R16) is still not ranked — omitted rather than
-// guessed.
+// Driver points after R32 Martinsville (2026-10-31). P1–P12 (Chase field,
+// staggered Chase points) triple-sourced: Wikipedia '2026 National Debt Relief 250'
+// standings table, Yahoo Sports and heavy.com O'Reilly standings articles (exact
+// match). P13–P38 are SINGLE-SOURCE: Wikipedia '2026 NASCAR O'Reilly Auto Parts
+// Series' season points table (fetched 2026-11-02). Truncated at P38 (Snider 73):
+// P39+ includes a new part-timer (Cram, 67) and the Pardus tie that cannot be
+// checked against a second source. Nick Sanchez still omitted rather than guessed.
 // gap = points − leader points.
 const NASCAR_XFINITY_STANDINGS = [
-  {pos:1, driver:'Love',      points:2401, gap:0},
-  {pos:2, driver:'Allgaier',  points:2382, gap:-19},
-  {pos:3, driver:'Day',       points:2372, gap:-29},
-  {pos:4, driver:'Creed',     points:2351, gap:-50},
-  {pos:5, driver:'Kvapil',    points:2342, gap:-59},
-  {pos:6, driver:'Mayer',     points:2305, gap:-96},
-  {pos:7, driver:'S. Smith',  points:2293, gap:-108},
-  {pos:8, driver:'T. Gray',   points:2246, gap:-155},
-  {pos:9, driver:'A. Hill',   points:2233, gap:-168},
-  {pos:10,driver:'B. Jones',  points:2212, gap:-189},
-  {pos:11,driver:'Retzlaff',  points:2200, gap:-201},
-  {pos:12,driver:'Caruth',    points:2183, gap:-218},
-  {pos:13,driver:'Crews',     points:798,  gap:-1603},
-  {pos:14,driver:'Sawalich',  points:775,  gap:-1626},
-  {pos:15,driver:'R. Sieg',   points:707,  gap:-1694},
-  {pos:16,driver:'Alfredo',   points:684,  gap:-1717},
-  {pos:17,driver:'Thompson',  points:611,  gap:-1790},
-  {pos:18,driver:'Poole',     points:576,  gap:-1825},
-  {pos:19,driver:'Clements',  points:550,  gap:-1851},
-  {pos:20,driver:'H. Burton', points:532,  gap:-1869},
-  {pos:21,driver:'J. Burton', points:503,  gap:-1898},
-  {pos:22,driver:'Perkins',   points:459,  gap:-1942},
-  {pos:23,driver:'Staropoli', points:406,  gap:-1995},
-  {pos:24,driver:'K. Sieg',   points:394,  gap:-2007},
-  {pos:25,driver:'Bilicki',   points:366,  gap:-2035},
-  {pos:26,driver:'Scott',     points:327,  gap:-2074},
-  {pos:27,driver:'Ellis',     points:316,  gap:-2085},
-  {pos:28,driver:'Green',     points:276,  gap:-2125},
-  {pos:29,driver:'Smithley',  points:240,  gap:-2161},
-  {pos:30,driver:'Gase',      points:232,  gap:-2169},
-  {pos:31,driver:'Williams',  points:217,  gap:-2184},
-  {pos:32,driver:'Maggio',    points:181,  gap:-2220},
-  {pos:33,driver:'Patterson', points:128,  gap:-2273},
-  {pos:34,driver:'Labbé',     points:93,   gap:-2308},
-  {pos:35,driver:'Yeley',     points:83,   gap:-2318},
-  {pos:36,driver:'Byrd',      points:79,   gap:-2322},
-  {pos:37,driver:'Snider',    points:73,   gap:-2328},
-  {pos:38,driver:'Pulliam',   points:66,   gap:-2335},
-  {pos:39,driver:'Pardus',    points:66,   gap:-2335},
+  {pos:1,  driver:'Allgaier', points:2436, gap:0},
+  {pos:2,  driver:'Love',     points:2414, gap:-22},
+  {pos:3,  driver:'Day',      points:2413, gap:-23},
+  {pos:4,  driver:'Kvapil',   points:2405, gap:-31},
+  {pos:5,  driver:'Creed',    points:2394, gap:-42},
+  {pos:6,  driver:'Mayer',    points:2339, gap:-97},
+  {pos:7,  driver:'S. Smith', points:2329, gap:-107},
+  {pos:8,  driver:'T. Gray',  points:2277, gap:-159},
+  {pos:9,  driver:'B. Jones', points:2253, gap:-183},
+  {pos:10, driver:'A. Hill',  points:2239, gap:-197},
+  {pos:11, driver:'Retzlaff', points:2226, gap:-210},
+  {pos:12, driver:'Caruth',   points:2205, gap:-231},
+  {pos:13, driver:'Crews',    points:834,  gap:-1602},
+  {pos:14, driver:'Sawalich', points:810,  gap:-1626},
+  {pos:15, driver:'R. Sieg',  points:733,  gap:-1703},
+  {pos:16, driver:'Alfredo',  points:717,  gap:-1719},
+  {pos:17, driver:'Thompson', points:616,  gap:-1820},
+  {pos:18, driver:'Poole',    points:595,  gap:-1841},
+  {pos:19, driver:'Clements', points:558,  gap:-1878},
+  {pos:20, driver:'H. Burton', points:557,  gap:-1879},
+  {pos:21, driver:'J. Burton', points:532,  gap:-1904},
+  {pos:22, driver:'Perkins',  points:463,  gap:-1973},
+  {pos:23, driver:'Staropoli', points:424,  gap:-2012},
+  {pos:24, driver:'K. Sieg',  points:410,  gap:-2026},
+  {pos:25, driver:'Bilicki',  points:379,  gap:-2057},
+  {pos:26, driver:'Scott',    points:346,  gap:-2090},
+  {pos:27, driver:'Ellis',    points:317,  gap:-2119},
+  {pos:28, driver:'Green',    points:276,  gap:-2160},
+  {pos:29, driver:'Gase',     points:244,  gap:-2192},
+  {pos:30, driver:'Smithley', points:242,  gap:-2194},
+  {pos:31, driver:'Williams', points:217,  gap:-2219},
+  {pos:32, driver:'Maggio',   points:182,  gap:-2254},
+  {pos:33, driver:'Patterson', points:128,  gap:-2308},
+  {pos:34, driver:'Labbé',    points:108,  gap:-2328},
+  {pos:35, driver:'Pulliam',  points:89,  gap:-2347},
+  {pos:36, driver:'Yeley',    points:83,  gap:-2353},
+  {pos:37, driver:'Byrd',     points:79,  gap:-2357},
+  {pos:38, driver:'Snider',   points:73,  gap:-2363},
 ];
 
-// Manufacturer wins after R31 — derived from the verified winners above
-// (Chevrolet 28, Toyota 3, Ford 0). Cross-checked by verify-nascar.js.
+// Manufacturer wins after R32 — derived from the verified winners above
+// (Chevrolet 29, Toyota 3, Ford 0). Cross-checked by verify-nascar.js.
 const NASCAR_XFINITY_MFRS = [
-  {pos:1, mfr:'Chevrolet', wins:28, drivers:['Allgaier (6)','Day (4)','Creed (3)','Larson (2)','Zilisch (2)','A. Hill (2)','van Gisbergen (2)','Kvapil (2)','Love (2)','Chastain','R. Sieg','S. Smith']},
+  {pos:1, mfr:'Chevrolet', wins:29, drivers:['Allgaier (6)','Day (4)','Creed (3)','Kvapil (3)','Larson (2)','Zilisch (2)','A. Hill (2)','van Gisbergen (2)','Love (2)','Chastain','R. Sieg','S. Smith']},
   {pos:2, mfr:'Toyota',    wins:3,  drivers:['Sawalich','T. Gray','B. Jones']},
   {pos:3, mfr:'Ford',      wins:0,  drivers:[]},
 ];
