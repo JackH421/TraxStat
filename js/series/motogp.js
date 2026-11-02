@@ -180,55 +180,67 @@ const MOTOGP_RESULTS={
   // deliberately null, not guessed. Sprint + pole from official AUS PDFs.
   18:{sprintWinner:'M. Marquez',  winner:null,             p2:null,         p3:null,              pole:'M. Marquez', gpCancelled:true,
      note:'Grand Prix cancelled on Sunday: poor visibility grounded the medical helicopter, so only the sprint counted in MotoGP\'s final Phillip Island visit. Polesitter M. Marquez led an all-Ducati sprint podium (A. Marquez, Di Giannantonio) after Martin crashed out of second — fracturing his forearm — and took the championship lead by 10 points.'},
+  // R19 Sepang (Sprint 2026-10-31, GP 2026-11-01) — Wikipedia '2026 Malaysian
+  // motorcycle Grand Prix' + crash.net sprint/race result pages (winners,
+  // podium, top finishers, A. Marquez pole 1:56.493 all agree). Martin withdrew
+  // after final practice (wrist) and scored nothing.
+  19:{sprintWinner:'Acosta',      winner:'M. Marquez',     p2:'Acosta',     p3:'A. Marquez',      pole:'A. Marquez',
+     note:'Acosta won the Saturday sprint from M. Marquez and Bezzecchi. On Sunday M. Marquez led from the first corner to beat Acosta by 4.172s, with pole-sitter A. Marquez third in an all-Spanish podium — his first Sepang win since 2018. Martin withdrew after final practice with a wrist injury, leaving M. Marquez 44 clear with a first title match point at Qatar.'},
 };
 
-// Riders' championship after R18 Australia (Sprint 2026-10-24; GP cancelled)
-// — official motogp.com World Championship Classification PDF
-// (AUS/MotoGP/SPR/worldstanding.pdf). Arithmetic check: every total = R17
-// total + R18 sprint points (12/9/7/6/5/4/3/2/1 to M. Marquez, A. Marquez,
-// Di Giannantonio, Bezzecchi, Acosta, Binder, Miller, Moreira, Lecuona).
-// Wikipedia GP page top 5 matches. Order as published (ties: Marini/Binder
-// 108, Chantra/Nakagami 3 — official order kept). gap = points − leader.
-// Zero-point riders (Crutchlow, Folger, Savadori, Pirro, A. Espargaro) omitted.
+// Riders' championship after R19 Malaysia (Sprint 2026-10-31, GP 2026-11-01)
+// — Wikipedia '2026 MotoGP World Championship' season table (the only full
+// published table I could fetch; motogp.com standings are JS-rendered). Top 5
+// (399/355/332/295/278) also match Wikipedia's Malaysian GP page and the
+// crash.net/Motorsport Week reports (M. Marquez 399, Martin 355, Bezzecchi 332,
+// Acosta 295). Arithmetic check: EVERY row = R18 total + Sepang sprint points
+// (12/9/7/6/5/4/3/2/1 Acosta, M. Marquez, Bezzecchi, Ogura, Di Giannantonio,
+// Bagnaia, Binder, Moreira, Bastianini) + GP points (25/20/16/13/11/10/9/8/7/
+// 6/5/4/3/2/1 M. Marquez, Acosta, A. Marquez, Ogura, Bastianini, Bezzecchi,
+// Marini, Di Giannantonio, Binder, Morbidelli, Quartararo, Rins, Bagnaia,
+// Vinales, Lecuona). Martin and R. Fernandez did not score. Order as published.
+// gap = points − leader. Zero-point riders omitted as before.
 const MOTOGP_STANDINGS=[
-  {pos:1,  rider:'M. Marquez',      points:365, gap:0},
-  {pos:2,  rider:'Martin',          points:355, gap:-10},
-  {pos:3,  rider:'Bezzecchi',       points:315, gap:-50},
-  {pos:4,  rider:'Acosta',          points:263, gap:-102},
-  {pos:5,  rider:'Ogura',           points:259, gap:-106},
-  {pos:6,  rider:'Di Giannantonio', points:252, gap:-113},
-  {pos:7,  rider:'R. Fernandez',    points:236, gap:-129},
-  {pos:8,  rider:'A. Marquez',      points:181, gap:-184},
-  {pos:9,  rider:'Bagnaia',         points:166, gap:-199},
-  {pos:10, rider:'Aldeguer',        points:125, gap:-240},
-  {pos:11, rider:'Bastianini',      points:122, gap:-243},
-  {pos:12, rider:'Marini',          points:108, gap:-257},
-  {pos:13, rider:'Binder',          points:108, gap:-257},
-  {pos:14, rider:'Moreira',         points:76,  gap:-289},
-  {pos:15, rider:'Quartararo',      points:74,  gap:-291},
-  {pos:16, rider:'Morbidelli',      points:59,  gap:-306},
-  {pos:17, rider:'Zarco',           points:51,  gap:-314},
-  {pos:18, rider:'Mir',             points:33,  gap:-332},
-  {pos:19, rider:'Miller',          points:31,  gap:-334},
-  {pos:20, rider:'Rins',            points:25,  gap:-340},
-  {pos:21, rider:'Razgatlioglu',    points:18,  gap:-347},
-  {pos:22, rider:'Vinales',         points:12,  gap:-353},
-  {pos:23, rider:'Lecuona',         points:10,  gap:-355},
-  {pos:24, rider:'A. Fernandez',    points:6,   gap:-359},
-  {pos:25, rider:'P. Espargaro',    points:5,   gap:-360},
-  {pos:26, rider:'Chantra',         points:3,   gap:-362},
-  {pos:27, rider:'Nakagami',        points:3,   gap:-362},
+  {pos:1,   rider:'M. Marquez',     points:399, gap:0},
+  {pos:2,   rider:'Martin',         points:355, gap:-44},
+  {pos:3,   rider:'Bezzecchi',      points:332, gap:-67},
+  {pos:4,   rider:'Acosta',         points:295, gap:-104},
+  {pos:5,   rider:'Ogura',          points:278, gap:-121},
+  {pos:6,   rider:'Di Giannantonio', points:265, gap:-134},
+  {pos:7,   rider:'R. Fernandez',   points:236, gap:-163},
+  {pos:8,   rider:'A. Marquez',     points:197, gap:-202},
+  {pos:9,   rider:'Bagnaia',        points:173, gap:-226},
+  {pos:10,  rider:'Bastianini',     points:134, gap:-265},
+  {pos:11,  rider:'Aldeguer',       points:125, gap:-274},
+  {pos:12,  rider:'Binder',         points:118, gap:-281},
+  {pos:13,  rider:'Marini',         points:117, gap:-282},
+  {pos:14,  rider:'Quartararo',     points:79,  gap:-320},
+  {pos:15,  rider:'Moreira',        points:78,  gap:-321},
+  {pos:16,  rider:'Morbidelli',     points:65,  gap:-334},
+  {pos:17,  rider:'Zarco',          points:51,  gap:-348},
+  {pos:18,  rider:'Mir',            points:33,  gap:-366},
+  {pos:19,  rider:'Miller',         points:31,  gap:-368},
+  {pos:20,  rider:'Rins',           points:29,  gap:-370},
+  {pos:21,  rider:'Razgatlioglu',   points:18,  gap:-381},
+  {pos:22,  rider:'Vinales',        points:14,  gap:-385},
+  {pos:23,  rider:'Lecuona',        points:11,  gap:-388},
+  {pos:24,  rider:'A. Fernandez',   points:6,   gap:-393},
+  {pos:25,  rider:'P. Espargaro',   points:5,   gap:-394},
+  {pos:26,  rider:'Chantra',        points:3,   gap:-396},
+  {pos:27,  rider:'Nakagami',       points:3,   gap:-396},
 ];
 
-// Constructors' championship after R18 — official motogp.com worldstanding
-// PDF (AUS SPR), matches Wikipedia GP page (Aprilia 509, Ducati 503, KTM 316,
-// Honda 167, Yamaha 100 = R17 + best sprint finisher per make 6/12/5/2/3).
+// Constructors' championship after R19 — Wikipedia season page + Malaysian GP
+// page (Ducati 537, Aprilia 529, KTM 348, Honda 178, Yamaha 105). Arithmetic
+// check vs R18 + best sprint finisher per make (Ducati 9, KTM 12, Aprilia 7,
+// Honda 2) + best GP finisher per make (Ducati 25, KTM 20, Aprilia 13, Honda 9,
+// Yamaha 5).
 const MOTOGP_CONSTRUCTORS=[
-  {pos:1, constructor:'Aprilia', points:509, gap:0},
-  {pos:2, constructor:'Ducati',  points:503, gap:-6},
-  {pos:3, constructor:'KTM',     points:316, gap:-193},
-  {pos:4, constructor:'Honda',   points:167, gap:-342},
-  {pos:5, constructor:'Yamaha',  points:100, gap:-409},
+  {pos:1, constructor:'Ducati',  points:537, gap:0},
+  {pos:2, constructor:'Aprilia', points:529, gap:-8},
+  {pos:3, constructor:'KTM',     points:348, gap:-189},
+  {pos:4, constructor:'Honda',   points:178, gap:-359},
+  {pos:5, constructor:'Yamaha',  points:105, gap:-432},
 ];
 
 // Per-round official Sunday-GP recaps from the MotoGP YouTube channel
@@ -368,7 +380,7 @@ function selectMotoGPRace(round){
 function renderMotoGPStandings(){
   const content=document.getElementById('main-content');
   const top=renderSeriesBanner('motogp','standings')+renderBackToSeriesHome('motogp');
-  const hdr=`<div class="section-title"><span>MotoGP Riders · 2026 · After R18 Australia</span><span>Sprint + GP points</span></div>`;
+  const hdr=`<div class="section-title"><span>MotoGP Riders · 2026 · After R19 Malaysia</span><span>Sprint + GP points</span></div>`;
   const rows=MOTOGP_STANDINGS.map(d=>{
     const info=motogpRider(d.rider);
     const isSelected=selectedMotoGPRider===d.rider;
@@ -387,7 +399,7 @@ function renderMotoGPStandings(){
       ${breakdown}
     </div>`;
   }).join('');
-  const conHdr=`<div class="section-title"><span>Constructors</span><span>After R18</span></div>`;
+  const conHdr=`<div class="section-title"><span>Constructors</span><span>After R19</span></div>`;
   const conRows=MOTOGP_CONSTRUCTORS.map(c=>`<div class="champ-row">
       <div class="champ-pos" style="color:${c.pos===1?'var(--yellow)':c.pos<=3?'var(--green)':'var(--text)'}">${c.pos}</div>
       <div class="flag-cell" style="color:${motogpBikeColor(c.constructor)};font-size:18px;">●</div>
@@ -396,7 +408,7 @@ function renderMotoGPStandings(){
       <div class="champ-gap" style="color:${c.pos===1?'var(--yellow)':'var(--muted)'}">${c.pos===1?'LEADER':c.gap}</div>
     </div>`).join('');
   content.innerHTML=top+hdr+rows+conHdr+conRows;
-  setStats(`${MOTOGP_STANDINGS[0].points} pts`,MOTOGP_STANDINGS[0].rider,'RIDERS','R18/22');
+  setStats(`${MOTOGP_STANDINGS[0].points} pts`,MOTOGP_STANDINGS[0].rider,'RIDERS','R19/22');
 }
 
 function renderMotoGPRiderBreakdown(name,info,points,pos){
