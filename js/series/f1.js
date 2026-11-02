@@ -246,10 +246,6 @@ const HARDCODED_RACES={
       {position:'R',Driver:{driverId:'bottas',familyName:'Bottas',nationality:'Finnish'},Constructor:{name:'Cadillac'},points:'0',laps:'15',status:'Retired',FastestLap:{rank:'21',lap:'3',Time:{time:'1:25.745'}}},
       {position:'R',Driver:{driverId:'stroll',familyName:'Stroll',nationality:'Canadian'},Constructor:{name:'Aston Martin'},points:'0',laps:'5',status:'Retired',FastestLap:{rank:'22',lap:'3',Time:{time:'1:25.904'}}},
     ]},
-  // R8–R17 verified 2026-10-14 against formula1.com race-result + fastest-laps
-  // pages (cross-checked vs Jolpica: positions, points, laps, gaps all match).
-  // R12–R14: Hadjar out (wrist injury) — Lawson at Red Bull, Tsunoda at Racing Bulls.
-  // R16 is the Bahrain GP relocated to Sepang (F1.com: "Bahrain Grand Prix in Malaysia").
   8:{round:'8',raceName:'Austrian Grand Prix',date:'2026-06-28',Circuit:{circuitName:'Red Bull Ring',Location:{country:'🇦🇹'}},
     Results:[
       {position:'1',Driver:{driverId:'russell',familyName:'Russell',nationality:'British'},Constructor:{name:'Mercedes'},points:'25',laps:'71',Time:{time:'1:26:37.979'},status:'Finished',FastestLap:{rank:'6',lap:'49',Time:{time:'1:10.683'}}},
@@ -500,10 +496,6 @@ const HARDCODED_RACES={
       {position:'DNF',Driver:{driverId:'colapinto',familyName:'Colapinto',nationality:'Argentine'},Constructor:{name:'Alpine'},points:'0',laps:'29',status:'DNF',FastestLap:{rank:'20',lap:'13',Time:{time:'1:39.265'}}},
       {position:'DNF',Driver:{driverId:'bortoleto',familyName:'Bortoleto',nationality:'Brazilian'},Constructor:{name:'Audi'},points:'0',laps:'7',status:'DNF',FastestLap:{rank:'22',lap:'6',Time:{time:'1:40.486'}}},
     ]},
-  // R18 verified 2026-10-28 against formula1.com/en/results/2026/races/1297/
-  // united-states/race-result + /fastest-laps; cross-checked vs Jolpica
-  // (positions, points, laps, gaps match) and Wikipedia (top 10, FL). No Sprint.
-  // FastestLap.lap uses F1.com; Jolpica lap numbers are 1 lower for 10 drivers.
   18:{round:'18',raceName:'United States Grand Prix',date:'2026-10-25',Circuit:{circuitName:'Circuit of the Americas',Location:{country:'🇺🇸'}},
     Results:[
       {position:'1',Driver:{driverId:'antonelli',familyName:'Antonelli',nationality:'Italian'},Constructor:{name:'Mercedes'},points:'25',laps:'56',Time:{time:'1:35:16.650'},status:'Finished',FastestLap:{rank:'4',lap:'55',Time:{time:'1:39.086'}}},
@@ -529,6 +521,31 @@ const HARDCODED_RACES={
       {position:'DNF',Driver:{driverId:'colapinto',familyName:'Colapinto',nationality:'Argentine'},Constructor:{name:'Alpine'},points:'0',laps:'35',status:'DNF',FastestLap:{rank:'17',lap:'34',Time:{time:'1:41.087'}}},
       {position:'DNF',Driver:{driverId:'bearman',familyName:'Bearman',nationality:'British'},Constructor:{name:'Haas F1 Team'},points:'0',laps:'24',status:'DNF',FastestLap:{rank:'22',lap:'4',Time:{time:'1:42.107'}}},
     ]},
+  19:{round:'19',raceName:'Mexico City Grand Prix',date:'2026-11-01',Circuit:{circuitName:'Autódromo Hermanos Rodríguez',Location:{country:'🇲🇽'}},
+    Results:[
+      {position:'1',Driver:{driverId:'max_verstappen',familyName:'Verstappen',nationality:'Dutch'},Constructor:{name:'Red Bull'},points:'25',laps:'71',Time:{time:'2:20:28.772'},status:'Finished',FastestLap:{rank:'2',lap:'50',Time:{time:'1:19.328'}}},
+      {position:'2',Driver:{driverId:'hamilton',familyName:'Hamilton',nationality:'British'},Constructor:{name:'Ferrari'},points:'18',laps:'71',Time:{time:'+0.799'},status:'Finished',FastestLap:{rank:'1',lap:'50',Time:{time:'1:19.268'}}},
+      {position:'3',Driver:{driverId:'antonelli',familyName:'Antonelli',nationality:'Italian'},Constructor:{name:'Mercedes'},points:'15',laps:'71',Time:{time:'+4.006'},status:'Finished',FastestLap:{rank:'3',lap:'64',Time:{time:'1:19.427'}}},
+      {position:'4',Driver:{driverId:'leclerc',familyName:'Leclerc',nationality:'Monegasque'},Constructor:{name:'Ferrari'},points:'12',laps:'71',Time:{time:'+10.707'},status:'Finished',FastestLap:{rank:'5',lap:'64',Time:{time:'1:19.851'}}},
+      {position:'5',Driver:{driverId:'norris',familyName:'Norris',nationality:'British'},Constructor:{name:'McLaren'},points:'10',laps:'71',Time:{time:'+11.778'},status:'Finished',FastestLap:{rank:'4',lap:'50',Time:{time:'1:19.800'}}},
+      {position:'6',Driver:{driverId:'russell',familyName:'Russell',nationality:'British'},Constructor:{name:'Mercedes'},points:'8',laps:'71',Time:{time:'+12.263'},status:'Finished',FastestLap:{rank:'6',lap:'51',Time:{time:'1:20.147'}}},
+      {position:'7',Driver:{driverId:'piastri',familyName:'Piastri',nationality:'Australian'},Constructor:{name:'McLaren'},points:'6',laps:'71',Time:{time:'+19.475'},status:'Finished',FastestLap:{rank:'9',lap:'52',Time:{time:'1:20.690'}}},
+      {position:'8',Driver:{driverId:'colapinto',familyName:'Colapinto',nationality:'Argentine'},Constructor:{name:'Alpine F1 Team'},points:'4',laps:'71',Time:{time:'+20.204'},status:'Finished',FastestLap:{rank:'12',lap:'50',Time:{time:'1:20.750'}}},
+      {position:'9',Driver:{driverId:'lawson',familyName:'Lawson',nationality:'New Zealander'},Constructor:{name:'Racing Bulls'},points:'2',laps:'71',Time:{time:'+20.899'},status:'Finished',FastestLap:{rank:'10',lap:'50',Time:{time:'1:20.713'}}},
+      {position:'10',Driver:{driverId:'gasly',familyName:'Gasly',nationality:'French'},Constructor:{name:'Alpine F1 Team'},points:'1',laps:'71',Time:{time:'+21.483'},status:'Finished',FastestLap:{rank:'13',lap:'50',Time:{time:'1:20.754'}}},
+      {position:'11',Driver:{driverId:'bortoleto',familyName:'Bortoleto',nationality:'Brazilian'},Constructor:{name:'Audi'},points:'0',laps:'71',Time:{time:'+22.041'},status:'Finished',FastestLap:{rank:'14',lap:'55',Time:{time:'1:20.872'}}},
+      {position:'12',Driver:{driverId:'hadjar',familyName:'Hadjar',nationality:'French'},Constructor:{name:'Red Bull'},points:'0',laps:'71',Time:{time:'+22.503'},status:'Finished',FastestLap:{rank:'7',lap:'43',Time:{time:'1:20.244'}}},
+      {position:'13',Driver:{driverId:'ryo_hirakawa',familyName:'Hirakawa',nationality:'Japanese'},Constructor:{name:'Haas F1 Team'},points:'0',laps:'71',Time:{time:'+25.373'},status:'Finished',FastestLap:{rank:'15',lap:'71',Time:{time:'1:20.984'}}},
+      {position:'14',Driver:{driverId:'albon',familyName:'Albon',nationality:'Thai'},Constructor:{name:'Williams'},points:'0',laps:'71',Time:{time:'+27.562'},status:'Finished',FastestLap:{rank:'17',lap:'50',Time:{time:'1:21.114'}}},
+      {position:'15',Driver:{driverId:'sainz',familyName:'Sainz',nationality:'Spanish'},Constructor:{name:'Williams'},points:'0',laps:'71',Time:{time:'+28.638'},status:'Finished',FastestLap:{rank:'19',lap:'51',Time:{time:'1:21.339'}}},
+      {position:'16',Driver:{driverId:'hulkenberg',familyName:'Hülkenberg',nationality:'German'},Constructor:{name:'Audi'},points:'0',laps:'71',Time:{time:'+29.977'},status:'Finished',FastestLap:{rank:'11',lap:'70',Time:{time:'1:20.732'}}},
+      {position:'17',Driver:{driverId:'perez',familyName:'Pérez',nationality:'Mexican'},Constructor:{name:'Cadillac F1 Team'},points:'0',laps:'71',Time:{time:'+30.695'},status:'Finished',FastestLap:{rank:'18',lap:'50',Time:{time:'1:21.256'}}},
+      {position:'R',Driver:{driverId:'arvid_lindblad',familyName:'Lindblad',nationality:'British'},Constructor:{name:'Racing Bulls'},points:'0',laps:'58',status:'Retired',FastestLap:{rank:'8',lap:'50',Time:{time:'1:20.555'}}},
+      {position:'R',Driver:{driverId:'bearman',familyName:'Bearman',nationality:'British'},Constructor:{name:'Haas F1 Team'},points:'0',laps:'47',status:'Retired',FastestLap:{rank:'16',lap:'43',Time:{time:'1:21.068'}}},
+      {position:'R',Driver:{driverId:'bottas',familyName:'Bottas',nationality:'Finnish'},Constructor:{name:'Cadillac F1 Team'},points:'0',laps:'42',status:'Retired',FastestLap:{rank:'20',lap:'33',Time:{time:'1:22.487'}}},
+      {position:'R',Driver:{driverId:'stroll',familyName:'Stroll',nationality:'Canadian'},Constructor:{name:'Aston Martin'},points:'0',laps:'5',status:'Retired',FastestLap:{rank:'22',lap:'2',Time:{time:'1:23.696'}}},
+      {position:'R',Driver:{driverId:'alonso',familyName:'Alonso',nationality:'Spanish'},Constructor:{name:'Aston Martin'},points:'0',laps:'5',status:'Retired',FastestLap:{rank:'21',lap:'2',Time:{time:'1:23.544'}}},
+    ]}
 };
 
 // Hardcoded verified championship standings (after R18 United States) — official
@@ -538,20 +555,20 @@ const HARDCODED_RACES={
 // points from R2/R4/R5/R9/R12/R17 Sprints as well
 // as each main GP result.
 const HARDCODED_DRIVER_STANDINGS=[
-  {position:'1',points:'365',Driver:{driverId:'antonelli',familyName:'Antonelli',givenName:'Andrea Kimi',nationality:'Italian'},Constructors:[{name:'Mercedes'}]},
-  {position:'2',points:'242',Driver:{driverId:'russell',familyName:'Russell',givenName:'George',nationality:'British'},Constructors:[{name:'Mercedes'}]},
-  {position:'3',points:'241',Driver:{driverId:'hamilton',familyName:'Hamilton',givenName:'Lewis',nationality:'British'},Constructors:[{name:'Ferrari'}]},
-  {position:'4',points:'236',Driver:{driverId:'max_verstappen',familyName:'Verstappen',givenName:'Max',nationality:'Dutch'},Constructors:[{name:'Red Bull'}]},
-  {position:'5',points:'233',Driver:{driverId:'leclerc',familyName:'Leclerc',givenName:'Charles',nationality:'Monegasque'},Constructors:[{name:'Ferrari'}]},
-  {position:'6',points:'211',Driver:{driverId:'norris',familyName:'Norris',givenName:'Lando',nationality:'British'},Constructors:[{name:'McLaren'}]},
-  {position:'7',points:'144',Driver:{driverId:'piastri',familyName:'Piastri',givenName:'Oscar',nationality:'Australian'},Constructors:[{name:'McLaren'}]},
+  {position:'1',points:'380',Driver:{driverId:'antonelli',familyName:'Antonelli',givenName:'Andrea Kimi',nationality:'Italian'},Constructors:[{name:'Mercedes'}]},
+  {position:'2',points:'261',Driver:{driverId:'max_verstappen',familyName:'Verstappen',givenName:'Max',nationality:'Dutch'},Constructors:[{name:'Red Bull'}]},
+  {position:'3',points:'259',Driver:{driverId:'hamilton',familyName:'Hamilton',givenName:'Lewis',nationality:'British'},Constructors:[{name:'Ferrari'}]},
+  {position:'4',points:'250',Driver:{driverId:'russell',familyName:'Russell',givenName:'George',nationality:'British'},Constructors:[{name:'Mercedes'}]},
+  {position:'5',points:'245',Driver:{driverId:'leclerc',familyName:'Leclerc',givenName:'Charles',nationality:'Monegasque'},Constructors:[{name:'Ferrari'}]},
+  {position:'6',points:'221',Driver:{driverId:'norris',familyName:'Norris',givenName:'Lando',nationality:'British'},Constructors:[{name:'McLaren'}]},
+  {position:'7',points:'150',Driver:{driverId:'piastri',familyName:'Piastri',givenName:'Oscar',nationality:'Australian'},Constructors:[{name:'McLaren'}]},
   {position:'8',points:'105',Driver:{driverId:'hadjar',familyName:'Hadjar',givenName:'Isack',nationality:'French'},Constructors:[{name:'Red Bull'}]},
-  {position:'9',points:'77',Driver:{driverId:'lawson',familyName:'Lawson',givenName:'Liam',nationality:'New Zealander'},Constructors:[{name:'Racing Bulls'}]},
-  {position:'10',points:'42',Driver:{driverId:'gasly',familyName:'Gasly',givenName:'Pierre',nationality:'French'},Constructors:[{name:'Alpine'}]},
+  {position:'9',points:'79',Driver:{driverId:'lawson',familyName:'Lawson',givenName:'Liam',nationality:'New Zealander'},Constructors:[{name:'Racing Bulls'},{name:'Red Bull'}]},
+  {position:'10',points:'43',Driver:{driverId:'gasly',familyName:'Gasly',givenName:'Pierre',nationality:'French'},Constructors:[{name:'Alpine F1 Team'}]},
   {position:'11',points:'38',Driver:{driverId:'arvid_lindblad',familyName:'Lindblad',givenName:'Arvid',nationality:'British'},Constructors:[{name:'Racing Bulls'}]},
-  {position:'12',points:'27',Driver:{driverId:'colapinto',familyName:'Colapinto',givenName:'Franco',nationality:'Argentine'},Constructors:[{name:'Alpine'}]},
+  {position:'12',points:'31',Driver:{driverId:'colapinto',familyName:'Colapinto',givenName:'Franco',nationality:'Argentine'},Constructors:[{name:'Alpine F1 Team'}]},
   {position:'13',points:'23',Driver:{driverId:'bearman',familyName:'Bearman',givenName:'Oliver',nationality:'British'},Constructors:[{name:'Haas F1 Team'}]},
-  {position:'14',points:'13',Driver:{driverId:'hulkenberg',familyName:'Hulkenberg',givenName:'Nico',nationality:'German'},Constructors:[{name:'Audi'}]},
+  {position:'14',points:'13',Driver:{driverId:'hulkenberg',familyName:'Hülkenberg',givenName:'Nico',nationality:'German'},Constructors:[{name:'Audi'}]},
   {position:'15',points:'10',Driver:{driverId:'bortoleto',familyName:'Bortoleto',givenName:'Gabriel',nationality:'Brazilian'},Constructors:[{name:'Audi'}]},
   {position:'16',points:'7',Driver:{driverId:'ocon',familyName:'Ocon',givenName:'Esteban',nationality:'French'},Constructors:[{name:'Haas F1 Team'}]},
   {position:'17',points:'7',Driver:{driverId:'alonso',familyName:'Alonso',givenName:'Fernando',nationality:'Spanish'},Constructors:[{name:'Aston Martin'}]},
@@ -559,22 +576,23 @@ const HARDCODED_DRIVER_STANDINGS=[
   {position:'19',points:'5',Driver:{driverId:'albon',familyName:'Albon',givenName:'Alexander',nationality:'Thai'},Constructors:[{name:'Williams'}]},
   {position:'20',points:'1',Driver:{driverId:'tsunoda',familyName:'Tsunoda',givenName:'Yuki',nationality:'Japanese'},Constructors:[{name:'Racing Bulls'}]},
   {position:'21',points:'0',Driver:{driverId:'stroll',familyName:'Stroll',givenName:'Lance',nationality:'Canadian'},Constructors:[{name:'Aston Martin'}]},
-  {position:'22',points:'0',Driver:{driverId:'bottas',familyName:'Bottas',givenName:'Valtteri',nationality:'Finnish'},Constructors:[{name:'Cadillac'}]},
-  {position:'23',points:'0',Driver:{driverId:'perez',familyName:'Perez',givenName:'Sergio',nationality:'Mexican'},Constructors:[{name:'Cadillac'}]},
+  {position:'22',points:'0',Driver:{driverId:'bottas',familyName:'Bottas',givenName:'Valtteri',nationality:'Finnish'},Constructors:[{name:'Cadillac F1 Team'}]},
+  {position:'23',points:'0',Driver:{driverId:'ryo_hirakawa',familyName:'Hirakawa',givenName:'Ryo',nationality:'Japanese'},Constructors:[{name:'Haas F1 Team'}]},
+  {position:'24',points:'0',Driver:{driverId:'perez',familyName:'Pérez',givenName:'Sergio',nationality:'Mexican'},Constructors:[{name:'Cadillac F1 Team'}]},
 ];
 
 const HARDCODED_CONSTRUCTOR_STANDINGS=[
-  {position:'1',points:'607',Constructor:{name:'Mercedes',nationality:'German'}},
-  {position:'2',points:'474',Constructor:{name:'Ferrari',nationality:'Italian'}},
-  {position:'3',points:'355',Constructor:{name:'Red Bull',nationality:'Austrian'}},
-  {position:'4',points:'355',Constructor:{name:'McLaren',nationality:'British'}},
-  {position:'5',points:'102',Constructor:{name:'Racing Bulls',nationality:'Italian'}},
-  {position:'6',points:'69',Constructor:{name:'Alpine',nationality:'French'}},
+  {position:'1',points:'630',Constructor:{name:'Mercedes',nationality:'German'}},
+  {position:'2',points:'504',Constructor:{name:'Ferrari',nationality:'Italian'}},
+  {position:'3',points:'380',Constructor:{name:'Red Bull',nationality:'Austrian'}},
+  {position:'4',points:'371',Constructor:{name:'McLaren',nationality:'British'}},
+  {position:'5',points:'104',Constructor:{name:'Racing Bulls',nationality:'Italian'}},
+  {position:'6',points:'74',Constructor:{name:'Alpine F1 Team',nationality:'French'}},
   {position:'7',points:'30',Constructor:{name:'Haas F1 Team',nationality:'American'}},
   {position:'8',points:'23',Constructor:{name:'Audi',nationality:'German'}},
   {position:'9',points:'12',Constructor:{name:'Williams',nationality:'British'}},
   {position:'10',points:'7',Constructor:{name:'Aston Martin',nationality:'British'}},
-  {position:'11',points:'0',Constructor:{name:'Cadillac',nationality:'American'}},
+  {position:'11',points:'0',Constructor:{name:'Cadillac F1 Team',nationality:'American'}},
 ];
 
 // ── RACE SELECTOR ─────────────────────────────────────────────────────────────
