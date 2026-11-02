@@ -99,10 +99,10 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **Push at natural stopping points**, not after every commit. A working feature, a verified fix, a completed section.
 - **Never amend or force-push** commits already on GitHub. Pushed history is shared history.
 
-## Current season state (as of 2026-10-28)
+## Current season state (as of 2026-11-02)
 
 - **F1**: Round 18 (United States GP, COTA) complete — Antonelli won from pole (no sprint). Standings: Antonelli 365, Russell 242, Hamilton 241, Verstappen 236, Leclerc 233 (Antonelli +123). Constructors: Mercedes 607, Ferrari 474, Red Bull 355, McLaren 355 (tie; Red Bull P3 per F1.com). Hadjar missed R12–R14 (wrist) — Lawson to Red Bull, Tsunoda to Racing Bulls. R6 Monaco P3–P7 corrected to F1.com order (Hadjar, Piastri, Lawson, Lindblad, Gasly). Calendar is 23 rounds. Next: Mexico City GP, 2026-11-01.
-- **NASCAR Cup**: Round 34 (YellaWood 500, Talladega) complete — Larson won in overtime (Chevrolet 1–6). Chase standings (8 of 10 Chase races run; 2026 Chase = top 16 after R26 with staggered points, no resets): Larson 2441, +73 over Hamlin 2368, Bell 2367. Not yet clinched. Manufacturers: Toyota 18, Chevrolet 9, Ford 7. Next: Xfinity 500 at Martinsville, 2026-11-01.
+- **NASCAR Cup**: Round 35 (Xfinity 500, Martinsville) complete — Byron won (swept both stages, led 362 of 500; Chevrolet 1–2 with Elliott). Chase standings (9 of 10 Chase races run; staggered points, no resets): Larson 2469, +67 over Bell 2402, +70 over Hamlin 2399. Only those three remain mathematically alive; Larson needs 9 points at Homestead to clinch. Manufacturers: Toyota 18, Chevrolet 10, Ford 7. Next: Straight Talk Wireless 400 at Homestead-Miami (finale), 2026-11-08.
 - **NASCAR Xfinity**: Round 31 (Talladega) complete — Sammy Smith won; Love leads 2401, +19 over Allgaier. Manufacturers: Chevrolet 28, Toyota 3, Ford 0. Next: National Debt Relief 250 at Martinsville, 2026-10-31.
 - **NASCAR Trucks**: Round 23 (Talladega) complete — Sammy Smith won (not points-eligible); Honeycutt leads 2371, +43 over Riggs. Manufacturers: Ford 10, Toyota 8, Chevrolet 5, Ram 0. Next: Black's Tire 200 at Martinsville, 2026-10-30.
 - **IndyCar**: Season complete (R18 Laguna Seca, McLaughlin). Palou champion (5th title, 4th straight; clinched at R16 Milwaukee) 631, +86 over Kirkwood. Engine wins: Honda 10, Chevrolet 8. Next: 2027 season.
