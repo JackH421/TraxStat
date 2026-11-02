@@ -85,8 +85,8 @@ const NASCAR_TRUCKS_DRIVERS={
   // 'S. Smith' (Sammy) keyed with an initial — 'Smith' is Chandler Smith.
   'S. Smith':      {first:'Sammy',      team:'Spire Motorsports',         mfr:'Chevrolet', num:7},
   'Green':         {first:'Austin',     team:'Spire Motorsports',         mfr:'Chevrolet', num:77},
-  // Added 2026-11-02 (R24 Martinsville) — #77 Spire per Jayski/Yahoo; Spire's
-  // other trucks are Chevrolet in this roster, so mfr follows the team.
+  // Added 2026-11-02 (R24 Martinsville) — #77 Spire per Jayski/Yahoo; the other Spire
+  // trucks are Chevrolet in this roster, so mfr follows the team.
   'McKee':         {first:'Tristan',    team:'Spire Motorsports',         mfr:'Chevrolet', num:77},
 };
 
