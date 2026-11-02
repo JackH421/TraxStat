@@ -99,12 +99,12 @@ Report the output before declaring the change done. If a check fails, **fix it b
 - **Push at natural stopping points**, not after every commit. A working feature, a verified fix, a completed section.
 - **Never amend or force-push** commits already on GitHub. Pushed history is shared history.
 
-## Current season state (as of 2026-10-28)
+## Current season state (as of 2026-11-02)
 
 - **F1**: Round 18 (United States GP, COTA) complete — Antonelli won from pole (no sprint). Standings: Antonelli 365, Russell 242, Hamilton 241, Verstappen 236, Leclerc 233 (Antonelli +123). Constructors: Mercedes 607, Ferrari 474, Red Bull 355, McLaren 355 (tie; Red Bull P3 per F1.com). Hadjar missed R12–R14 (wrist) — Lawson to Red Bull, Tsunoda to Racing Bulls. R6 Monaco P3–P7 corrected to F1.com order (Hadjar, Piastri, Lawson, Lindblad, Gasly). Calendar is 23 rounds. Next: Mexico City GP, 2026-11-01.
 - **NASCAR Cup**: Round 34 (YellaWood 500, Talladega) complete — Larson won in overtime (Chevrolet 1–6). Chase standings (8 of 10 Chase races run; 2026 Chase = top 16 after R26 with staggered points, no resets): Larson 2441, +73 over Hamlin 2368, Bell 2367. Not yet clinched. Manufacturers: Toyota 18, Chevrolet 9, Ford 7. Next: Xfinity 500 at Martinsville, 2026-11-01.
 - **NASCAR Xfinity**: Round 31 (Talladega) complete — Sammy Smith won; Love leads 2401, +19 over Allgaier. Manufacturers: Chevrolet 28, Toyota 3, Ford 0. Next: National Debt Relief 250 at Martinsville, 2026-10-31.
-- **NASCAR Trucks**: Round 23 (Talladega) complete — Sammy Smith won (not points-eligible); Honeycutt leads 2371, +43 over Riggs. Manufacturers: Ford 10, Toyota 8, Chevrolet 5, Ram 0. Next: Black's Tire 200 at Martinsville, 2026-10-30.
+- **NASCAR Trucks**: Round 24 (Martinsville) complete — Chandler Smith won (Rhodes P2, Riggs P3; McKee pole). Honeycutt leads 2403, +20 over Riggs 2383 — only those two remain alive for the title. Manufacturers: Ford 11, Toyota 8, Chevrolet 5, Ram 0. Next: finale at Homestead-Miami, 2026-11-06.
 - **IndyCar**: Season complete (R18 Laguna Seca, McLaughlin). Palou champion (5th title, 4th straight; clinched at R16 Milwaukee) 631, +86 over Kirkwood. Engine wins: Honda 10, Chevrolet 8. Next: 2027 season.
 - **MotoGP**: Round 18 (Australia) complete — sprint only (M. Márquez won); Sunday GP cancelled (weather/medical helicopter), modeled as `gpCancelled:true`. Martín broke his forearm in the sprint. M. Márquez 365, +10 over Martín 355 (Bezzecchi 315). Constructors: Aprilia 509, Ducati 503. Next: Malaysia (Sepang), 2026-11-01.
 - **WEC**: Round 7 (Barcelona) complete — #8 Toyota won; Buemi/Hartley/Hirakawa 114, +17 over Conway/Kobayashi/de Vries; Toyota leads mfrs 212 (+58 over BMW, mathematically decided — not yet marked in data); LMGT3 teams: #33 TF Sport 92. Next: 6 Hours of Monza (R8 finale), 2026-11-08.
