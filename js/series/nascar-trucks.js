@@ -5,7 +5,7 @@
 // 2026-06-12 (all-series buildout, Phase 2). Dispatch is wired at the top of
 // each renderNascar* function in nascar.js (currentNascarSeries==='trucks').
 //
-// Data current through R23 Talladega (2026-10-23). R1–R12 sources (fetched +
+// Data current through R25 Homestead (2026-11-06). R1–R12 sources (fetched +
 // cross-checked 2026-06-12; per-race URLs in the Phase-2 commit body):
 //   https://en.wikipedia.org/wiki/2026_NASCAR_Craftsman_Truck_Series
 //     (schedule, standings, teams, manufacturer column)
@@ -23,7 +23,7 @@
 //   - 2026 has a FOURTH manufacturer: Ram (Kaulig Racing) — no wins yet.
 //   - R5 Rockingham results are post-DQ (C. Smith disqualified from 4th).
 //   - Corey Heim is part-time (Cup, 23XI) — 3 wins but championship-
-//     ineligible, hence outside the Chase (P17 after R23).
+//     ineligible, hence outside the Chase (P17 after R25).
 //   - Kyle Busch's R9 Dover win (his 69th) was his final victory; he died
 //     2026-05-21. He remains in roster + results per the Cup-side precedent.
 
@@ -124,7 +124,7 @@ const NASCAR_TRUCKS_SCHEDULE=[
   {round:22,race:'Zero Carbon Bioethanol 150',           track:'Phoenix Raceway',                     country:'🇺🇸', date:'2026-10-16', chase:true},
   {round:23,race:"Love's RV Stop 225",                   track:'Talladega Superspeedway',             country:'🇺🇸', date:'2026-10-23', chase:true},
   {round:24,race:"Black's Tire 200",                     track:'Martinsville Speedway',               country:'🇺🇸', date:'2026-10-30', chase:true},
-  {round:25,race:'Baptist Health 200',                   track:'Homestead-Miami Speedway',            country:'🇺🇸', date:'2026-11-06', chase:true},
+  {round:25,race:'Craftsman 200',                          track:'Homestead-Miami Speedway',            country:'🇺🇸', date:'2026-11-06', chase:true},
 ];
 
 // Completed rounds 1–23 (R13–R23 sourcing: see header / R22–R23 comments).
@@ -166,53 +166,58 @@ const NASCAR_TRUCKS_RESULTS={
   // the 2026 Blacks Tire 200 (Martinsville) race page + Yahoo Sports race results/recap
   // (NASCAR.com recap and Jayski inspection report corroborate the winner).
   24:{winner:'Smith',     p2:'Rhodes',    p3:'Riggs',         polePos:'McKee',     note:"Chandler Smith took the lead from teammate Layne Riggs on a restart with 12 laps to go and won by 0.574s over Ben Rhodes — his 10th career Truck win and third of 2026 (Ford's 11th of the season). Riggs swept both stages and led a race-high 156 laps; Tristan McKee became the youngest pole winner in series history. Honeycutt finished 14th and his lead over Riggs fell from 43 to 20 with only the two still alive for Homestead."},
+  // R25 added 2026-11-09 — official NASCAR.com results feed
+  // (cf.nascar.com/cacher/2026/3/5670/weekend-feed.json: top 10, pole, stage
+  // winners, laps led) + Wikipedia '2026 Craftsman 200' race page and season
+  // page (winner/P2/pole/champion/points agree). Race renamed from the
+  // scheduled 'Baptist Health 200' to 'Craftsman 200' per Wikipedia.
+  25:{winner:'Honeycutt', p2:'Eckes',     p3:'Hemric',        polePos:'Sanchez',   note:"Kaden Honeycutt took the lead from Eckes with 13 laps to go for his fifth win of 2026 and the 2026 Truck Series championship (his first), finishing 2,471 to 2,388 over Layne Riggs, who was caught in an early wreck and finished 32nd. Corey Heim won both stages; polesitter Nick Sanchez finished 35th with a driveshaft failure."},
 };
 
-// Driver points after R24 Martinsville (2026-10-30). Top 10 (Chase field,
-// 2000-base reset at R19) dual-sourced: Wikipedia season-page points table and
-// the Yahoo Sports post-race Chase standings (gaps match exactly for P1–P10).
-// P11–P26 are SINGLE-SOURCE: Wikipedia season-page points table (fetched
-// 2026-11-02). Truncated at P26 (see header). Friesen/Gray tie at 499 kept in
+// FINAL driver points after R25 Homestead (2026-11-06). Honeycutt is 2026
+// champion. Source: Wikipedia season-page points table (fetched 2026-11-09);
+// P1 and P2 (2471/2388) also match the race page. SINGLE-SOURCE otherwise;
+// not cross-checked on a second site. Truncated at P26 (see header). Friesen/Gray tie at 499 kept in
 // Wikipedia order.
 // gap = points − leader points. Heim (P17) has 3 wins but is
 // championship-ineligible (part-time). Kyle Busch removed from official
 // standings after his death (per Wikipedia season page).
 const NASCAR_TRUCKS_STANDINGS=[
-  {pos:1, driver:'Honeycutt',   points:2403, gap:0},
-  {pos:2, driver:'Riggs',       points:2383, gap:-20},
-  {pos:3, driver:'Smith',       points:2300, gap:-103},
-  {pos:4, driver:'Majeski',     points:2275, gap:-128},
-  {pos:5, driver:'Eckes',       points:2263, gap:-140},
-  {pos:6, driver:'Ruggiero',    points:2224, gap:-179},
-  {pos:7, driver:'Rhodes',      points:2217, gap:-186},
-  {pos:8, driver:'Hemric',      points:2199, gap:-204},
-  {pos:9, driver:'Ankrum',      points:2193, gap:-210},
-  {pos:10,driver:'Enfinger',    points:2178, gap:-225},
-  {pos:11,driver:'Garcia',      points:584, gap:-1819},
-  {pos:12,driver:'Friesen',     points:499, gap:-1904},
-  {pos:13,driver:'Gray',        points:499, gap:-1904},
-  {pos:14,driver:'Queen',       points:497, gap:-1906},
-  {pos:15,driver:'Pérez de Lara', points:483, gap:-1920},
-  {pos:16,driver:'Haley',       points:478, gap:-1925},
-  {pos:17,driver:'Heim',        points:380, gap:-2023},
-  {pos:18,driver:'Sutton',      points:366, gap:-2037},
-  {pos:19,driver:'Butcher',     points:363, gap:-2040},
-  {pos:20,driver:'Lewis',       points:352, gap:-2051},
-  {pos:21,driver:'Tyrrell',     points:345, gap:-2058},
-  {pos:22,driver:'LaJoie',      points:336, gap:-2067},
-  {pos:23,driver:'Mosack',      points:269, gap:-2134},
-  {pos:24,driver:'Wright',      points:264, gap:-2139},
-  {pos:25,driver:'Muniz',       points:227, gap:-2176},
-  {pos:26,driver:'Boyd',        points:199, gap:-2204},
+  {pos:1,driver:'Honeycutt',   points:2471, gap:0},
+  {pos:2,driver:'Riggs',       points:2388, gap:-83},
+  {pos:3,driver:'Smith',       points:2340, gap:-131},
+  {pos:4,driver:'Majeski',     points:2319, gap:-152},
+  {pos:5,driver:'Eckes',       points:2308, gap:-163},
+  {pos:6,driver:'Ruggiero',    points:2252, gap:-219},
+  {pos:7,driver:'Hemric',      points:2249, gap:-222},
+  {pos:8,driver:'Rhodes',      points:2241, gap:-230},
+  {pos:9,driver:'Enfinger',    points:2210, gap:-261},
+  {pos:10, driver:'Ankrum',      points:2196, gap:-275},
+  {pos:11, driver:'Garcia',      points:614, gap:-1857},
+  {pos:12, driver:'Friesen',     points:536, gap:-1935},
+  {pos:13, driver:'Queen',       points:514, gap:-1957},
+  {pos:14, driver:'Gray',        points:510, gap:-1961},
+  {pos:15, driver:'Haley',       points:496, gap:-1975},
+  {pos:16, driver:'Pérez de Lara', points:487, gap:-1984},
+  {pos:17, driver:'Heim',        points:431, gap:-2040},
+  {pos:18, driver:'Butcher',     points:378, gap:-2093},
+  {pos:19, driver:'Lewis',       points:375, gap:-2096},
+  {pos:20, driver:'Sutton',      points:366, gap:-2105},
+  {pos:21, driver:'LaJoie',      points:363, gap:-2108},
+  {pos:22, driver:'Tyrrell',     points:359, gap:-2112},
+  {pos:23, driver:'Mosack',      points:290, gap:-2181},
+  {pos:24, driver:'Wright',      points:277, gap:-2194},
+  {pos:25, driver:'Muniz',       points:236, gap:-2235},
+  {pos:26, driver:'Boyd',        points:206, gap:-2265},
 ];
 
-// Manufacturer wins after R24 — derived from the verified winners above;
+// Manufacturer wins after R25 (Wikipedia season-page mfr table: Ford 11, Toyota 9, Chevrolet 5, Ram 0) — derived from the verified winners above;
 // manufacturer column cross-checked on the Wikipedia season page. Ram
 // (Kaulig Racing) is new for 2026 and winless so far — included at 0 so the
 // fourth manufacturer is visible.
 const NASCAR_TRUCKS_MFRS=[
   {pos:1, mfr:'Ford',      wins:11,drivers:['Riggs (7)','Smith (3)','Garcia']},
-  {pos:2, mfr:'Toyota',    wins:8, drivers:['Honeycutt (4)','Heim (3)','Bell']},
+  {pos:2, mfr:'Toyota',    wins:9, drivers:['Honeycutt (5)','Heim (3)','Bell']},
   {pos:3, mfr:'Chevrolet', wins:5, drivers:['Busch (2)','Hocevar','Enfinger','S. Smith']},
   {pos:4, mfr:'Ram',       wins:0, drivers:[]},
 ];
@@ -399,7 +404,7 @@ function renderNascarTrucksStandings(){
       <div class="champ-gap">WINS</div>
     </div>`).join('');
   content.innerHTML=top+hdr+note+rows+mfrHdr+mfrRows;
-  setStats(`${NASCAR_TRUCKS_STANDINGS[0].points} pts`,NASCAR_TRUCKS_STANDINGS[0].driver,'DRIVERS',`R23/25`);
+  setStats(`${NASCAR_TRUCKS_STANDINGS[0].points} pts`,NASCAR_TRUCKS_STANDINGS[0].driver,'DRIVERS',`R25/25`);
 }
 
 // ── TRUCKS HIGHLIGHTS ─────────────────────────────────────────────────────────
