@@ -41,34 +41,34 @@ const HOMEPAGE_ARTICLES = [
   {
     id: 'a1',
     series: 'f1',
-    headline: 'Max Verstappen signs ambassador deal with Dutch technical group VDK',
-    source: 'Motorsport.com',
-    url: 'https://www.motorsport.com/f1/news/max-verstappen-signs-ambassador-deal-with-dutch-technical-group-vdk/10874486/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
-    publishedAt: '2026-11-14T11:03:24.000Z',
-    excerpt: 'Four-time Formula 1 champion Max Verstappen has become the new ambassador of the VDK Group, a Dutch group of installation and technical companies that is expanding across Europe.The Dutchman will play a prominent role in the company\'s international branding over the coming years…',
-    imageUrl: 'https://cdn-6.motorsport.com/images/amp/YN7vzaP6/s6/motorsport-com-graphics-2026-1.jpg',
-    imageCredit: ''
+    headline: 'Kimi Antonelli names best F1 victory after whirlwind title success',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/kimi-antonelli-names-best-f1-victory-after-whirlwind-title-success',
+    publishedAt: '2026-11-15T07:10:00.000Z',
+    excerpt: 'Kimi Antonelli claimed the F1 title in just his second season and 43rd grand prix in Mexico City.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Antonelli/XPB_1450725_HiRes.jpg?v=1793619636&width=1800&height=945&quality=75&crop=6000%2C3150%2C0%2C425',
+    imageCredit: 'Antonelli champion Mexico'
   },
   {
     id: 'a2',
     series: 'f1',
-    headline: 'Las Vegas Grand Prix 2026: Race start time, how to watch, full schedule, predictions',
-    source: 'ESPN F1',
-    url: 'https://www.espn.com/f1/story/_/id/50389130/las-vegas-grand-prix-2026-race-f1-start-s-how-watch-schedule-tv-channel-live-stream-predictions',
-    publishedAt: '2026-11-14T15:19:08.000Z',
-    excerpt: 'Formula 1 is back under the bright lights of Las Vegas for one of the most extravagant weekends on the calendar.',
-    imageUrl: 'https://a.espncdn.com/combiner/i?img=%2Fphoto%2F2025%2F1119%2Fr1577676_1296x729_16%2D9.jpg',
+    headline: 'Retaining Lawson isn\'t enough – Red Bull must stop treating him like a failure',
+    source: 'Autosport',
+    url: 'https://www.autosport.com/f1/news/retaining-lawson-isnt-enough-red-bull-must-stop-treating-him-like-a-failure/10874666/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
+    publishedAt: '2026-11-15T13:08:22.000Z',
+    excerpt: 'Liam Lawson never failed at Red Bull Racing in 2025. It was Red Bull that failed Liam Lawson.Retaining his services for another year isn\'t just a logical decision, but perhaps the first sign that the organisation is changing the habits it developed under Helmut Marko. Yet there…',
+    imageUrl: 'https://cdn-7.motorsport.com/images/amp/YP743Le2/s6/liam-lawson-red-bull-2.jpg',
     imageCredit: ''
   },
   {
     id: 'a3',
     series: 'f1',
-    headline: 'How Antonelli overcame Russell, Ferrari to become F1\'s youngest champion',
-    source: 'ESPN F1',
-    url: 'https://www.espn.com/f1/story/_/id/50196394/how-kimi-antonelli-george-russell-ferrari-f1-youngest-champion',
-    publishedAt: '2026-11-14T13:27:31.000Z',
-    excerpt: 'How Kimi Antonelli overcame early setbacks, teammate George Russell and a Ferrari fightback to become Formula 1\'s youngest-ever world champion.',
-    imageUrl: 'https://a.espncdn.com/combiner/i?img=%2Fphoto%2F2026%2F1102%2Fr1739911_1296x729_16%2D9.jpg',
+    headline: 'Has Ferrari solved its Lewis Hamilton-Charles Leclerc problem? Fred Vasseur shares peace talk details',
+    source: 'Crash.net',
+    url: 'https://www.crash.net/f1/news/1110117/1/has-ferrari-solved-its-lewis-hamilton-charles-leclerc-problem-fred-vasseur-shares',
+    publishedAt: '2026-11-15T14:00:00.000Z',
+    excerpt: 'Fred Vasseur reveals more about the meeting he held with Lewis Hamilton and Charles Leclerc in Brazil.',
+    imageUrl: 'https://www.crash.net/sites/default/files/2026-11/xpb_1397474_hires.jpg?width=1600&aspect_ratio=16:9',
     imageCredit: ''
   },
   {
@@ -90,7 +90,7 @@ const HOMEPAGE_ARTICLES = [
     url: 'https://www.motorsport.com/general/news/carson-hocevar-and-cleetus-mcfarland-win-lemullets-2026/10874411/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
     publishedAt: '2026-11-14T04:20:50.000Z',
     excerpt: 'Carson Hocevar and Cleetus McFarland have won the 2026 edition of the 2.4 Hours of LeMullets, a full-contact Crown Vic around the Freedom Factory short track in Florida The 3/8-mile oval also had a chicane of sorts on the backstretch for the race, which is where a lot of the…',
-    imageUrl: 'https://cdn-1.motorsport.com/images/amp/6VyK9qNY/s6/carson-hocevar-and-cleetus-mcf.jpg',
+    imageUrl: 'https://cdn-7.motorsport.com/images/amp/6VyK9qNY/s6/carson-hocevar-and-cleetus-mcf.jpg',
     imageCredit: ''
   },
   {
@@ -101,7 +101,7 @@ const HOMEPAGE_ARTICLES = [
     url: 'https://www.motorsport.com/nascar-cup/news/tv-ratings-released-for-nascar-cup-season-finale/10874404/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-NASCAR-CUP&utm_term=News&utm_content=www',
     publishedAt: '2026-11-13T22:02:09.000Z',
     excerpt: 'The live NBC broadcast for the 2026 NASCAR Cup Series finale at Homestead-Miami Speedway earned a 1.37 rating and 2.471 million viewers this past weekend.That is down from the 2025 finale at Phoenix Raceway, also on NBC, which had a 1.45 rating and 2.774 million viewers. This…',
-    imageUrl: 'https://cdn-4.motorsport.com/images/amp/24QGbbeY/s6/start-of-nascar-cup-finale-wit.jpg',
+    imageUrl: 'https://cdn-7.motorsport.com/images/amp/24QGbbeY/s6/start-of-nascar-cup-finale-wit.jpg',
     imageCredit: ''
   },
   {
@@ -112,18 +112,18 @@ const HOMEPAGE_ARTICLES = [
     url: 'https://www.motorsport.com/motogp/news/how-qatar-red-flag-helped-johann-zarco-put-barcelona-crash-behind-him/10874456/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=www',
     publishedAt: '2026-11-14T10:00:03.000Z',
     excerpt: 'Johann Zarco suffered a double accident during the Catalan Grand Prix last May, from which he is still recovering, both physically and psychologically. His knee injury was so serious that it threatened to jeopardise his racing career.During the Barcelona race, Pedro Acosta\'s KTM…',
-    imageUrl: 'https://cdn-8.motorsport.com/images/amp/0kZX9vD6/s6/johann-zarco-team-lcr-honda.jpg',
+    imageUrl: 'https://cdn-9.motorsport.com/images/amp/0kZX9vD6/s6/johann-zarco-team-lcr-honda.jpg',
     imageCredit: ''
   },
   {
     id: 'a8',
-    series: 'wec',
-    headline: 'AF Corse Wins Chaotic Asian Le Mans Opener At Wet Le Castellet',
-    source: 'DailySportsCar',
-    url: 'https://www.dailysportscar.com/2026/11/14/af-corse-wins-chaotic-asian-le-mans-opener-at-wet-le-castellet.html?utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=af-corse-wins-chaotic-asian-le-mans-opener-at-wet-le-castellet',
-    publishedAt: '2026-11-14T16:32:47.000Z',
-    excerpt: 'AF Corse’s #90 Ferrari 499P of Luis Perez Companc, Ye Yifei and Nicklas Nielsen triumphed in challenging conditions during this afternoon’s opening round of the 2026/27 Asian Le Mans Series season at Circuit Paul Ricard. Perez Companc passed the pole-sitting #47 Cetilar Racing…',
-    imageUrl: 'https://www.dailysportscar.com/wp-content/uploads/2030/01/PMW-2026-Expo-Banner.png',
+    series: 'other',
+    headline: 'Herrera wins postponed Vegas race; Kalitta, Capps, Glenn and Herrera qualify No. 1 at NHRA Finals in Pomona',
+    source: 'Racer',
+    url: 'https://racer.com/2026/11/14/herrera-wins-postponed-vegas-race-kalitta-capps-glenn-and-herrera-qualify-no-1-at-nhra-finals-in-pomona',
+    publishedAt: '2026-11-15T01:35:10.000Z',
+    excerpt: 'Pro Stock Motorcycle’s Gaige Herrera won the delayed final round from Las Vegas on Saturday at In-N-Out Burger Pomona Dragstrip, also qualifying No. 1 to pull within a round of points leader Richard Gadson at the In-N-Out Burger NHRA Finals. Doug Kalitta (Top Fuel), Ron Capps…',
+    imageUrl: '',
     imageCredit: ''
   }
 ];
@@ -136,47 +136,47 @@ const HOMEPAGE_ARTICLES = [
 const HOMEPAGE_ALTERNATES = [
   {
     id: 'a101',
-    series: 'wec',
-    headline: 'AF Corse Sails to Victory in Rain-Affected Paul Ricard Opener',
-    source: 'Sportscar365',
-    url: 'https://sportscar365.com/lemans/asian-lms/af-corse-sails-to-victory-in-rain-affected-paul-ricard-opener/',
-    publishedAt: '2026-11-14T16:54:23.000Z',
-    excerpt: 'AF Corse overcomes constant rain and chaotic final stint to take the win at Paul Ricard...',
-    imageUrl: 'https://sportscar365.com/wp-content/uploads/2026/11/MPSA_ALMS26_PAUL_LC_LCR_2511_141126_14_29_52.jpg',
-    imageCredit: ''
+    series: 'f1',
+    headline: 'Liam Lawson hailed by Red Bull for \'incredible contrast\' with F1 redemption',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/liam-lawson-hailed-by-red-bull-for-incredible-contrast-with-f1-redemption',
+    publishedAt: '2026-11-15T18:05:00.000Z',
+    excerpt: 'Liam Lawson has been one of the best-performing drivers in F1 this season, and Red Bull boss Laurent Mekies has heralded his strong form.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Lawson/XPB_1450832_HiRes.jpg?v=1793891726&width=1800&height=945&quality=75&crop=5185%2C2722%2C0%2C369',
+    imageCredit: 'Lawson Brazil Thu'
   },
   {
     id: 'a102',
-    series: 'motogp',
-    headline: 'Yamaha won’t face sporting penalty for missing Qatar MotoGP, FIM president states',
-    source: 'Crash.net',
-    url: 'https://www.crash.net/motogp/news/1110121/1/yamaha-wont-face-sporting-penalty-missing-qatar-motogp-fim-president-states',
-    publishedAt: '2026-11-14T10:25:43.000Z',
-    excerpt: 'Yamaha will not be given any sporting penalties for missing the Qatar Grand Prix',
-    imageUrl: 'https://www.crash.net/sites/default/files/2026-10/gng_1351538_hires.jpg?width=1600&aspect_ratio=16:9',
-    imageCredit: ''
+    series: 'other',
+    headline: 'Formula E twelfth team finally official as Fusion arrival confirmed',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/formula-e-twelfth-team-finally-official-as-fusion-arrival-confirmed',
+    publishedAt: '2026-11-15T17:41:00.000Z',
+    excerpt: 'Formula E\'s newest team is finally official, taking the grid to 24 cars to kickstart the Gen4 era.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Formula-E/LN4-Fusion.webp?v=1794763704&width=1200&height=630&format=jpg&quality=75&crop=1920%2C1008%2C0%2C36',
+    imageCredit: 'LN4 Fusion'
   },
   {
     id: 'a103',
     series: 'f1',
-    headline: 'Quick shift: Breaking down the latest F1 silly season developments',
-    source: 'Racer',
-    url: 'https://racer.com/2026/11/13/quick-shift-breaking-down-the-latest-f1-silly-season-developments',
-    publishedAt: '2026-11-13T21:45:21.000Z',
-    excerpt: 'RACER\'s Chris Medland breaks down Racing Bulls\' decision to retain an unchanged driver line-up for the 2027 Formula 1 season – and why he expects Cadillac to do the same thing.',
-    imageUrl: '',
-    imageCredit: ''
+    headline: 'Mercedes predict significant loss for start of new F1 season',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/mercedes-predict-significant-loss-for-start-of-new-f1-season',
+    publishedAt: '2026-11-15T17:10:00.000Z',
+    excerpt: 'F1 underwent a considerable regulations overhaul for the 2026 season, and further changes are coming. Mercedes technical director James Allison has shared his thoughts.',
+    imageUrl: 'https://cdn.racingnews365.com/2026/Antonelli/XPB_1451737_HiRes.jpg?v=1793994859&width=1800&height=945&quality=75&crop=5185%2C2722%2C0%2C369',
+    imageCredit: 'Antonelli Brazil FP1'
   },
   {
     id: 'a104',
-    series: 'motogp',
-    headline: 'The numbers that reveal how MotoGP sprint races have decided the title fight',
-    source: 'Autosport',
-    url: 'https://www.autosport.com/motogp/news/the-numbers-that-reveal-how-motogp-sprint-races-have-decided-the-title-fight/10874488/?utm_source=RSS&utm_medium=referral&utm_campaign=RSS-ALL&utm_term=News&utm_content=uk',
-    publishedAt: '2026-11-14T13:04:23.000Z',
-    excerpt: 'MotoGP’s title race is heading towards a foregone conclusion at next week’s Portuguese Grand Prix, with Marc Marquez all but certain to take his 10th world championship crown.That his dominance in sprint races has been integral to his title success would come as little surprise.…',
-    imageUrl: 'https://cdn-1.motorsport.com/images/amp/6n7bL7o0/s6/jorge-martin-aprilia-racing-te-2.jpg',
-    imageCredit: ''
+    series: 'f1',
+    headline: 'Red Bull make surprisingly-priced purchase from Ford to kick off new F1 venture - On This Day',
+    source: 'RacingNews365',
+    url: 'https://racingnews365.com/red-bull-make-surprisingly-priced-purchase-from-ford-to-kick-off-new-f1-venture-on-this-day',
+    publishedAt: '2026-11-15T16:20:00.000Z',
+    excerpt: '22 years ago today, Ford confirmed Red Bull had purchased the Jaguar Racing F1 team for just $1. Two decades later, the two companies would join forces...',
+    imageUrl: 'https://cdn.racingnews365.com/Red-Bull-logo-2005.jpg?v=1794733638&width=1800&height=945&quality=75&crop=2464%2C1294%2C0%2C177',
+    imageCredit: 'Red Bull logo 2005'
   }
 ];
 
